@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#F0FDF4">
+    <title>Institute Registration | PRΛN</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+          /* ====================================================================
+        DESIGN SYSTEM: BIOSPHERE V1 (Exact Copy from MCP.html)
+        ====================================================================
+        */
+        :root {
+            /* Brand Colors: Deep Forest & Clean Air */
+            --primary-dark: #064E3B;    /* Emerald 900 */
+            --primary-main: #059669;    /* Emerald 600 */
+            --primary-glow: #34D399;    /* Emerald 400 */
+            --accent-teal:  #0D9488;    /* Teal 600 */
+            --accent-sky:   #0EA5E9;    /* Sky 500 */
+            
+            /* Surfaces */
+            --bg-canvas: #F0FDF4;       /* Mint Cream */
+            --surface-polymer: rgba(255, 255, 255, 0.75);
+            --surface-glass: rgba(255, 255, 255, 0.4);
+            --border-light: rgba(255, 255, 255, 0.6);
+            --border-active: var(--primary-main);
+
+            /* Text */
+            --text-heading: #022C22;
+            --text-body:    #374151;
+            --text-muted:   #6B7280;
+
+            /* Physics */
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow-ambient: 0 25px 50px -12px rgba(6, 78, 59, 0.1);
+            --shadow-floating: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* --- NAVBAR & FOOTER TOKENS --- */
+            --glass-surface: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(22, 163, 74, 0.15);
+            --col-primary: #14532D;
+            --col-body: #475569;
+            --col-accent: #16A34A;
+            --col-accent-hover: #15803D;
+            --font-display: "Space Grotesk", sans-serif;
+            --font-body: "Inter", sans-serif;
+            --nav-height: 80px;
+            --shadow-soft: 0 20px 40px -10px rgba(20, 83, 45, 0.06);
+            --shadow-hover: 0 25px 50px -12px rgba(20, 83, 45, 0.12);
+            --transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-font-smoothing: antialiased; }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--bg-canvas);
+            color: var(--text-body);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding-top: var(--nav-height); 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* =========================
+           PREMIUM NAVBAR
+           ========================= */
+        .glass-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: var(--glass-surface);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 60px;
+            transition: var(--transition);
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--col-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1002; 
+            text-decoration: none;
+        }
+        .nav-logo::after {
+            content: ''; width: 8px; height: 8px; background: var(--col-accent); border-radius: 50%;
+        }
+        .nav-logo span { color: var(--col-accent); }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .nav-items {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-link {
+            font-family: var(--font-body);
+            font-weight: 500;
+            color: var(--col-body);
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-link:hover {
+            color: var(--col-accent);
+        }
+
+         .btn-login {
+            background: var(--col-accent);
+            background: transparent;
+            color: var(--col-accent);
+            padding: 10px 28px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            border: 1px solid var(--col-accent);
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .btn-login:hover {
+            background: var(--col-accent);
+            color: white;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 1002;
+            background: none;
+            border: none;
+        }
+        .line {
+            width: 24px;
+            height: 2px;
+            background: var(--col-primary);
+            border-radius: 2px;
+            transition: 0.3s ease;
+        }
+
+        /* ====================================================================
+           LAYER 1: UI LAYOUT
+           ==================================================================== */
+        .app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* --- NEW: PAGE HEADER --- */
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+            animation: fadeDown 0.8s ease-out;
+        }
+        
+        .page-title {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: -0.03em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-main) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .page-subtitle {
+            font-family: var(--font-body);
+            font-size: 1.125rem;
+            color: var(--text-body);
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ====================================================================
+           LAYER 2: THE "POLYMER" CARD
+           ==================================================================== */
+        .main-interface {
+            display: grid;
+            grid-template-columns: 300px 1fr; /* Slightly wider sidebar */
+            gap: 40px;
+            background: var(--surface-polymer);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 10px;
+            box-shadow: var(--shadow-ambient);
+            margin-bottom: 60px;
+            overflow: hidden;
+            min-height: 700px;
+        }
+
+        /* --- ENHANCED SIDEBAR (VISUALS) --- */
+        .sidebar {
+            /* Premium Glass Background */
+            background: radial-gradient(circle at top left, rgba(52, 211, 153, 0.1), transparent 50%),
+                        radial-gradient(circle at bottom right, rgba(13, 148, 136, 0.1), transparent 50%),
+                        rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: var(--radius-md);
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+        
+        .progress-title {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary-dark);
+            margin-bottom: 32px;
+            font-weight: 700;
+            opacity: 0.8;
+        }
+
+        .steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+        /* The connecting line */
+        .steps-list::before {
+            content: ''; position: absolute; left: 14px; top: 20px; bottom: 20px; width: 2px;
+            background: rgba(22, 163, 74, 0.2); z-index: 0;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 0;
+            position: relative;
+            z-index: 1;
+            color: var(--text-muted);
+            transition: 0.3s;
+            cursor: default;
+        }
+        .step-dot {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid #E5E7EB;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .step-label { 
+            font-size: 0.95rem; 
+            font-weight: 600; 
+            transition: 0.3s;
+            font-family: var(--font-body);
+        }
+
+        /* Active State */
+        .step-item.active { color: var(--primary-dark); }
+        .step-item.active .step-dot {
+            background: var(--primary-main);
+            border-color: var(--primary-main);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.15);
+        }
+        /* Completed State */
+        .step-item.completed .step-dot {
+            background: var(--accent-teal);
+            border-color: var(--accent-teal);
+            color: white;
+            content: '✓';
+        }
+
+        /* Main Form Area */
+        .form-viewport {
+            padding: 40px 60px 40px 20px;
+            position: relative;
+        }
+
+        .section-animate {
+            display: none;
+            animation: floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .section-animate.active { display: block; }
+        
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .form-header h1 {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+        .form-header p {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        /* ====================================================================
+           LAYER 3: INPUTS & CONTROLS
+           ==================================================================== */
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        .full-width { grid-column: span 2; }
+        
+        .field-wrapper { position: relative; display: flex; flex-direction: column; gap: 8px; }
+        
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-heading);
+            display: flex;
+            align-items: center;
+        }
+        .required::after { content: "*"; color: #EF4444; margin-left: 4px; }
+
+        input, select, textarea {
+            background: rgba(255,255,255,0.8);
+            border: 1px solid #D1D5DB;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 1rem;
+            font-family: 'Manrope', sans-serif;
+            color: var(--text-heading);
+            transition: 0.3s;
+            box-shadow: var(--shadow-floating);
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-main);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+        }
+        input::placeholder { color: #9CA3AF; }
+
+        /* Modern Select Arrow */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23059669' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+        }
+
+        /* Special Toggle for "Other" */
+        .conditional-input {
+            max-height: 0; opacity: 0; overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .conditional-input.visible { max-height: 100px; opacity: 1; margin-top: 12px; }
+
+        /* File Upload "Biosphere" Style */
+        .file-dropzone {
+            border: 2px dashed #D1D5DB;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            transition: 0.3s;
+            background: rgba(249, 250, 251, 0.5);
+            cursor: pointer;
+            position: relative;
+        }
+        .file-dropzone:hover {
+            background: #ECFDF5;
+            border-color: var(--primary-main);
+        }
+        .file-dropzone input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+        
+        .zone-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; color: var(--primary-main); }
+        .zone-text { font-size: 0.9rem; color: var(--text-body); font-weight: 500; }
+        .file-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: #D1FAE5; color: var(--primary-dark);
+            padding: 6px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 600;
+            margin-top: 12px;
+        }
+        .remove-file { cursor: pointer; color: #EF4444; margin-left: 8px; }
+
+        /* Selection Chips */
+        .chip-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .chip {
+            padding: 10px 20px;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--text-muted);
+        }
+        .chip:hover { transform: translateY(-2px); border-color: var(--primary-glow); }
+        .chip.selected {
+            background: var(--primary-dark);
+            color: white;
+            border-color: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(6, 78, 59, 0.2);
+        }
+
+        /* Footer Actions */
+        .form-actions {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid #F3F4F6;
+        }
+        
+        .btn {
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            font-family: 'Manrope', sans-serif;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .btn-ghost { background: #e6fced; color: var(--text-heading); }
+        .btn-ghost:hover { background: #F3F4F6; color: var(--text-heading); }
+        
+        .btn-ghost1 { background: #e6fced; margin-top: auto; margin-left:auto; margin-right: auto; color: var(--text-heading); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-main) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(5, 150, 105, 0.35);
+        }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* =========================
+           GLASS FOOTER
+           ========================= */
+        .glass-footer {
+            background: var(--glass-surface);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-top: 1px solid var(--glass-border);
+            padding: 80px 60px 40px;
+            position: relative;
+            z-index: 20;
+            width: 100%;
+            margin-top: auto; /* Push to bottom if content is short */
+            font-family: var(--font-body);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--col-primary);
+            margin-bottom: 16px;
+        }
+        .footer-brand p {
+            color: var(--col-body);
+            line-height: 1.6;
+            font-size: 0.95rem;
+            max-width: 300px;
+        }
+
+        .footer-heading {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+            color: var(--col-accent);
+            margin-bottom: 24px;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links a {
+            color: var(--col-body);
+            font-size: 0.95rem;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+        .footer-links a:hover {
+            color: var(--col-primary);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 32px;
+            border-top: 1px solid rgba(22, 163, 74, 0.1);
+            font-size: 0.9rem;
+            color: var(--col-body);
+        }
+
+        /* =========================
+           RESPONSIVE
+           ========================= */
+        @media (max-width: 1024px) {
+            .glass-nav { padding: 0 30px; }
+            .nav-right {
+                position: fixed; top: var(--nav-height); left: 0; width: 100%;
+                background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(198px) saturate(180%);-webkit-backdrop-filter: blur(198px) saturate(180%);
+                flex-direction: column; padding: 40px; gap: 30px;
+                border-bottom: 1px solid var(--glass-border);
+                max-height: 0; overflow: hidden; opacity: 0;
+                transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            }
+            .nav-right.active { max-height: 400px; opacity: 1; box-shadow: var(--shadow-hover); }
+            .nav-items { flex-direction: column; width: 100%; text-align: center; }
+            .nav-link { font-size: 1.2rem; justify-content: center; }
+            .hamburger { display: flex; }
+            .hamburger.active .line:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+            .hamburger.active .line:nth-child(2) { opacity: 0; }
+            .hamburger.active .line:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+            .glass-footer { padding: 60px 30px 30px; }
+
+            .main-interface { grid-template-columns: 1fr; min-height: auto; }
+            
+            /* Responsive Sidebar with Glass Scroll */
+            .sidebar { 
+                flex-direction: row; 
+                overflow-x: auto; 
+                padding: 24px; 
+                gap: 0;
+                /* Horizontal gradients for mobile */
+                background: linear-gradient(to right, rgba(52, 211, 153, 0.1), rgba(13, 148, 136, 0.05), rgba(255,255,255,0.4));
+            }
+            .steps-list { flex-direction: row; width: 100%; gap: 32px; min-width: max-content; }
+            .steps-list::before { width: 100%; height: 2px; left: 0; top: 15px; bottom: auto; }
+            .step-label { display: none; } /* Hide text on mobile for cleaner look */
+            .progress-title { display: none; }
+        }
+        @media (max-width: 768px) {
+            .page-title { font-size: 2.2rem; }
+            .input-grid { grid-template-columns: 1fr; }
+            .form-viewport { padding: 30px 20px; }
+        }
+        @media (max-width: 640px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+            .page-title { font-size: 1.8rem; }
+        }
+
+        /* Validation Shake */
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-4px);} 75% {transform: translateX(4px);} }
+        .error-shake { animation: shake 0.3s ease-in-out; border-color: #EF4444 !important; background: #FEF2F2 !important; }
+        
+        /* Generative Background (Layer 0) */
+        #bioCanvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        
+        .social{
+      display:flex;
+      gap:20px;
+      color:var(--col-body);
+      text-decoration:none;
+    }
+
+    .social:hover{
+      color:var(--col-primary);
+    }
+
+     .info-text {
+            background: #e6fced;
+            padding: 12px 16px;
+            border-left: 4px solid var(--primary-main) ;
+            border-radius: 6px;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .step-dot {
+    width: 46px !important;
+    height: 46px !important;
+    font-size: 1rem !important;
+}
+
+@media (max-width: 1024px) {
+
+    /* Increase mobile circle size too */
+    .step-dot {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 1rem !important;
+    }
+
+    /* Fixing spacing between circles */
+    .steps-list {
+        flex-direction: row;
+        gap: 20px !important;
+        justify-content: space-between;   /* equal spacing */
+        width: 100%;
+    }
+
+    /* Line passing exactly through the circles */
+    .steps-list::before {
+        height: 2px !important;
+        width: 100% !important;
+        top: 50% !important;
+        left: 0 !important;
+        transform: translateY(-50%);
+    }
+
+    /* Remove bottom-top padding to avoid extra space */
+    .step-item {
+        padding: 0 !important;
+    }
+}
+
+
+
+/* ===== MOBILE LAYOUT FIXES: fix right-cutoff + responsive buttons ===== */
+@media (max-width: 768px) {
+  /* Reduce outer paddings so content never exceeds viewport */
+  .app-container { padding: 20px; max-width: 100%; }
+  .form-viewport { padding: 18px 16px 28px 16px; box-sizing: border-box; width: 100%; }
+
+  /* Ensure inputs/cards never overflow horizontally */
+  .main-interface, .surface-polymer, .sidebar, .form-viewport, .file-dropzone {
+    max-width: 100%;
+    overflow: visible;
+    box-sizing: border-box;
+  }
+  /* Make sure any min-width on steps doesn't push layout */
+  .steps-list { min-width: 0; }
+
+  /* Inputs full width */
+  .input-grid { grid-template-columns: 1fr; gap: 16px; }
+  input, select, textarea { width: 100%; }
+
+  /* Footer action buttons stacked and full-width for easy tap */
+  .form-actions {
+    flex-direction: column-reverse; /* Continue button on top, Back below */
+    gap: 12px;
+    align-items: stretch;
+    margin-top: 28px;
+    padding-bottom: 10px;
+  }
+  .form-actions .btn { width: 100%; padding: 14px 18px; border-radius: 14px; box-sizing: border-box; }
+  .form-actions .btn-ghost { background: #e6fced; color: var(--text-heading); }
+  .btn-primary { padding: 14px 18px; }
+
+  /* Reduce size of huge card radius that may cause overflow visual */
+  .main-interface { border-radius: 18px; }
+
+  /* Ensure the stepper circles are centered and the connector line passes through them */
+  .sidebar { padding: 18px; }
+  .steps-list { gap: 16px; justify-content: space-between; align-items: center; width: 100%; }
+  .steps-list::before { top: 50%; transform: translateY(-50%); height: 2px; left: 8px; right: 8px; }
+  .step-item { padding: 0; margin: 0; display:flex; align-items:center; justify-content:center; min-width: 0; }
+  .step-dot { width: 44px !important; height: 44px !important; font-size: 0.95rem !important; }
+
+  /* Prevent the fixed navbar from overlapping visible area */
+  body { padding-top: calc(var(--nav-height) + 6px); } /* small extra gap so hero doesn't hide */
+}
+
+
+
+
+/* Hide Back button when it is disabled (used to hide on Step 1) */
+#backBtn[disabled] {
+  display: none !important;
+}
+
+  /* Remove blue focus outline / click highlight on buttons, links, cards */
+* {
+  outline: none !important;
+}
+
+/* Remove tap highlight on mobile */
+button, a, .glass-card, .card, .btn {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Remove focus outline specifically */
+button:focus,
+a:focus,
+input:focus,
+.select:focus,
+textarea:focus,
+.glass-card:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+
+/* === Remove blue/tap highlight appearing on checkbox label/text === */
+
+/* Remove mobile tap highlight on label and inner text */
+label, label * {
+  -webkit-tap-highlight-color: transparent !important;
+  tap-highlight-color: transparent !important;
+}
+
+/* Remove outline / box-shadow on label when focused (mouse/tap) */
+label:focus,
+label:focus-within,
+label *:focus,
+label *:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Specifically target checkbox focus affecting the next div/text
+   (works for structure: <label><input type="checkbox"> <div>text</div></label>) */
+input[type="checkbox"]:focus + div,
+input[type="checkbox"]:focus-visible + div,
+input[type="checkbox"]:active + div {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* If your label structure is input then plain text (no div), also handle sibling text nodes:
+   target any immediate sibling (span, div, p) */
+input[type="checkbox"]:focus + span,
+input[type="checkbox"]:focus + p,
+input[type="checkbox"]:focus + label {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+
+/* Remove blue focus / tap highlight from chips */
+.chip {
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+.chip:focus,
+.chip:active,
+.chip:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Utility to toggle entity sections */
+.entity-section { display: none; }
+.entity-section.visible { display: block; animation: floatUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="bioCanvas"></canvas>
+
+    <nav class="glass-nav">
+        <a href="../index.html" class="nav-logo"><span>PRΛN</span></a>
+        <div class="nav-right">
+            <ul class="nav-items">
+                <li><a href="../MainPage.html" class="nav-link">Home</a></li>
+                <li><a href="#" class="nav-link">Help Center</a></li>
+            </ul>
+            <a href="#" class="btn-login">Login</a>
+        </div>
+        <button class="hamburger" aria-label="Menu">
+            <span class="line"></span><span class="line"></span><span class="line"></span>
+        </button>
+    </nav>
+
+    <div class="app-container">
+        
+        <header class="page-header">
+            <h1 class="page-title">Educational Institute Registration</h1>
+            <p class="page-subtitle">
+                Complete the onboarding flow to register your Educational Entity.
+                Join the verified network for green initiatives and academic partnerships.
+            </p>
+        </header>
+
+        <main class="main-interface">
+            
+            <aside class="sidebar">
+                <div class="progress-title">Registration Flow</div>
+                <div class="steps-list">
+                    <div class="step-item active" id="navStep1">
+                        <div class="step-dot">1</div>
+                        <span class="step-label">Basic Info</span>
+                    </div>
+                    <div class="step-item" id="navStep2">
+                        <div class="step-dot">2</div>
+                        <span class="step-label">Administrative</span>
+                    </div>
+                    <div class="step-item" id="navStep3">
+                        <div class="step-dot">3</div>
+                        <span class="step-label">Documents</span>
+                    </div>
+                    <div class="step-item" id="navStep4">
+                        <div class="step-dot">4</div>
+                        <span class="step-label">Financials</span>
+                    </div>
+                    <div class="step-item" id="navStep5">
+                        <div class="step-dot">5</div>
+                        <span class="step-label">Declaration</span>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="form-viewport">
+                <form id="educationForm" novalidate>
+
+                    <div class="section-animate active" id="step1">
+                        <div class="form-header">
+                            <h1>Basic Information</h1>
+                            <p>Establish the official identity of the Educational Entity.</p>
+                        </div>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label for="entityType" class="required">Entity Type</label>
+                                <select id="entityType" required onchange="handleEntityTypeChange()">
+                                    <option value="">Select Entity Type</option>
+                                    <option value="school">School</option>
+                                    <option value="college">College</option>
+                                    <option value="university">University</option>
+                                    <option value="research">Research Institute</option>
+                                </select>
+                            </div>
+                            <div class="field-wrapper">
+                                <label for="officialName" class="required">Official Name of Institute</label>
+                                <input type="text" id="officialName" required placeholder="Full registered name">
+                            </div>
+                        </div>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label for="shortName">Short Name / Acronym</label>
+                                <input type="text" id="shortName" placeholder="e.g., IITJ, DU">
+                            </div>
+                            <div class="field-wrapper">
+                                <label for="establishmentDate" class="required">Establishment Date</label>
+                                <input type="date" id="establishmentDate" required>
+                            </div>
+                        </div>
+
+                        <div class="input-grid">
+                             <div class="field-wrapper">
+                                <label for="instituteCode" class="required">Institute Code / Reg. No.</label>
+                                <input type="text" id="instituteCode" required placeholder="e.g., UDISE, AISHE Code">
+                            </div>
+                             <div class="field-wrapper">
+                                <label for="website">Website URL</label>
+                                <input type="text" id="website" placeholder="https://www.example.edu">
+                            </div>
+                        </div>
+
+                        <div class="field-wrapper full-width" style="margin-bottom:24px;">
+                            <label for="registeredAddress" class="required">Registered Office Address</label>
+                            <textarea id="registeredAddress" rows="3" required placeholder="Complete postal address"></textarea>
+                        </div>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label for="state" class="required">State / UT</label>
+                                <select id="state" name="state" required>
+                                    <option value="">Select State / UT</option>
+                                    <option value="andhra_pradesh">Andhra Pradesh</option>
+                                    <option value="arunachal_pradesh">Arunachal Pradesh</option>
+                                    <option value="assam">Assam</option>
+                                    <option value="bihar">Bihar</option>
+                                    <option value="chhattisgarh">Chhattisgarh</option>
+                                    <option value="goa">Goa</option>
+                                    <option value="gujarat">Gujarat</option>
+                                    <option value="haryana">Haryana</option>
+                                    <option value="himachal_pradesh">Himachal Pradesh</option>
+                                    <option value="jharkhand">Jharkhand</option>
+                                    <option value="karnataka">Karnataka</option>
+                                    <option value="kerala">Kerala</option>
+                                    <option value="madhya_pradesh">Madhya Pradesh</option>
+                                    <option value="maharashtra">Maharashtra</option>
+                                    <option value="manipur">Manipur</option>
+                                    <option value="meghalaya">Meghalaya</option>
+                                    <option value="mizoram">Mizoram</option>
+                                    <option value="nagaland">Nagaland</option>
+                                    <option value="odisha">Odisha</option>
+                                    <option value="punjab">Punjab</option>
+                                    <option value="rajasthan">Rajasthan</option>
+                                    <option value="sikkim">Sikkim</option>
+                                    <option value="tamil_nadu">Tamil Nadu</option>
+                                    <option value="telangana">Telangana</option>
+                                    <option value="tripura">Tripura</option>
+                                    <option value="uttar_pradesh">Uttar Pradesh</option>
+                                    <option value="uttarakhand">Uttarakhand</option>
+                                    <option value="west_bengal">West Bengal</option>
+                                    <option value="delhi">Delhi (NCT)</option>
+                                    </select>
+                            </div>
+                            <div class="field-wrapper">
+                                <label for="district" class="required">District</label>
+                                <input type="text" id="district" required placeholder="District">
+                            </div>
+                        </div>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label for="city" class="required">City / Town</label>
+                                <input type="text" id="city" required placeholder="City name">
+                            </div>
+                            <div class="field-wrapper">
+                                <label for="pincode" class="required">Pincode</label>
+                                <input type="text" id="pincode" maxlength="6" pattern="^[1-9][0-9]{5}$" required placeholder="000000">
+                            </div>
+                        </div>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label for="officialEmail" class="required">Official Email Address</label>
+                                <input type="email" id="officialEmail" required placeholder="registrar@institute.edu">
+                            </div>
+                            <div class="field-wrapper">
+                                <label for="officePhone" class="required">Office Phone / Helpline</label>
+                                <input type="tel" id="officePhone" required placeholder="Landline or mobile">
+                            </div>
+                        </div>
+
+                        <h3 style="font-size:1.1rem; font-weight:700; margin: 20px 0; color:var(--primary-dark);">Head / Principal / Director Details</h3>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label for="headName" class="required">Full Name</label>
+                                <input type="text" id="headName" required placeholder="Name of Head of Institute">
+                            </div>
+                            <div class="field-wrapper">
+                                <label for="headDesignation" class="required">Designation</label>
+                                <input type="text" id="headDesignation" required placeholder="e.g., Principal, Vice-Chancellor">
+                            </div>
+                        </div>
+
+                        <div class="input-grid">
+                             <div class="field-wrapper">
+                                <label for="headEmail" class="required">Email Address</label>
+                                <input type="email" id="headEmail" required placeholder="Direct email address">
+                            </div>
+                            <div class="field-wrapper">
+                                <label for="headPhone" class="required">Mobile Number</label>
+                                <input type="tel" id="headPhone" maxlength="10" pattern="^[6-9]\d{9}$" required placeholder="Phone number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-animate" id="step2">
+                        <div class="form-header">
+                            <h1>Administrative Details</h1>
+                            <p>Operational scope, affiliation, and capacity metrics.</p>
+                        </div>
+
+                        <div id="fields-school" class="entity-section">
+                            <div class="input-grid">
+                                <div class="field-wrapper">
+                                    <label for="schoolBoard" class="required">Board Affiliation</label>
+                                    <select id="schoolBoard">
+                                        <option value="">Select Board</option>
+                                        <option value="CBSE">CBSE</option>
+                                        <option value="ICSE">ICSE / ISC</option>
+                                        <option value="State Board">State Board</option>
+                                        <option value="IB">IB</option>
+                                        <option value="Cambridge">Cambridge / IGCSE</option>
+                                    </select>
+                                </div>
+                                <div class="field-wrapper">
+                                    <label for="udiseCode" class="required">UDISE Code</label>
+                                    <input type="text" id="udiseCode" placeholder="Unified District Info System Code">
+                                </div>
+                            </div>
+                            <div class="input-grid">
+                                <div class="field-wrapper">
+                                    <label for="schoolLevel" class="required">School Level</label>
+                                    <select id="schoolLevel">
+                                        <option value="">Select Level</option>
+                                        <option value="Primary">Primary (1-5)</option>
+                                        <option value="Secondary">Secondary (6-10)</option>
+                                        <option value="Higher Secondary">Higher Secondary (11-12)</option>
+                                    </select>
+                                </div>
+                                <div class="field-wrapper">
+                                    <label for="mgmtType" class="required">Management Type</label>
+                                    <select id="mgmtType">
+                                        <option value="">Select Management</option>
+                                        <option value="Government">Government</option>
+                                        <option value="Private Aided">Private - Aided</option>
+                                        <option value="Private Unaided">Private - Unaided</option>
+                                        <option value="Trust">Trust / NGO</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-grid">
+                                <div class="field-wrapper">
+                                    <label for="schoolStudents" class="required">Total Students</label>
+                                    <input type="number" id="schoolStudents" min="0" placeholder="Count">
+                                </div>
+                                <div class="field-wrapper">
+                                    <label for="schoolTeachers" class="required">Total Teachers</label>
+                                    <input type="number" id="schoolTeachers" min="0" placeholder="Count">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="fields-college" class="entity-section">
+                            <div class="field-wrapper full-width" style="margin-bottom:24px;">
+                                <label for="affilUniversity" class="required">Affiliated University</label>
+                                <input type="text" id="affilUniversity" placeholder="Name of the University">
+                            </div>
+                            <div class="input-grid">
+                                <div class="field-wrapper">
+                                    <label for="approvalBody" class="required">Approval Body</label>
+                                    <select id="approvalBody">
+                                        <option value="">Select Body</option>
+                                        <option value="AICTE">AICTE</option>
+                                        <option value="UGC">UGC</option>
+                                        <option value="PCI">PCI</option>
+                                        <option value="MCI">NMC / MCI</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="field-wrapper">
+                                    <label for="naacGrade">NAAC Grade</label>
+                                    <select id="naacGrade">
+                                        <option value="">Select Grade</option>
+                                        <option value="A++">A++</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A">A</option>
+                                        <option value="B++">B++</option>
+                                        <option value="B+">B+</option>
+                                        <option value="Not Accredited">Not Accredited</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-grid">
+                                <div class="field-wrapper">
+                                    <label for="collegeStudents" class="required">Student Strength</label>
+                                    <input type="number" id="collegeStudents" min="0" placeholder="Count">
+                                </div>
+                                <div class="field-wrapper">
+                                    <label for="collegeFaculty" class="required">Faculty Strength</label>
+                                    <input type="number" id="collegeFaculty" min="0" placeholder="Count">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="fields-university" class="entity-section">
+                            <div class="input-grid">
+                                <div class="field-wrapper">
+                                    <label for="uniType" class="required">University Type</label>
+                                    <select id="uniType">
+                                        <option value="">Select Type</option>
+                                        <option value="Central">Central University</option>
+                                        <option value="State">State University</option>
+                                        <option value="Deemed">Deemed University</option>
+                                        <option value="Private">Private University</option>
+                                    </select>
+                                </div>
+                                <div class="field-wrapper">
+                                    <label for="ugcSection">UGC Act Section</label>
+                                    <input type="text" id="ugcSection" placeholder="e.g., 2(f) & 12(B)">
+                                </div>
+                            </div>
+                            <div class="input-grid">
+                                <div class="field-wrapper">
+                                    <label for="collegesCount" class="required">Affiliated Colleges</label>
+                                    <input type="number" id="collegesCount" min="0" placeholder="Number of colleges">
+                                </div>
+                                <div class="field-wrapper">
+                                    <label for="deptCount" class="required">Departments</label>
+                                    <input type="number" id="deptCount" min="0" placeholder="Number of departments">
+                                </div>
+                            </div>
+                             <div class="input-grid">
+                                <div class="field-wrapper">
+                                    <label for="uniStudents" class="required">Total Students</label>
+                                    <input type="number" id="uniStudents" min="0" placeholder="Approx count">
+                                </div>
+                                <div class="field-wrapper">
+                                    <label for="uniFaculty" class="required">Total Faculty</label>
+                                    <input type="number" id="uniFaculty" min="0" placeholder="Count">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="fields-research" class="entity-section">
+                            <div class="field-wrapper full-width" style="margin-bottom:24px;">
+                                <label for="parentOrg">Parent Organization (if any)</label>
+                                <input type="text" id="parentOrg" placeholder="e.g., CSIR, ICMR, DRDO">
+                            </div>
+                            <div class="field-wrapper full-width" style="margin-bottom:24px;">
+                                <label for="researchArea" class="required">Core Research Areas</label>
+                                <input type="text" id="researchArea" placeholder="e.g., Biotechnology, Artificial Intelligence">
+                            </div>
+                            <div class="input-grid">
+                                <div class="field-wrapper">
+                                    <label for="resResearchers" class="required">Number of Researchers</label>
+                                    <input type="number" id="resResearchers" min="0" placeholder="Count">
+                                </div>
+                                <div class="field-wrapper">
+                                    <label for="phdScholars">Number of PhD Scholars</label>
+                                    <input type="number" id="phdScholars" min="0" placeholder="Count">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px dashed #D1D5DB;">
+                            <div class="input-grid">
+                                <div class="field-wrapper">
+                                    <label for="campusArea" class="required">Campus Area (Acres)</label>
+                                    <input type="number" id="campusArea" min="0" required placeholder="Area in acres">
+                                </div>
+                                <div class="field-wrapper">
+                                    <label for="adminZone" class="required">Location Zone</label>
+                                    <select id="adminZone" required>
+                                        <option value="">Select Zone Type</option>
+                                        <option value="urban">Urban</option>
+                                        <option value="rural">Rural</option>
+                                        <option value="semi-urban">Semi-Urban</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="section-animate" id="step3">
+                        <div class="form-header">
+                            <h1>Document Uploads</h1>
+                            <p>Verify your institute with official documentation.</p>
+                        </div>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label class="required">Establishment Certificate</label>
+                                <div class="file-dropzone">
+                                    <input type="file" id="estabCert" required>
+                                    <span class="zone-icon">📜</span>
+                                    <span class="zone-text">Govt. Recognition / Act Copy</span>
+                                </div>
+                            </div>
+                            <div class="field-wrapper">
+                                <label class="required">Head Identity Proof</label>
+                                <div class="file-dropzone">
+                                    <input type="file" id="headIdProof" required>
+                                    <span class="zone-icon">🪪</span>
+                                    <span class="zone-text">Aadhaar / Official ID</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label class="required">Registered Address Proof</label>
+                                <div class="file-dropzone">
+                                    <input type="file" id="addressProof" required>
+                                    <span class="zone-icon">📍</span>
+                                    <span class="zone-text">Utility Bill / Deed</span>
+                                </div>
+                            </div>
+                            <div class="field-wrapper">
+                                <label>PAN / GST Certificate</label>
+                                <div class="file-dropzone">
+                                    <input type="file" id="panGst">
+                                    <span class="zone-icon">💳</span>
+                                    <span class="zone-text">Institute PAN or GST</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label>Accreditation Docs (Optional)</label>
+                                <div class="file-dropzone">
+                                    <input type="file" id="accredDocs">
+                                    <span class="zone-icon">🏅</span>
+                                    <span class="zone-text">NAAC / ISO Certificates</span>
+                                </div>
+                            </div>
+                            <div class="field-wrapper">
+                                <label>Course Catalog / Prospectus</label>
+                                <div class="file-dropzone">
+                                    <input type="file" id="catalogDoc">
+                                    <span class="zone-icon">📚</span>
+                                    <span class="zone-text">Brochure or Research Grants</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-animate" id="step4">
+                        <div class="form-header">
+                            <h1>Financial Information</h1>
+                            <p>Banking details for grants and project disbursements.</p>
+                        </div>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label for="bankName" class="required">Bank Name</label>
+                                <input type="text" id="bankName" required placeholder="Bank name">
+                            </div>
+                            <div class="field-wrapper">
+                                <label for="accountNumber" class="required">Account Number</label>
+                                <input type="text" id="accountNumber" required placeholder="Account number">
+                            </div>
+                        </div>
+
+                        <div class="input-grid">
+                            <div class="field-wrapper">
+                                <label for="ifscCode" class="required">IFSC Code</label>
+                                <input type="text" id="ifscCode" required placeholder="IFSC code" style="text-transform:uppercase">
+                            </div>
+                            <div class="field-wrapper">
+                                <label for="accountType" class="required">Account Type</label>
+                                <select id="accountType" required>
+                                    <option value="">Select Type</option>
+                                    <option value="Savings">Savings</option>
+                                    <option value="Current">Current</option>
+                                    <option value="Institutional">Institutional</option>
+                                </select>
+                            </div>
+                        </div>
+
+                         <div class="field-wrapper full-width" style="margin-bottom:24px;">
+                            <label for="signatoryName" class="required">Authorized Signatory Name</label>
+                            <input type="text" id="signatoryName" required placeholder="Name of person handling accounts">
+                        </div>
+
+                        <div class="field-wrapper full-width" style="margin-bottom:24px;">
+                            <label for="annualBudget">Annual Budget / Funding (Optional)</label>
+                            <input type="number" id="annualBudget" min="0" placeholder="Approximate amount in INR">
+                        </div>
+
+                        <div class="field-wrapper full-width">
+                            <label>Bank Proof (Optional)</label>
+                            <div class="file-dropzone">
+                                <input type="file" id="bankProof">
+                                <span class="zone-icon">🏦</span>
+                                <span class="zone-text">Cancelled Cheque / Bank Letter</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-animate" id="step5">
+                        <div class="form-header">
+                            <h1>Declaration & Submit</h1>
+                            <p>Confirm institute details and accept protocols.</p>
+                        </div>
+
+                        <p class="info-text">
+                            Before submitting, please review all the information provided.
+                            By completing this declaration, you confirm that the institute details are accurate.
+                        </p>
+
+                        <div class="field-wrapper full-width" style="margin-bottom:24px;">
+                            <label for="visionMission" class="required">Vision / Mission Statement</label>
+                            <textarea id="visionMission" rows="3" required placeholder="Describe the institute's vision..."></textarea>
+                        </div>
+
+                        <div class="field-wrapper full-width" style="margin-bottom:24px;">
+                            <label for="achievements">Key Achievements / Awards</label>
+                            <textarea id="achievements" rows="3" placeholder="List rankings, awards, or key milestones..."></textarea>
+                        </div>
+
+                        <div class="field-wrapper full-width" style="margin-bottom:24px;">
+                            <label for="researchOutput">Research Output / Publications (Optional)</label>
+                            <textarea id="researchOutput" rows="2" placeholder="Brief summary of recent research output..."></textarea>
+                        </div>
+
+                        <div style="background: #F9FAFB; padding: 24px; border-radius: 16px; border: 1px solid #E5E7EB; display: flex; flex-direction: column; gap: 16px;">
+                           <label style="display:flex; gap:16px; align-items:flex-start; cursor:pointer;">
+                                <input type="checkbox" id="termsConsent" required style="width:24px; height:24px; accent-color:var(--primary-main); flex-shrink:0;">
+                                <div style="font-size:0.95rem; line-height:1.5; color:var(--text-body);">
+                                    I certify that the information provided is accurate and authorized by the administration. I agree to the <strong style="color:var(--primary-main);">PRΛN Education Protocol</strong> terms.
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="section-animate" id="stepSuccess" style="text-align:center; padding:60px 20px;">
+                        <div style="width:100px; height:100px; background:var(--primary-main); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:3rem; color:white; margin:0 auto 32px; box-shadow: 0 10px 30px rgba(5, 150, 105, 0.4);">
+                            ✓
+                        </div>
+                        <h2 style="font-size:2rem; color:var(--primary-dark); margin-bottom:16px;">Registration Submitted!</h2>
+                        <p style="color:var(--text-body); max-width:400px; margin:0 auto 40px;">
+                            Your Institute Registration has been submitted successfully. Our verification team will review your documents within 3–5 working days.
+                        </p>
+                        <button type="button" class="btn btn-ghost1" onclick="window.location.href='r.html'">Continue</button>
+                    </div>
+
+                </form>
+
+                <div class="form-actions" id="actionControls">
+                    <button type="button" class="btn btn-ghost" id="backBtn" onclick="prevStep()" disabled>Back</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">Continue</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="glass-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+            <a href="MainPage.html" class="nav-logo"><span>PRΛN</span></a>
+            <br>
+          <p>
+            The world's first transparent, blockchain-verified ecological ledger. 
+            Connecting education and capital to ground-truth data.
+          </p>
+        </div>
+        
+        <div class="footer-col">
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="#">Register NGO</a></li>
+            <li><a href="#">Partner Schools</a></li>
+            <li><a href="#">Community</a></li>
+            <li><a href="#">Explorer</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Impact Reports</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Compliance</a></li>
+          </ul>
+        </div>
+      </div>
+
+       <div class="footer-bottom">
+        <div>&copy; 2025 PRΛN Registry. All rights reserved.</div>
+        <div style="display: flex; gap: 20px;">
+        <a href="#" target="_blank">
+          <svg width="26" height="26" fill="var(--col-accent)" viewBox="0 0 24 24">
+            <path
+              d="M22.675 0h-21.35C.597 0 0 .597 0 1.325v21.351C0 23.403.597 24 1.325 24h11.495v-9.294H9.691v-3.622h3.129V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.764v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.403 24 24 23.403 24 22.676V1.325C24 .597 23.403 0 22.675 0z" />
+          </svg>
+        </a>
+
+        <a href="#" target="_blank">
+          <svg width="26" height="26" fill="var(--col-accent)" viewBox="0 0 24 24">
+            <path
+              d="M19 0h-14C2.239 0 0 2.239 0 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5V5c0-2.761-2.238-5-5-5zm-8 19H8V9h3v10zm-1.5-11.268c-.966 0-1.75-.79-1.75-1.764 0-.975.784-1.764 1.75-1.764s1.75.789 1.75 1.764c0 .974-.784 1.764-1.75 1.764zM20 19h-3v-5.604c0-3.368-4-3.113-4 0V19h-3V9h3v1.528c1.395-2.586 7-2.777 7 2.476V19z" />
+          </svg>
+        </a>
+
+        <a href="#" target="_blank">
+          <svg width="26" height="26" fill="var(--col-accent)" viewBox="0 0 24 24">
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26L22.5 21.75h-6.438l-5.033-6.588-5.756 6.588H1.965l7.73-8.85L1.5 2.25h6.594l4.536 6.042 5.614-6.042z" />
+          </svg>
+        </a>
+
+        <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg width="24px" height="24px" fill="var(--col-accent)" viewBox="0 0 24 24" role="img"
+            xmlns="http://www.w3.org/2000/svg">
+            <title>Instagram icon</title>
+            <path
+              d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" />
+          </svg>
+        </a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+        /* ====================================================================
+        ENGINE: BIOSPHERE LOGIC (Exact JS from MCP.html adapted)
+        ====================================================================
+        */
+
+        /* --- 1. NAVBAR TOGGLE --- */
+        const hamburger = document.querySelector('.hamburger');
+        const navRight = document.querySelector('.nav-right');
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navRight.classList.toggle('active');
+            });
+        }
+
+        /* --- 2. GENERATIVE CANVAS BACKGROUND --- */
+        const canvas = document.getElementById('bioCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 150 + 50; 
+                this.color = Math.random() > 0.5 ? 'rgba(16, 185, 129, 0.03)' : 'rgba(13, 148, 136, 0.03)';
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if(this.x < -200) this.x = canvas.width + 200;
+                if(this.x > canvas.width + 200) this.x = -200;
+                if(this.y < -200) this.y = canvas.height + 200;
+                if(this.y > canvas.height + 200) this.y = -200;
+            }
+            draw() {
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color; ctx.fill();
+            }
+        }
+        for(let i=0; i<15; i++) particles.push(new Particle());
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        /* --- 3. FORM WIZARD LOGIC --- */
+        let currentStep = 1;
+        const totalSteps = 5;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initFileUploads();
+            restoreDraft();
+            handleEntityTypeChange(); // Ensure correct fields are shown on load if draft exists
+            updateUI();
+        });
+
+        function updateUI() {
+            // Toggle Content
+            document.querySelectorAll('.section-animate').forEach(el => el.classList.remove('active'));
+            
+            if(currentStep > totalSteps) {
+                document.getElementById('stepSuccess').classList.add('active');
+                document.getElementById('actionControls').style.display = 'none';
+                return;
+            }
+
+            document.getElementById(`step${currentStep}`).classList.add('active');
+
+            // Update Sidebar Stepper
+            document.querySelectorAll('.step-item').forEach((el, idx) => {
+                const stepNum = idx + 1;
+                el.classList.remove('active', 'completed');
+                if(stepNum === currentStep) el.classList.add('active');
+                if(stepNum < currentStep) el.classList.add('completed');
+            });
+
+            // Button States
+            document.getElementById('backBtn').disabled = currentStep === 1;
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.innerHTML = currentStep === totalSteps ? 'Submit Registration' : 'Continue';
+
+            // Scroll to top
+            const viewport = document.querySelector('.page-title');
+            if(viewport) viewport.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+
+        function nextStep() {
+            // if(validateStep(currentStep)) {
+                saveDraft(); 
+                if(currentStep === totalSteps) {
+                    submitForm();
+                } else {
+                    currentStep++;
+                    updateUI();
+                }
+            // }
+        }
+
+        function prevStep() {
+            if(currentStep > 1) {
+                currentStep--;
+                updateUI();
+            }
+        }
+
+        function submitForm() {
+            const btn = document.getElementById('nextBtn');
+            btn.innerHTML = 'Submitting...';
+            btn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                currentStep++;
+                localStorage.removeItem('educationDraft');
+                updateUI();
+                setTimeout(() => {
+                    const successSection = document.getElementById("stepSuccess");
+                    if (successSection) {
+                        successSection.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                }, 200);
+            }, 1500);
+        }
+
+        /* --- 4. VALIDATION & INTERACTION --- */
+        function validateStep(step) {
+            const section = document.getElementById(`step${step}`);
+            // Select required inputs, but also filter out those that are currently hidden
+            const inputs = section.querySelectorAll('input[required], select[required], textarea[required]');
+            let isValid = true;
+            let firstError = null;
+
+            inputs.forEach(input => {
+                // Skip validation if the element is inside a hidden section
+                if (input.offsetParent === null) return;
+
+                // Special check for checkbox
+                if (input.type === 'checkbox') {
+                    if (!input.checked) {
+                        isValid = false;
+                        input.parentElement.style.color = '#EF4444';
+                        if(!firstError) firstError = input;
+                    } else {
+                         input.parentElement.style.color = 'var(--text-body)';
+                    }
+                } 
+                // Standard check
+                else if(!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add('error-shake');
+                    setTimeout(() => input.classList.remove('error-shake'), 500);
+                    if(!firstError) firstError = input;
+                    input.addEventListener('input', () => input.classList.remove('error-shake'), {once:true});
+                }
+            });
+
+            if(firstError) {
+                firstError.focus();
+                firstError.scrollIntoView({behavior: 'smooth', block: 'center'});
+            }
+            return isValid;
+        }
+
+        function handleEntityTypeChange() {
+            const type = document.getElementById('entityType').value;
+            
+            // Hide all specific sections
+            document.querySelectorAll('.entity-section').forEach(el => {
+                el.classList.remove('visible');
+                // Remove required attribute from inputs in hidden sections to prevent validation errors
+                el.querySelectorAll('input, select').forEach(input => {
+                    input.removeAttribute('required');
+                });
+            });
+
+            // Show selected section
+            let activeId = '';
+            if(type === 'school') activeId = 'fields-school';
+            else if(type === 'college') activeId = 'fields-college';
+            else if(type === 'university') activeId = 'fields-university';
+            else if(type === 'research') activeId = 'fields-research';
+
+            if(activeId) {
+                const section = document.getElementById(activeId);
+                section.classList.add('visible');
+                
+                // Re-add required attribute to the specific fields we want mandatory in that section
+                // Note: In a real prod environment, you might want to map specific IDs. 
+                // Here, I'm simply restoring required to all inputs that had it in HTML structure before hiding.
+                // A simpler way for this demo is manual check or assuming standard logic.
+                
+                // Logic: Only apply required to standard inputs within the visible block
+                if(type === 'school') {
+                    document.getElementById('schoolBoard').setAttribute('required', 'true');
+                    document.getElementById('udiseCode').setAttribute('required', 'true');
+                    document.getElementById('schoolLevel').setAttribute('required', 'true');
+                    document.getElementById('mgmtType').setAttribute('required', 'true');
+                    document.getElementById('schoolStudents').setAttribute('required', 'true');
+                    document.getElementById('schoolTeachers').setAttribute('required', 'true');
+                } else if (type === 'college') {
+                    document.getElementById('affilUniversity').setAttribute('required', 'true');
+                    document.getElementById('approvalBody').setAttribute('required', 'true');
+                    document.getElementById('collegeStudents').setAttribute('required', 'true');
+                    document.getElementById('collegeFaculty').setAttribute('required', 'true');
+                } else if (type === 'university') {
+                    document.getElementById('uniType').setAttribute('required', 'true');
+                    document.getElementById('collegesCount').setAttribute('required', 'true');
+                    document.getElementById('deptCount').setAttribute('required', 'true');
+                    document.getElementById('uniStudents').setAttribute('required', 'true');
+                    document.getElementById('uniFaculty').setAttribute('required', 'true');
+                } else if (type === 'research') {
+                    document.getElementById('researchArea').setAttribute('required', 'true');
+                    document.getElementById('resResearchers').setAttribute('required', 'true');
+                }
+            }
+        }
+
+        function initFileUploads() {
+            document.querySelectorAll('input[type="file"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    const zone = this.parentElement;
+                    const existingPill = zone.querySelector('.file-pill');
+                    if(existingPill) existingPill.remove();
+
+                    if(this.files[0]) {
+                        zone.style.borderColor = 'var(--primary-main)';
+                        zone.style.background = '#ECFDF5';
+                        
+                        const pill = document.createElement('div');
+                        pill.className = 'file-pill';
+                        pill.innerHTML = `<span>${this.files[0].name}</span> <span class="remove-file" onclick="clearFile(this, '${this.id}')">×</span>`;
+                        zone.appendChild(pill);
+                    }
+                });
+            });
+        }
+
+        window.clearFile = function(btn, inputId) {
+            const input = document.getElementById(inputId);
+            input.value = '';
+            
+            const zone = input.parentElement;
+            zone.style.borderColor = '#D1D5DB';
+            zone.style.background = 'rgba(249, 250, 251, 0.5)';
+            
+            btn.parentElement.remove();
+            event.stopPropagation();
+        }
+
+        /* --- 5. LOCAL STORAGE DRAFT --- */
+        function saveDraft() {
+            const data = {};
+            document.querySelectorAll('input:not([type="file"]), textarea, select').forEach(el => {
+                if(el.id) {
+                    if (el.type === 'checkbox') data[el.id] = el.checked;
+                    else data[el.id] = el.value;
+                }
+            });
+            localStorage.setItem('educationDraft', JSON.stringify(data));
+        }
+
+        function restoreDraft() {
+            const saved = localStorage.getItem('educationDraft');
+            if(saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(key => {
+                    const el = document.getElementById(key);
+                    if(el) {
+                         if (el.type === 'checkbox') el.checked = data[key];
+                         else el.value = data[key];
+                    }
+                });
+                // Handle dynamic display on restore
+                if(data['entityType']) handleEntityTypeChange();
+            }
+        }
+    </script>
+   <script>
+document.addEventListener("keydown", function(e) {
+    // Check if Ctrl key (or Meta key on Mac) is pressed along with 'u' (keyCode 85)
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 117)) {
+        e.preventDefault(); // Prevents the view source action
+        // alert("View source is disabled."); // Optional: alert user
+    }
+});
+</script>
+	<script>
+(function () {
+    document.addEventListener('keydown', function (e) {
+
+        // Block Ctrl+U
+        if (e.ctrlKey && e.key.toLowerCase() === 'u') {
+            e.preventDefault();
+            return false;
+        }
+
+        // Block Ctrl+Shift+I
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') {
+            e.preventDefault();
+            return false;
+        }
+
+        // Block F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            return false;
+        }
+
+        // Block Ctrl+Shift+J
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'j') {
+            e.preventDefault();
+            return false;
+        }
+
+        // Block Ctrl+S
+        if (e.ctrlKey && e.key.toLowerCase() === 's') {
+            e.preventDefault();
+            return false;
+        }
+
+    });
+
+    // Disable Right Click
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+})();
+</script>
+</body>
+</html>

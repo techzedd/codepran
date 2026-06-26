@@ -1,0 +1,1853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>PRΛN | Upload Tree Protocol (Registry Grade)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ====================================================================
+           1. DESIGN TOKENS
+           ==================================================================== */
+        :root {
+            --col-primary: #14532D;      
+            --col-accent: #16A34A;       
+            --col-accent-hover: #15803D;
+            --col-surface: #F0FDF4;      
+            
+            --text-main: #022C22;
+            --text-body: #374151;
+            --text-muted: #64748B;
+            
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-blur: blur(20px);
+            --shadow-float: 0 20px 40px -10px rgba(20, 83, 45, 0.08);
+            
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-sm: 8px;
+            --nav-height: 80px;
+            --transition: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* --- RESET & BASE --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #F8FAFC;
+            color: var(--text-body);
+            min-height: 100vh;
+            padding-top: var(--nav-height);
+            display: flex; flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- VIDEO BACKGROUND --- */
+        .bg-video-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .bg-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(0) brightness(0.9) contrast(0.9);
+            transform: scale(1.1);
+        }
+
+        /* --- NAVBAR & LAYOUT --- */
+        .glass-nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid rgba(22, 163, 74, 0.15); z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 60px;
+        }
+        .nav-logo {
+            font-family: 'Space Grotesk', sans-serif; font-size: 1.75rem; font-weight: 700;
+            color: var(--col-primary); display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .nav-logo span { color: var(--col-accent); }
+        .nav-logo::after { content: ''; width: 8px; height: 8px; background: var(--col-accent); border-radius: 50%; }
+        .nav-right { display: flex; align-items: center; gap: 40px; }
+        .nav-link { font-weight: 500; color: var(--text-body); text-decoration: none; transition: 0.3s; }
+        .user-pill {
+            display: flex; align-items: center; gap: 10px; padding: 8px 16px;
+            background: rgba(22, 163, 74, 0.1); border-radius: 50px; color: var(--col-primary); font-weight: 600; font-size: 0.9rem;
+        }
+        .user-avatar { width: 28px; height: 28px; background: var(--col-accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+        
+        .app-shell {
+            max-width: 1400px; margin: 0 auto; padding: 40px 20px;
+            display: grid; grid-template-columns: 320px 1fr; gap: 40px;
+            position: relative; z-index: 2; flex: 1; transition: all 0.5s ease;
+        }
+        .app-shell.full-width {
+            grid-template-columns: 1fr;
+            max-width: 1000px;
+        }
+
+        .sidebar-sticky { position: sticky; top: 120px; display: flex; flex-direction: column; gap: 30px; transition: opacity 0.5s ease; }
+        .progress-card {
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+            padding: 30px; box-shadow: var(--shadow-float);
+        }
+        .stepper { display: flex; flex-direction: column; gap: 0; position: relative; }
+        .stepper::before {
+            content: ''; position: absolute; left: 14px; top: 15px; bottom: 15px; width: 2px;
+            background: rgba(22, 163, 74, 0.15); z-index: 0;
+        }
+        .step-node {
+            display: flex; align-items: center; gap: 16px; padding: 12px 0;
+            position: relative; z-index: 1; opacity: 0.5; transition: 0.3s;
+        }
+        .step-node.active { opacity: 1; }
+        .step-node.completed { opacity: 1; }
+        .step-marker {
+            width: 30px; height: 30px; border-radius: 50%; background: #F8FAFC; border: 2px solid #E2E8F0;
+            display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;
+            transition: 0.4s var(--transition);
+        }
+        .step-node.active .step-marker {
+            background: var(--col-accent); border-color: var(--col-accent); color: white;
+            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2); transform: scale(1.1);
+        }
+        .step-node.completed .step-marker {
+            background: var(--col-primary); border-color: var(--col-primary); color: white; content: '✓';
+        }
+        .step-label { font-weight: 600; font-size: 0.95rem; }
+        .live-impact-widget {
+            background: linear-gradient(145deg, #064E3B 0%, #14532D 100%);
+            border-radius: var(--radius-lg); padding: 25px; color: white;
+            position: relative; overflow: hidden;
+        }
+        .live-impact-widget::before {
+            content: ''; position: absolute; top: -50px; right: -50px; width: 100px; height: 100px;
+            background: var(--col-accent); filter: blur(60px); opacity: 0.5;
+        }
+        .widget-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.8; margin-bottom: 15px; }
+        .widget-metric { margin-bottom: 15px; }
+        .metric-val { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 700; line-height: 1; display: block; }
+        .metric-lbl { font-size: 0.8rem; opacity: 0.8; }
+        .live-badge { 
+            display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; 
+            background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 0.7rem; margin-top: 10px;
+        }
+        .pulse-dot { width: 6px; height: 6px; background: #4ADE80; border-radius: 50%; animation: pulse 2s infinite; }
+        
+        .form-canvas {
+            background: #ffffff; border-radius: var(--radius-xl); box-shadow: var(--shadow-float);
+            padding: 50px 60px; min-height: 700px; position: relative; display: flex; flex-direction: column;
+            scroll-margin-top: 100px;
+        }
+        .form-header { margin-bottom: 40px; border-bottom: 1px solid #F1F5F9; padding-bottom: 20px; }
+        .form-title { font-family: 'Space Grotesk'; font-size: 2.5rem; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.02em; }
+        .form-sub { color: var(--text-muted); font-size: 1.1rem; }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .full-span { grid-column: span 2; }
+        .field { display: flex; flex-direction: column; gap: 8px; position: relative; }
+        .field-wrapper { display: flex; flex-direction: column; gap: 8px; width: 100%;}
+        label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        .req { color: #EF4444; margin-left: 2px; }
+        input, select, textarea {
+            width: 100%; padding: 14px 16px; border-radius: 12px;
+            border: 1px solid #E2E8F0; background: #F8FAFC;
+            font-family: 'Manrope'; font-size: 1rem; color: var(--text-main); transition: 0.2s;
+            appearance: none; -webkit-appearance: none;
+        }
+        input:focus, select:focus, textarea:focus {
+            background: #FFFFFF; border-color: var(--col-accent); box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+        }
+        input.invalid, select.invalid, textarea.invalid {
+            border-color: #EF4444; background: #FEF2F2;
+        }
+        .form-footer {
+            margin-top: auto; padding-top: 40px; border-top: 1px solid #F1F5F9;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .btn {
+            padding: 16px 32px; border-radius: 50px; font-weight: 700; cursor: pointer; border: none; font-size: 1rem;
+            transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-ghost { background: transparent; color: var(--text-muted); }
+        .btn-ghost:hover { background: #F1F5F9; color: var(--text-main); }
+        .btn-primary {
+            background: var(--col-primary); color: white;
+            box-shadow: 0 10px 20px -5px rgba(20, 83, 45, 0.3);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: var(--col-accent); transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(22, 163, 74, 0.4);
+        }
+        .btn-primary:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; transform: none; }
+        
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* UI COMPONENTS */
+        .evidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .doc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+        
+        .file-dropzone {
+            border: 2px dashed #D1D5DB; border-radius: 16px; padding: 24px; text-align: center;
+            transition: 0.3s; background: rgba(249, 250, 251, 0.5); cursor: pointer;
+            position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .file-dropzone:hover { background: #ECFDF5; border-color: var(--col-accent); }
+        .file-dropzone input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+        
+        .zone-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; color: var(--col-accent); }
+        .zone-text { font-size: 0.85rem; color: var(--text-body); font-weight: 600; line-height: 1.3;}
+        .zone-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block; }
+        .file-pill {
+            display: inline-flex; align-items: center; gap: 8px; background: #D1FAE5; color: var(--col-primary);
+            padding: 6px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; margin-top: 12px;
+            z-index: 2; position: relative; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+        }
+        .remove-file { cursor: pointer; color: #EF4444; margin-left: auto; transition:0.2s; padding-left: 4px;}
+        .remove-file:hover { color: #DC2626; transform:scale(1.2); }
+
+        .scientific-card {
+            background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; margin-bottom: 32px;
+            box-shadow: 0 4px 20px -5px rgba(0,0,0,0.03); overflow: hidden; display: flex; flex-direction: column;
+        }
+        .sc-header {
+            padding: 16px 24px; background: linear-gradient(to right, #F0FDF4, #FFFFFF);
+            border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;
+        }
+        .sc-title { font-weight: 700; color: var(--col-primary); font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+        .sc-subtitle { font-size: 0.8rem; color: var(--text-muted); }
+        .sc-body { padding: 20px; background: #FCFCFD; }
+        
+        .enhanced-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; overflow-x: auto; display: block; }
+        .enhanced-table th { 
+            text-align: left; font-size: 0.75rem; text-transform: uppercase; 
+            letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; 
+            padding: 0 16px; margin-bottom: 8px; min-width: 120px;
+        }
+        .enhanced-table tbody { display: table; width: 100%; }
+        .enhanced-table thead { display: table; width: 100%; }
+        
+        .table-row-card { 
+            background: #FFFFFF; box-shadow: 0 2px 8px rgba(0,0,0,0.04); 
+            border: 1px solid #F1F5F9; border-radius: 12px; 
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); position: relative; display: table-row;
+        }
+        .table-row-card td { padding: 12px 16px; vertical-align: middle; }
+        .table-row-card:hover { 
+            transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(20, 83, 45, 0.08); border-color: var(--col-accent);
+        }
+        select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748B'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 16px center; background-size: 16px; padding-right: 40px;
+        }
+        .btn-row-delete {
+            opacity: 0; pointer-events: none; background: transparent; border: none;
+            color: #EF4444; font-size: 1rem; cursor: pointer; transition: 0.2s; padding: 8px; border-radius: 6px;
+        }
+        .table-row-card:hover .btn-row-delete { opacity: 1; pointer-events: auto; }
+        .btn-row-delete:hover { background: #FEF2F2; transform: scale(1.1); }
+        
+        .btn-add-dashed {
+            width: 100%; padding: 16px; margin-top: 8px;
+            border: 2px dashed #CBD5E1; border-radius: 12px; background: white;
+            color: var(--col-primary); font-weight: 600; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem;
+        }
+        .btn-add-dashed:hover { background: #F0FDF4; border-color: var(--col-accent); color: var(--col-accent); }
+        .wrapper-inline-species { display: flex; align-items: center; gap: 8px; width: 100%; }
+        .inp-inline-species {
+            font-size: 0.95rem; padding: 10px 14px; background: #FFFFFF; border: 1px solid var(--col-accent);
+            animation: fadeIn 0.3s; font-weight: 600; color: var(--col-primary);
+        }
+        .btn-reset-species {
+            background: #F1F5F9; color: var(--text-muted); border: none; 
+            width: 32px; height: 32px; border-radius: 6px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.2s;
+        }
+        .btn-reset-species:hover { background: #EF4444; color: white; }
+        .sc-footer {
+            padding: 16px 24px; border-top: 1px solid #E2E8F0; background: #F8FAFC;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 12px;
+        }
+        .stat-pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: white; border: 1px solid #E2E8F0; padding: 6px 12px; border-radius: 8px;
+            font-size: 0.85rem; font-weight: 600; color: var(--text-body);
+        }
+        
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; margin-bottom: 12px; gap: 16px;}
+        .toggle-label { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0;}
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #CBD5E1; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--col-accent); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .validation-alert { background: #FEF2F2; border: 1px solid #FECACA; color: #DC2626; padding: 16px; border-radius: 12px; margin-bottom: 24px; font-size: 0.9rem; font-weight: 600; display: none; }
+        
+        .review-section { margin-bottom: 32px; }
+        .review-section h3 { font-family: 'Space Grotesk'; font-size: 1.2rem; color: var(--col-primary); margin-bottom: 16px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px; }
+        .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.95rem; }
+        .review-item { display: flex; flex-direction: column; gap: 4px; }
+        .review-lbl { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .review-val { font-weight: 500; color: var(--text-main); word-break: break-word;}
+        .checklist-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+        .check-pass { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+        .check-fail { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+        
+        /* Fixed Final Checkbox Styling */
+        .consent-label { display: flex; gap: 16px; align-items: flex-start; cursor: pointer; padding: 16px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; transition: 0.2s; }
+        .consent-label:hover { border-color: var(--col-accent); background: #F0FDF4; }
+        .custom-checkbox {
+            appearance: none; -webkit-appearance: none;
+            width: 24px; height: 24px; border: 2px solid #CBD5E1; border-radius: 6px;
+            background-color: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+            transition: 0.2s; outline: none; margin: 0;
+        }
+        .custom-checkbox:checked {
+            background-color: var(--col-accent); border-color: var(--col-accent);
+        }
+        .custom-checkbox:checked::after {
+            content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; color: white; font-size: 14px;
+        }
+        .custom-checkbox:hover { border-color: var(--col-accent); }
+
+        .glass-footer {
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px); border-top: 1px solid var(--glass-border);
+            padding: 80px 60px 40px; position: relative; z-index: 20; width: 100%; margin-top: auto;
+        }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; }
+        .footer-heading { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--col-accent); margin-bottom: 24px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .footer-links a { color: var(--text-body); font-size: 0.95rem; transition: color 0.2s; text-decoration: none; }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; border-top: 1px solid rgba(22, 163, 74, 0.1); font-size: 0.9rem; color: var(--text-body); flex-wrap: wrap; gap: 16px;}
+
+        /* GALLERY SPECIFIC STYLES */
+        .gallery-nav-btn {
+            position: absolute;
+            top: calc(50% - 20px);
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid #E2E8F0;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            color: var(--col-primary);
+            transition: 0.2s;
+            z-index: 10;
+        }
+        .gallery-nav-btn:hover { background: #FFFFFF; transform: scale(1.1); color: var(--col-accent); }
+        .gallery-nav-btn.left { left: 16px; }
+        .gallery-nav-btn.right { right: 16px; }
+        
+        .gallery-preview-wrapper {
+            width: 100%; height: 350px; 
+            border-radius: 12px; 
+            background: #F8FAFC; 
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+            border: 1px solid #E2E8F0;
+        }
+
+        .btn-gallery-add {
+            border: 2px solid var(--col-accent);
+            color: var(--col-primary);
+            background: #FFFFFF;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.1);
+        }
+        .btn-gallery-add:hover {
+            background: #F0FDF4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px -1px rgba(22, 163, 74, 0.15);
+        }
+
+        .btn-gallery-remove {
+            color: #EF4444;
+            background: #FEF2F2;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #FECACA;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        .btn-gallery-remove:hover {
+            background: #FEE2E2;
+            color: #DC2626;
+            border-color: #FCA5A5;
+            transform: translateY(-2px);
+        }
+
+        .gallery-controls-wrapper {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-info-note {
+            background: #F0FDF4;
+            border: 1px solid #BBF7D0;
+            color: var(--col-primary);
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 4px rgba(22, 163, 74, 0.05);
+        }
+        .gallery-info-note i {
+            margin-top: 3px;
+            color: var(--col-accent);
+            font-size: 1.1rem;
+        }
+
+        /* RESPONSIVE POLISH */
+        @media(max-width: 1024px) {
+            .app-shell { grid-template-columns: 1fr; padding: 20px; }
+            .sidebar-sticky { display: none; }
+            .doc-grid { grid-template-columns: 1fr 1fr; }
+            .glass-nav { padding: 0 30px; }
+            .glass-footer { padding: 60px 30px 30px; }
+        }
+
+        @media(max-width: 768px) {
+            .input-row { grid-template-columns: 1fr; gap: 16px; }
+            .evidence-grid { grid-template-columns: 1fr; }
+            .doc-grid { grid-template-columns: 1fr; }
+            .review-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+            .form-canvas { padding: 40px 24px; min-height: auto; }
+            .form-title { font-size: 2rem; }
+            .gallery-preview-wrapper { height: 280px; }
+        }
+
+        @media(max-width: 576px) {
+            .glass-nav { padding: 0 16px; }
+            .nav-right { gap: 16px; }
+            .nav-link { display: none; } 
+            .form-canvas { padding: 30px 16px; border-radius: 16px; }
+            .gallery-controls-wrapper { flex-direction: column-reverse; align-items: stretch; text-align: center; }
+            .gallery-controls-wrapper > div { display: flex; justify-content: space-between; align-items: center; }
+            .btn-gallery-add, .btn-gallery-remove { width: 100%; justify-content: center; }
+            .form-footer { flex-direction: column-reverse; gap: 16px; }
+            .form-footer .btn { width: 100%; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-video-container">
+        <div class="bg-video" style="background: linear-gradient(135deg, #e0f2fe, #dcfce7);"></div>
+    </div>
+
+    <nav class="glass-nav">
+        <a href="../../index.html" class="nav-logo"><span>PRΛN</span></a>
+        <div class="nav-right">
+            <a href="dashngo.html" class="nav-link">Dashboard</a>
+            <a href="#" class="nav-link" onclick="App.switch('projects')">Projects</a>
+            <div class="user-pill">
+                <div class="user-avatar">GE</div>
+                GreenEarth NGO
+            </div>
+        </div>
+    </nav>
+
+    <main class="app-shell">
+        
+        <aside class="sidebar-sticky">
+            <div class="progress-card">
+                <div style="font-family:'Space Grotesk'; font-weight:700; color:var(--col-primary); margin-bottom:20px; text-transform:uppercase; letter-spacing:1px; font-size:0.8rem;">Protocol Steps</div>
+                <div class="stepper" id="stepperNav"></div>
+            </div>
+
+            <div class="live-impact-widget">
+                <div class="widget-title">Live Estimates</div>
+                <div class="widget-metric">
+                    <span class="metric-val" id="dispImpact">0</span>
+                    <span class="metric-lbl">Tons CO₂e / Year (Baseline)</span>
+                </div>
+                <div class="widget-metric">
+                    <span class="metric-val" id="dispCredits">0</span>
+                    <span class="metric-lbl">Est. Carbon Credits</span>
+                </div>
+                <div class="live-badge"><div class="pulse-dot"></div> AI Model Active</div>
+            </div>
+        </aside>
+
+        <section class="form-canvas" id="mainFormCanvas">
+            <div id="validationAlert" class="validation-alert">
+                <i class="fa-solid fa-triangle-exclamation"></i> <span id="alertMsg">Please complete all mandatory fields.</span>
+            </div>
+
+            <form id="projectForm" onsubmit="return false;">
+                
+                <div id="stepContainer" class="fade-in"></div>
+
+                <div class="form-footer">
+                    <button type="button" class="btn btn-ghost" id="btnPrev" onclick="App.prev()">Back</button>
+                    <button type="button" class="btn btn-primary" id="btnNext" onclick="App.next()">Save & Continue</button>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+
+    <footer class="glass-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+            <a href="MainPage.html" class="nav-logo"><span>PRΛN</span></a>
+            <br><br>
+          <p style="color:var(--text-muted); line-height:1.6; font-size:0.95rem; max-width:300px;">
+            The world's first transparent, blockchain-verified ecological ledger. 
+            Connecting capital to ground-truth data.
+          </p>
+        </div>
+        
+        <div class="footer-col">
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="#">Register NGO</a></li>
+            <li><a href="#">Buy Credits</a></li>
+            <li><a href="#">Explorer</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Impact Reports</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Compliance</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2025 PRΛN Registry. All rights reserved.</div>
+        <div>
+           <span style="opacity:0.6;">v3.6.1 Release (Forestry Protocol)</span>
+        </div>
+      </div>
+    </footer>
+
+  <script>
+    /**
+     * PRΛN Forestry Protocol Engine v3.6.1 (Registry Grade)
+     */
+    const App = {
+        // TESTING MODE FLAG: Set to true to bypass strict validation blocking during dev/testing.
+        TESTING_MODE: true,
+
+        state: {
+            step: 1,
+            galleryIndex: 0,
+            data: {
+                identity: {
+                    projectName: "",
+                    projectType: "Tree Plantation",
+                    activityType: "",
+                    plantationStatus: "Planned",
+                    developerOrg: "",
+                    developerType: "",
+                    contactName: "",
+                    contactEmail: "",
+                    contactPhone: "",
+                    contactAddress: "",
+                    projectStartDate: "",
+                    creditingStart: "",
+                    creditingEnd: "",
+                    projectDuration: "",
+                    objective: "",
+                    fundingCosts: "",
+                    communityImpact: "",
+                    benefitSharing: ""
+                },
+                location: {
+                    country: "India",
+                    state: "",
+                    district: "",
+                    block: "",
+                    village: "",
+                    pin: "",
+                    fullSiteAddress: "",
+                    landTenure: "Government",
+                    tenureProofNote: "",
+                    areaHectares: 0,
+                    latitude: "",
+                    longitude: "",
+                    boundaryDescription: "",
+                    landClassification: "Non-Forest",
+                    geotagSource: "Manual Entry",
+                    requiresClearance: false,
+                    requiresFRA: false,
+                    requiresWildlifePermit: false
+                },
+                bio: {
+                    method: "Direct plantation",
+                    managementPlanSummary: "",
+                    afforestationPlanSummary: "",
+                    monitoringPlan: "",
+                    safeguards: "",
+                    stakeholders: "",
+                    survivalPlan: "",
+                    communityParticipation: "",
+                    inventory: [
+                        { species: 'Teak', count: 0, age: 1, condition: 'Healthy', nativity: 'Native', zone: '' } 
+                    ]
+                },
+                files: {
+                    visual: { prePlantation: null, postPlantation: null, matureTree: null, activityPhoto: null },
+                    galleryMedia: [],
+                    docs: {
+                        dpdPin: null, pdd: null, monitoringPlan: null, emissionReductionSheet: null, stakeholderReport: null,
+                        validationReport: null, landTitle: null, afforestationPlan: null, vvbStatement: null, attestationForms: null,
+                        forestClearance: null, fraApproval: null, wildlifePermit: null, panchayatConsent: null, ownershipProof: null, externalApproval: null,
+                        esia: null, fundingAgreement: null, legalAgreements: null, baselineStudy: null, nurseryProcurement: null, siteSurvey: null, monitoringEvidence: null,
+                        gisBoundaryFile: null, survivalAudit: null, maintenanceLogbook: null, beneficiaryRegister: null, insuranceRiskCover: null,
+                        revisionAuditTrail: null, saplingQualityCertificate: null, carbonMethodologyNote: null
+                    }
+                }
+            }
+        },
+        
+        user: null,
+
+        steps: [
+            { id: 1, label: "Project Identity" },
+            { id: 2, label: "Location & Land" },
+            { id: 3, label: "Bio-Configuration" },
+            { id: 4, label: "Digital Evidence" },
+            { id: 5, label: "Review & Mint" }
+        ],
+
+        init() {
+            this.getCurrentUserSession();
+            this.renderUserPill();
+            this.renderStepper();
+            this.renderForm();
+            this.updateSidebar(this.getTotalTrees());
+        },
+
+        // --- SESSION HANDLING ---
+        getCurrentUserSession() {
+            try {
+                const session = localStorage.getItem('blueCredUser');
+                this.user = session ? JSON.parse(session) : { name: "GreenEarth NGO" };
+            } catch(e) {
+                this.user = { name: "GreenEarth NGO" };
+            }
+        },
+
+        renderUserPill() {
+            const pill = document.querySelector('.user-pill');
+            if(pill) {
+                const name = this.user.orgName || this.user.name || "GreenEarth NGO";
+                const initials = name.substring(0, 2).toUpperCase();
+                pill.innerHTML = `<div class="user-avatar">${initials}</div>${name}`;
+            }
+        },
+
+        // --- NAVIGATION & VALIDATION ---
+        next() {
+            const isValid = this.validateCurrentStep();
+
+            if (!this.TESTING_MODE && !isValid) {
+                 return; // Block navigation in production
+            }
+
+            if (this.state.step < 5) {
+                const btn = document.getElementById('btnNext');
+                btn.innerHTML = 'Saving...';
+                
+                setTimeout(() => {
+                    this.state.step++;
+                    this.renderStepper();
+                    this.renderForm();
+                    this.scrollToStepTop();
+                }, 300);
+            } else {
+                this.submit();
+            }
+        },
+
+        prev() {
+            if (this.state.step > 1) {
+                this.state.step--;
+                this.renderStepper();
+                this.renderForm();
+                this.scrollToStepTop();
+            }
+        },
+
+        scrollToStepTop() {
+            const formCanvas = document.getElementById('mainFormCanvas');
+            if (formCanvas) {
+                const y = formCanvas.getBoundingClientRect().top + window.scrollY - 100;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        },
+
+        showAlert(msg) {
+            const alert = document.getElementById('validationAlert');
+            document.getElementById('alertMsg').innerText = msg;
+            alert.style.display = 'block';
+            this.scrollToStepTop();
+        },
+
+        hideAlert() {
+            document.getElementById('validationAlert').style.display = 'none';
+        },
+
+        validateCurrentStep() {
+            this.hideAlert();
+            const d = this.state.data;
+            let isValid = true;
+            let missing = [];
+
+            const check = (val, name) => {
+                if (!val || val.toString().trim() === '') {
+                    isValid = false;
+                    missing.push(name);
+                }
+            };
+
+            if (this.state.step === 1) {
+                check(d.identity.projectName, "Project Name");
+                check(d.identity.activityType, "Activity Type");
+                check(d.identity.developerOrg, "Developer Organization");
+                check(d.identity.contactName, "Contact Person");
+                check(d.identity.contactEmail, "Email");
+                check(d.identity.contactPhone, "Phone");
+                check(d.identity.projectStartDate, "Project Start Date");
+            } 
+            else if (this.state.step === 2) {
+                check(d.location.landTenure, "Land Tenure");
+                if (d.location.areaHectares <= 0) { isValid = false; missing.push("Area (>0)"); }
+                check(d.location.latitude, "Latitude");
+                check(d.location.longitude, "Longitude");
+                check(d.location.pin, "PIN Code");
+                check(d.location.fullSiteAddress, "Full Site Address");
+            }
+            else if (this.state.step === 3) {
+                const hasValidSpecies = d.bio.inventory.some(i => i.species && i.count > 0);
+                if(!hasValidSpecies) { isValid = false; missing.push("At least one valid species with count > 0"); }
+            }
+            else if (this.state.step === 4) {
+                const reqDocs = this.getRequiredDocuments();
+                if (!d.files.visual.matureTree) missing.push("Mature Tree Close-up (Visual)");
+                if (!d.files.visual.activityPhoto) missing.push("On-Ground Activity (Visual)");
+                
+                reqDocs.forEach(doc => {
+                    if (!d.files.docs[doc.key]) missing.push(doc.label);
+                });
+                
+                if (missing.length > 0) isValid = false;
+            }
+
+            if (!isValid && !this.TESTING_MODE) {
+                this.showAlert(`Please resolve the following: ${missing.join(', ')}`);
+            }
+            return isValid;
+        },
+
+        getRequiredDocuments() {
+            const loc = this.state.data.location;
+            let docs = [
+                { key: 'dpdPin', label: 'Draft Project Description (DPD/PIN)' },
+                { key: 'pdd', label: 'Final Project Design Document (PDD)' },
+                { key: 'monitoringPlan', label: 'Monitoring Report / Plan' },
+                { key: 'stakeholderReport', label: 'Stakeholder Consultation Report (SCR)' },
+                { key: 'landTitle', label: 'Land Title / Lease Documents' },
+                { key: 'afforestationPlan', label: 'Afforestation / Forest Mgmt Plan' }
+            ];
+
+            if (loc.requiresClearance) docs.push({ key: 'forestClearance', label: 'Forest / Environment Clearances' });
+            if (loc.requiresFRA) docs.push({ key: 'fraApproval', label: 'FRA Approvals' });
+            if (loc.requiresWildlifePermit) docs.push({ key: 'wildlifePermit', label: 'Biodiversity / Wildlife Permits' });
+
+            return docs;
+        },
+
+        getOptionalDocuments() {
+            return [
+                { key: 'esia', label: 'Env/Social Impact Assessment (ESIA)' },
+                { key: 'fundingAgreement', label: 'Funding / Investment Agreements' },
+                { key: 'legalAgreements', label: 'Legal Agreements' },
+                { key: 'panchayatConsent', label: 'Panchayat / Local Body Consent' },
+                { key: 'baselineStudy', label: 'Baseline Study Attachment' },
+                { key: 'nurseryProcurement', label: 'Nursery / Sapling Procurement Docs' },
+                { key: 'siteSurvey', label: 'Site Survey Note' },
+                { key: 'monitoringEvidence', label: 'Monitoring Evidence Sheets' },
+                { key: 'gisBoundaryFile', label: 'GIS / Boundary File' },
+                { key: 'survivalAudit', label: 'Survival Audit Sheet' },
+                { key: 'maintenanceLogbook', label: 'Maintenance Logbook' },
+                { key: 'beneficiaryRegister', label: 'Beneficiary Register' },
+                { key: 'insuranceRiskCover', label: 'Insurance / Risk Cover Document' },
+                { key: 'revisionAuditTrail', label: 'Revision History / Audit Trail' },
+                { key: 'saplingQualityCertificate', label: 'Sapling Quality Certificate' },
+                { key: 'carbonMethodologyNote', label: 'Carbon Methodology Note' }
+            ];
+        },
+
+        bind(path, value) {
+            const keys = path.split('.');
+            let current = this.state.data;
+            for (let i = 0; i < keys.length - 1; i++) current = current[keys[i]];
+            current[keys[keys.length - 1]] = value;
+        },
+
+        // --- RENDERING ---
+        renderStepper() {
+            const nav = document.getElementById('stepperNav');
+            nav.innerHTML = this.steps.map(s => `
+                <div class="step-node ${s.id === this.state.step ? 'active' : ''} ${s.id < this.state.step ? 'completed' : ''}">
+                    <div class="step-marker">${s.id < this.state.step ? '✓' : s.id}</div>
+                    <span class="step-label">${s.label}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('btnPrev').style.visibility = this.state.step === 1 ? 'hidden' : 'visible';
+            
+            const btnNext = document.getElementById('btnNext');
+            if (this.state.step === 5) {
+                btnNext.innerHTML = 'Submit Protocol';
+            } else {
+                btnNext.innerHTML = 'Save & Continue';
+            }
+        },
+
+        renderForm() {
+            const container = document.getElementById('stepContainer');
+            container.classList.remove('fade-in');
+            void container.offsetWidth; 
+            container.classList.add('fade-in');
+
+            let html = '';
+            const d = this.state.data;
+
+            // =========================================================
+            // STEP 1: PROJECT IDENTITY
+            // =========================================================
+            if (this.state.step === 1) {
+                html = `
+                    <div class="form-header">
+                        <h1 class="form-title">Project Identity</h1>
+                        <p class="form-sub">Define the registry metadata and development entity.</p>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Project Name <span class="req">*</span></label>
+                            <input type="text" value="${d.identity.projectName}" oninput="App.bind('identity.projectName', this.value)" placeholder="e.g. Aravalli Green Belt Phase I" autofocus>
+                        </div>
+                        <div class="field">
+                            <label>Activity Type <span class="req">*</span></label>
+                            <select onchange="App.bind('identity.activityType', this.value)">
+                                <option value="">Select Activity</option>
+                                <option value="Afforestation" ${d.identity.activityType === 'Afforestation'?'selected':''}>Afforestation</option>
+                                <option value="Reforestation" ${d.identity.activityType === 'Reforestation'?'selected':''}>Reforestation</option>
+                                <option value="Agroforestry" ${d.identity.activityType === 'Agroforestry'?'selected':''}>Agroforestry</option>
+                                <option value="Urban Forestry" ${d.identity.activityType === 'Urban Forestry'?'selected':''}>Urban Forestry</option>
+                                <option value="Community Plantation" ${d.identity.activityType === 'Community Plantation'?'selected':''}>Community Plantation</option>
+                                <option value="Mixed Plantation" ${d.identity.activityType === 'Mixed Plantation'?'selected':''}>Mixed Plantation</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Developer Organization <span class="req">*</span></label>
+                            <input type="text" value="${d.identity.developerOrg}" oninput="App.bind('identity.developerOrg', this.value)" placeholder="NGO / Corp Name">
+                        </div>
+                        <div class="field">
+                            <label>Developer Type</label>
+                            <select onchange="App.bind('identity.developerType', this.value)">
+                                <option value="">Select Type</option>
+                                <option value="NGO" ${d.identity.developerType === 'NGO'?'selected':''}>NGO</option>
+                                <option value="CSR" ${d.identity.developerType === 'CSR'?'selected':''}>CSR</option>
+                                <option value="Community Group" ${d.identity.developerType === 'Community Group'?'selected':''}>Community Group</option>
+                                <option value="Government Partner" ${d.identity.developerType === 'Government Partner'?'selected':''}>Government Partner</option>
+                                <option value="Private Organization" ${d.identity.developerType === 'Private Organization'?'selected':''}>Private Organization</option>
+                                <option value="Cooperative" ${d.identity.developerType === 'Cooperative'?'selected':''}>Cooperative</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="input-row">
+                         <div class="field">
+                            <label>Plantation Status</label>
+                            <select onchange="App.bind('identity.plantationStatus', this.value)">
+                                <option value="Planned" ${d.identity.plantationStatus === 'Planned'?'selected':''}>Planned</option>
+                                <option value="In Progress" ${d.identity.plantationStatus === 'In Progress'?'selected':''}>In Progress</option>
+                                <option value="Completed" ${d.identity.plantationStatus === 'Completed'?'selected':''}>Completed</option>
+                                <option value="Under Monitoring" ${d.identity.plantationStatus === 'Under Monitoring'?'selected':''}>Under Monitoring</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Funding / Cost Summary</label>
+                            <input type="text" value="${d.identity.fundingCosts}" oninput="App.bind('identity.fundingCosts', this.value)" placeholder="e.g. Self-funded / $50k Grant">
+                        </div>
+                    </div>
+
+                    <div class="scientific-card" style="margin-top:16px;">
+                        <div class="sc-header"><div class="sc-title">Contact & Admin Details</div></div>
+                        <div class="sc-body">
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Contact Person Name <span class="req">*</span></label>
+                                    <input type="text" value="${d.identity.contactName}" oninput="App.bind('identity.contactName', this.value)">
+                                </div>
+                                <div class="field">
+                                    <label>Official Phone <span class="req">*</span></label>
+                                    <input type="tel" value="${d.identity.contactPhone}" oninput="App.bind('identity.contactPhone', this.value)">
+                                </div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:0;">
+                                <div class="field">
+                                    <label>Official Email <span class="req">*</span></label>
+                                    <input type="email" value="${d.identity.contactEmail}" oninput="App.bind('identity.contactEmail', this.value)">
+                                </div>
+                                <div class="field">
+                                    <label>Organization Address</label>
+                                    <input type="text" value="${d.identity.contactAddress}" oninput="App.bind('identity.contactAddress', this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                         <div class="field">
+                            <label>Project Start Date <span class="req">*</span></label>
+                            <input type="date" value="${d.identity.projectStartDate}" oninput="App.bind('identity.projectStartDate', this.value)">
+                        </div>
+                        <div class="field">
+                            <label>Project Duration / Lifetime (Years)</label>
+                            <input type="number" value="${d.identity.projectDuration}" oninput="App.bind('identity.projectDuration', this.value)" placeholder="e.g. 20">
+                        </div>
+                    </div>
+                    
+                    <div class="input-row">
+                         <div class="field">
+                            <label>Crediting Period Start</label>
+                            <input type="date" value="${d.identity.creditingStart}" oninput="App.bind('identity.creditingStart', this.value)">
+                        </div>
+                        <div class="field">
+                            <label>Crediting Period End</label>
+                            <input type="date" value="${d.identity.creditingEnd}" oninput="App.bind('identity.creditingEnd', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="field full-span" style="margin-bottom:16px;">
+                        <label>Project Objective / Overview</label>
+                        <textarea placeholder="Briefly describe the objective..." rows="2" oninput="App.bind('identity.objective', this.value)">${d.identity.objective}</textarea>
+                    </div>
+                    
+                    <div class="field full-span" style="margin-bottom:16px;">
+                        <label>Community / Beneficiary Impact Note</label>
+                        <textarea placeholder="Details on local community benefits..." rows="2" oninput="App.bind('identity.communityImpact', this.value)">${d.identity.communityImpact}</textarea>
+                    </div>
+
+                    <div class="field full-span">
+                        <label>Benefit-Sharing / Community Agreements (Optional)</label>
+                        <textarea placeholder="Summary of revenue sharing..." rows="2" oninput="App.bind('identity.benefitSharing', this.value)">${d.identity.benefitSharing}</textarea>
+                    </div>
+                `;
+            }
+
+            // =========================================================
+            // STEP 2: LOCATION & LAND
+            // =========================================================
+            else if (this.state.step === 2) {
+                html = `
+                     <div class="form-header">
+                        <h1 class="form-title">Location & Land</h1>
+                        <p class="form-sub">Precise coordinates, geospatial data, and legal land status.</p>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Land Tenure / Ownership Status <span class="req">*</span></label>
+                            <select onchange="App.bind('location.landTenure', this.value)">
+                                <option value="">Select Tenure</option>
+                                ${['Government', 'Community', 'Private', 'NGO', 'Leasehold', 'Forest Department', 'Other'].map(opt => 
+                                    `<option value="${opt}" ${d.location.landTenure === opt ? 'selected' : ''}>${opt}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Tenure Proof Note</label>
+                            <input type="text" value="${d.location.tenureProofNote}" oninput="App.bind('location.tenureProofNote', this.value)" placeholder="e.g. Title deed ref # or Lease detail">
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Total Area (Hectares) <span class="req">*</span></label>
+                            <input type="number" step="0.01" value="${d.location.areaHectares}" oninput="App.bind('location.areaHectares', parseFloat(this.value) || 0)" placeholder="0.00">
+                        </div>
+                        <div class="field">
+                            <label>Land Classification</label>
+                            <select onchange="App.bind('location.landClassification', this.value)">
+                                <option value="">Select Classification</option>
+                                <option value="Forest land" ${d.location.landClassification==='Forest land'?'selected':''}>Forest land</option>
+                                <option value="Non-forest land" ${d.location.landClassification==='Non-forest land'?'selected':''}>Non-forest land</option>
+                                <option value="Community land" ${d.location.landClassification==='Community land'?'selected':''}>Community land</option>
+                                <option value="Private agricultural land" ${d.location.landClassification==='Private agricultural land'?'selected':''}>Private agricultural land</option>
+                                <option value="Mixed use land" ${d.location.landClassification==='Mixed use land'?'selected':''}>Mixed use land</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="scientific-card" style="margin-top:16px;">
+                        <div class="sc-header"><div class="sc-title">Geospatial Boundaries & Site</div></div>
+                        <div class="sc-body">
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Latitude <span class="req">*</span></label>
+                                    <input type="number" step="any" value="${d.location.latitude}" oninput="App.bind('location.latitude', this.value)" placeholder="e.g. 26.9124">
+                                </div>
+                                <div class="field">
+                                    <label>Longitude <span class="req">*</span></label>
+                                    <input type="number" step="any" value="${d.location.longitude}" oninput="App.bind('location.longitude', this.value)" placeholder="e.g. 75.7873">
+                                </div>
+                            </div>
+                            <div class="field full-span" style="margin-bottom:16px;">
+                                <label>Geotag Source</label>
+                                <select onchange="App.bind('location.geotagSource', this.value)">
+                                    <option value="Manual Entry" ${d.location.geotagSource==='Manual Entry'?'selected':''}>Manual Entry</option>
+                                    <option value="Survey Record" ${d.location.geotagSource==='Survey Record'?'selected':''}>Survey Record</option>
+                                    <option value="GPS Capture" ${d.location.geotagSource==='GPS Capture'?'selected':''}>GPS Capture</option>
+                                    <option value="Satellite Estimate" ${d.location.geotagSource==='Satellite Estimate'?'selected':''}>Satellite Estimate</option>
+                                    <option value="Other" ${d.location.geotagSource==='Other'?'selected':''}>Other</option>
+                                </select>
+                            </div>
+                            <div class="field full-span" style="margin-bottom:0;">
+                                <label>Boundary Description / Parcel Note</label>
+                                <textarea rows="2" placeholder="Describe natural boundaries or supply polygon ref..." oninput="App.bind('location.boundaryDescription', this.value)">${d.location.boundaryDescription}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="field"><label>Country</label><input type="text" value="${d.location.country}" oninput="App.bind('location.country', this.value)"></div>
+                        <div class="field"><label>State / UT</label><input type="text" value="${d.location.state}" oninput="App.bind('location.state', this.value)"></div>
+                    </div>
+                     <div class="input-row">
+                        <div class="field"><label>District</label><input type="text" value="${d.location.district}" oninput="App.bind('location.district', this.value)"></div>
+                        <div class="field"><label>Block</label><input type="text" value="${d.location.block}" oninput="App.bind('location.block', this.value)"></div>
+                    </div>
+                    <div class="input-row" style="margin-bottom:16px;">
+                        <div class="field"><label>Village / Locality</label><input type="text" value="${d.location.village}" oninput="App.bind('location.village', this.value)"></div>
+                        <div class="field"><label>PIN Code <span class="req">*</span></label><input type="text" value="${d.location.pin}" oninput="App.bind('location.pin', this.value)"></div>
+                    </div>
+                    <div class="field full-span" style="margin-bottom:24px;">
+                        <label>Full Site Address <span class="req">*</span></label>
+                        <textarea rows="2" placeholder="Complete address..." oninput="App.bind('location.fullSiteAddress', this.value)">${d.location.fullSiteAddress}</textarea>
+                    </div>
+
+                    <div class="scientific-card">
+                        <div class="sc-header"><div class="sc-title">Statutory & Legal Flags (Toggles)</div></div>
+                        <div class="sc-body" style="padding:0;">
+                            <div class="toggle-row" style="border:none; border-bottom:1px solid #E2E8F0; border-radius:0; margin:0;">
+                                <span class="toggle-label">Requires forest/environment clearance?</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${d.location.requiresClearance?'checked':''} onchange="App.bind('location.requiresClearance', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-row" style="border:none; border-bottom:1px solid #E2E8F0; border-radius:0; margin:0;">
+                                <span class="toggle-label">Requires FRA/community rights approval?</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${d.location.requiresFRA?'checked':''} onchange="App.bind('location.requiresFRA', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-row" style="border:none; border-radius:0; margin:0;">
+                                <span class="toggle-label">Located near wildlife/protected area?</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${d.location.requiresWildlifePermit?'checked':''} onchange="App.bind('location.requiresWildlifePermit', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // =========================================================
+            // STEP 3: BIO-CONFIGURATION
+            // =========================================================
+            else if (this.state.step === 3) {
+                html = `
+                    <div class="form-header">
+                        <h1 class="form-title">Bio-Configuration</h1>
+                        <p class="form-sub">Scientific methodology, species inventory, and plantation details.</p>
+                    </div>
+
+                    <div class="scientific-card">
+                        <div class="sc-header">
+                            <div class="sc-title"><span style="font-size:1.2rem;">🌳</span> A. Plantation Configuration</div>
+                        </div>
+                        <div class="sc-body" style="padding-bottom:16px;">
+                            <div class="input-row">
+                                <div class="field">
+                                    <label>Plantation/Activity Method</label>
+                                    <select onchange="App.bind('bio.method', this.value)">
+                                        <option value="Direct plantation" ${d.bio.method==='Direct plantation'?'selected':''}>Direct plantation</option>
+                                        <option value="Assisted natural regeneration" ${d.bio.method==='Assisted natural regeneration'?'selected':''}>Assisted natural regeneration</option>
+                                        <option value="Gap planting" ${d.bio.method==='Gap planting'?'selected':''}>Gap planting</option>
+                                        <option value="Mixed method" ${d.bio.method==='Mixed method'?'selected':''}>Mixed method</option>
+                                        <option value="Agroforestry model" ${d.bio.method==='Agroforestry model'?'selected':''}>Agroforestry model</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label>Verified Area (From Step 2)</label>
+                                    <input type="text" value="${d.location.areaHectares} Ha" disabled style="background:#F1F5F9; color:#64748B;">
+                                </div>
+                            </div>
+                            <div class="field full-span" style="margin-bottom:16px;">
+                                <label>Management Plan Summary</label>
+                                <textarea rows="2" oninput="App.bind('bio.managementPlanSummary', this.value)">${d.bio.managementPlanSummary}</textarea>
+                            </div>
+                            <div class="field full-span">
+                                <label>Afforestation / Forestry Plan Summary</label>
+                                <textarea rows="2" oninput="App.bind('bio.afforestationPlanSummary', this.value)">${d.bio.afforestationPlanSummary}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="sc-header" style="border-top:1px solid #E2E8F0;"><div class="sc-title">B. Tree Inventory</div></div>
+                        <div class="sc-body">
+                            <table class="enhanced-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 25%;">Species Name</th>
+                                            <th style="width: 15%;">Count</th>
+                                            <th style="width: 15%;">Avg Age (Yrs)</th>
+                                            <th style="width: 15%;">Condition</th>
+                                            <th style="width: 15%;">Nativity</th>
+                                            <th style="width: 10%;">Zone</th>
+                                            <th style="width: 5%;"></th>
+                                        </tr>
+                                    </thead>
+                                <tbody id="inventoryBody"></tbody>
+                            </table>
+                            <div class="btn-add-dashed" onclick="App.addInventoryRow()">
+                                <i class="fa-solid fa-plus"></i> Add Species Row
+                            </div>
+                        </div>
+                        <div class="sc-footer">
+                            <div class="stat-pill">Total Trees: <span class="stat-val" id="statTotal">0</span></div>
+                            <div class="stat-pill">Avg Age: <span class="stat-val" id="statAge">0</span> Yrs</div>
+                        </div>
+                    </div>
+
+                    <div class="scientific-card">
+                        <div class="sc-header"><div class="sc-title">C. Ecological & Quality Inputs</div></div>
+                        <div class="sc-body">
+                            <div class="field full-span" style="margin-bottom:16px;">
+                                <label>Monitoring Plan Summary</label>
+                                <textarea rows="2" oninput="App.bind('bio.monitoringPlan', this.value)">${d.bio.monitoringPlan}</textarea>
+                            </div>
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Environmental / Social Safeguards</label>
+                                    <input type="text" value="${d.bio.safeguards}" oninput="App.bind('bio.safeguards', this.value)">
+                                </div>
+                                <div class="field">
+                                    <label>Stakeholder Identification</label>
+                                    <input type="text" value="${d.bio.stakeholders}" oninput="App.bind('bio.stakeholders', this.value)">
+                                </div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:0;">
+                                <div class="field">
+                                    <label>Survival Strategy / Maintenance Plan</label>
+                                    <input type="text" value="${d.bio.survivalPlan}" oninput="App.bind('bio.survivalPlan', this.value)">
+                                </div>
+                                <div class="field">
+                                    <label>Community Participation Summary</label>
+                                    <input type="text" value="${d.bio.communityParticipation}" oninput="App.bind('bio.communityParticipation', this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                setTimeout(() => this.renderInventoryRows(), 0);
+            }
+
+            // =========================================================
+            // STEP 4: DIGITAL EVIDENCE
+            // =========================================================
+            else if (this.state.step === 4) {
+                const reqDocs = this.getRequiredDocuments();
+                const reqDocKeys = reqDocs.map(r => r.key);
+                
+                const optionalDocs = this.getOptionalDocuments();
+
+                const renderDocs = (list, requiredKeys) => {
+                    if(!list || list.length === 0) return '';
+                    return list.map(doc => {
+                        const isRequired = requiredKeys ? requiredKeys.includes(doc.key) : false;
+                        return this.renderDocDropzone(doc.key, doc.label, isRequired);
+                    }).join('');
+                };
+
+                html = `
+                    <div class="form-header">
+                        <h1 class="form-title">Digital Evidence</h1>
+                        <p class="form-sub">Upload spatial data, visual proofs, and registry documents.</p>
+                    </div>
+                    
+                    <h3 style="font-family:'Space Grotesk'; margin-bottom:16px; color:var(--col-primary);">Section A. Visual Evidence</h3>
+                    <div class="evidence-grid">
+                        ${this.renderVisualDropzone('prePlantation', 'Pre-Plantation Photo', '🏜️', false)}
+                        ${this.renderVisualDropzone('postPlantation', 'Post-Plantation Photo', '🌱', false)}
+                        ${this.renderVisualDropzone('matureTree', 'Mature Tree Close-up', '🌳', true)}
+                        ${this.renderVisualDropzone('activityPhoto', 'On-Ground Activity', '👷', true)}
+                    </div>
+                    
+                    ${this.renderPlantationGallery()}
+
+                    <h3 style="font-family:'Space Grotesk'; margin:40px 0 16px; color:var(--col-primary);">Section C. Core Project Documents <span class="req">*</span></h3>
+                    <div class="doc-grid">
+                        ${renderDocs(reqDocs, reqDocKeys)}
+                    </div>
+
+                    <h3 style="font-family:'Space Grotesk'; margin:40px 0 16px; color:var(--col-primary);">Section D. Optional / Supporting Documents</h3>
+                    <div class="doc-grid">
+                        ${renderDocs(optionalDocs, [])}
+                    </div>
+                `;
+            }
+
+            // =========================================================
+            // STEP 5: REVIEW & MINT
+            // =========================================================
+            else if (this.state.step === 5) {
+                const total = this.getTotalTrees();
+                const estCarb = (total * 0.025).toFixed(2);
+                
+                // Checklist Silent Validation
+                const isIdValid = !!(d.identity.projectName && d.identity.developerOrg && d.identity.projectStartDate);
+                const isLocValid = !!(d.location.landTenure && d.location.areaHectares > 0 && d.location.latitude && d.location.fullSiteAddress);
+                const isBioValid = !!(d.bio.inventory && d.bio.inventory.length > 0 && d.bio.inventory[0].species);
+                
+                let isDocsValid = !!(d.files.visual.matureTree && d.files.visual.activityPhoto);
+                this.getRequiredDocuments().forEach(doc => { if(!d.files.docs[doc.key]) isDocsValid = false; });
+
+                const allValid = isIdValid && isLocValid && isBioValid && isDocsValid;
+
+                html = `
+                    <div class="form-header">
+                        <h1 class="form-title">Review & Submit</h1>
+                        <p class="form-sub">Final compliance check before writing to the ledger.</p>
+                    </div>
+
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:16px; padding:30px; margin-bottom:30px;">
+                        
+                        <div class="review-section">
+                            <h3>1. Project Identity Summary</h3>
+                            <div class="review-grid">
+                                <div class="review-item"><span class="review-lbl">Project Name</span><span class="review-val">${d.identity.projectName || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Developer Org</span><span class="review-val">${d.identity.developerOrg || '-'} (${d.identity.developerType || '-'})</span></div>
+                                <div class="review-item"><span class="review-lbl">Activity Type</span><span class="review-val">${d.identity.activityType || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Status</span><span class="review-val">${d.identity.plantationStatus || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Crediting Period</span><span class="review-val">${d.identity.creditingStart || '-'} to ${d.identity.creditingEnd || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Contact Details</span><span class="review-val">${d.identity.contactName || '-'} | ${d.identity.contactPhone || '-'}</span></div>
+                                <div class="review-item full-span"><span class="review-lbl">Funding / Community Impact</span><span class="review-val">${d.identity.fundingCosts ? 'Funding noted' : 'None'} | ${d.identity.communityImpact ? 'Impact noted' : 'None'}</span></div>
+                            </div>
+                        </div>
+
+                        <div class="review-section">
+                            <h3>2. Location & Land Summary</h3>
+                            <div class="review-grid">
+                                <div class="review-item"><span class="review-lbl">Location</span><span class="review-val">${d.location.village || '-'}, ${d.location.district || '-'}, ${d.location.state || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Area</span><span class="review-val">${d.location.areaHectares} Ha</span></div>
+                                <div class="review-item"><span class="review-lbl">Coordinates</span><span class="review-val">${d.location.latitude || '-'}, ${d.location.longitude || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Land Tenure & Class</span><span class="review-val">${d.location.landTenure || '-'} | ${d.location.landClassification || '-'}</span></div>
+                                <div class="review-item full-span"><span class="review-lbl">Full Site Address</span><span class="review-val">${d.location.fullSiteAddress || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Tenure Proof Note</span><span class="review-val">${d.location.tenureProofNote || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Geotag Source</span><span class="review-val">${d.location.geotagSource || '-'}</span></div>
+                                <div class="review-item full-span"><span class="review-lbl">Statutory Flags</span><span class="review-val">Clearance: ${d.location.requiresClearance?'Yes':'No'} | FRA: ${d.location.requiresFRA?'Yes':'No'}</span></div>
+                            </div>
+                        </div>
+
+                        <div class="review-section">
+                            <h3>3. Bio-Configuration Summary</h3>
+                            <div class="review-grid">
+                                <div class="review-item"><span class="review-lbl">Plantation Method</span><span class="review-val">${d.bio.method || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Species Summary</span><span class="review-val">${d.bio.inventory.length} distinct species (${total} total trees)</span></div>
+                                <div class="review-item"><span class="review-lbl">Average Age</span><span class="review-val">${total > 0 ? (d.bio.inventory.reduce((sum, item) => sum + (item.age * item.count), 0) / total).toFixed(1) : 0} Yrs</span></div>
+                                <div class="review-item"><span class="review-lbl">Dominant Species</span><span class="review-val">${d.bio.inventory.length > 0 ? d.bio.inventory.reduce((prev, current) => (prev.count > current.count) ? prev : current).species : '-'}</span></div>
+                                <div class="review-item full-span"><span class="review-lbl">Ecological Planning</span><span class="review-val">Safeguards: ${d.bio.safeguards ? 'Yes' : 'No'} | Survival Plan: ${d.bio.survivalPlan ? 'Yes' : 'No'}</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="review-section">
+                            <h3>4. Digital Evidence Summary</h3>
+                            <div class="review-grid">
+                                <div class="review-item"><span class="review-lbl">Mandatory Visuals</span><span class="review-val">${d.files.visual.matureTree && d.files.visual.activityPhoto ? 'Uploaded' : 'Missing'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Project Media Gallery</span><span class="review-val">${d.files.galleryMedia.length} items uploaded</span></div>
+                                <div class="review-item full-span"><span class="review-lbl">Core Docs Uploaded</span><span class="review-val">${this.getRequiredDocuments().filter(doc => d.files.docs[doc.key]).length} / ${this.getRequiredDocuments().length}</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="font-family:'Space Grotesk'; color:var(--col-primary); margin-bottom:16px;">Compliance Checklist</h3>
+                    <div style="margin-bottom:32px;">
+                        <div class="checklist-item ${isIdValid ? 'check-pass' : 'check-fail'}">
+                            <i class="fa-solid ${isIdValid ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> Mandatory Identity Fields Complete
+                        </div>
+                        <div class="checklist-item ${isLocValid ? 'check-pass' : 'check-fail'}">
+                            <i class="fa-solid ${isLocValid ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> Mandatory Land/Location Fields Complete
+                        </div>
+                        <div class="checklist-item ${isBioValid ? 'check-pass' : 'check-fail'}">
+                            <i class="fa-solid ${isBioValid ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> Bio-Config & Plantation Details Complete
+                        </div>
+                        <div class="checklist-item ${isDocsValid ? 'check-pass' : 'check-fail'}">
+                            <i class="fa-solid ${isDocsValid ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> Mandatory & Conditional Documents Uploaded
+                        </div>
+                    </div>
+
+                    <div style="background:#ECFDF5; border:1px solid #34D399; border-radius:16px; padding:24px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap: wrap; gap: 16px;">
+                        <div>
+                            <span style="font-size:0.8rem; text-transform:uppercase; font-weight:700; color:#065F46;">Estimated Impact</span>
+                            <div style="font-size:1.5rem; font-weight:700; color:#064E3B; font-family:'Space Grotesk';">${estCarb} Tons CO₂e/Yr</div>
+                        </div>
+                        <div style="text-align:right;">
+                             <span style="font-size:0.8rem; text-transform:uppercase; font-weight:700; color:#065F46;">Total Area</span>
+                            <div style="font-size:1.5rem; font-weight:700; color:#064E3B; font-family:'Space Grotesk';">${d.location.areaHectares} Ha</div>
+                        </div>
+                    </div>
+
+                    <div class="field full-span" style="margin-top: 16px;">
+                        <label class="custom-checkbox-wrapper">
+                             <input type="checkbox" id="termsConsent" class="custom-checkbox" onchange="App.checkFinalForm()">
+                            <span style="font-size:0.95rem; line-height:1.5; color:var(--text-body); font-weight: 500; margin-top:2px;">
+                                I certify that the registry data and documents provided are accurate. I understand falsifying geo-data or baseline metrics will result in immediate protocol suspension.
+                            </span>
+                        </label>
+                    </div>
+
+                    <script>
+                        App.state.allValid = ${allValid};
+                    <\/script>
+                `;
+            }
+
+            container.innerHTML = html;
+            if (this.state.step === 5) this.checkFinalForm();
+        },
+
+        checkFinalForm() {
+            const btn = document.getElementById('btnNext');
+            const consent = document.getElementById('termsConsent');
+            if (this.state.step === 5 && btn && consent) {
+                if (this.TESTING_MODE) {
+                    btn.disabled = false;
+                } else {
+                    btn.disabled = !(consent.checked && this.state.allValid);
+                }
+            }
+        },
+
+        // --- INVENTORY LOGIC ---
+        renderInventoryRows() {
+            const tbody = document.getElementById('inventoryBody');
+            if(!tbody) return;
+            
+            const standardSpecies = ['Teak', 'Neem', 'Bamboo', 'Mango', 'Sheesham'];
+
+            tbody.innerHTML = this.state.data.bio.inventory.map((item, index) => {
+                const isYoung = item.age < 0.5;
+                const warnClass = isYoung ? 'inp-warning' : '';
+                const warnText = isYoung ? `<span class="txt-warning">⚠️ Too young</span>` : '';
+                
+                const isCustom = !standardSpecies.includes(item.species);
+                const options = standardSpecies.map(s => 
+                    `<option value="${s}" ${s === item.species ? 'selected' : ''}>${s}</option>`
+                ).join('');
+
+                let speciesInputHtml = isCustom ? `
+                        <div class="wrapper-inline-species">
+                            <input type="text" class="inp-inline-species" placeholder="Type species..." 
+                                value="${item.species}" 
+                                oninput="App.updateInventory(${index}, 'species', this.value)" autofocus>
+                            <button type="button" class="btn-reset-species" onclick="App.resetSpecies(${index})" title="Back">×</button>
+                        </div>
+                    ` : `
+                        <select onchange="App.handleSpeciesChange(${index}, this.value)">
+                            ${options}
+                            <option value="Other">Other / Custom</option>
+                        </select>
+                    `;
+
+                return `
+                <tr class="table-row-card">
+                    <td>${speciesInputHtml}</td>
+                    <td>
+                        <input type="number" value="${item.count}" oninput="App.updateInventory(${index}, 'count', this.value)">
+                    </td>
+                    <td>
+                        <input type="number" class="${warnClass}" step="0.1" value="${item.age}" oninput="App.updateInventory(${index}, 'age', this.value)">
+                        ${warnText}
+                    </td>
+                     <td>
+                        <select onchange="App.updateInventory(${index}, 'condition', this.value)">
+                            <option value="Healthy" ${item.condition === 'Healthy' ? 'selected' : ''}>Healthy</option>
+                            <option value="Moderate" ${item.condition === 'Moderate' ? 'selected' : ''}>Moderate</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select onchange="App.updateInventory(${index}, 'nativity', this.value)">
+                            <option value="Native" ${item.nativity === 'Native' ? 'selected' : ''}>Native</option>
+                            <option value="Non-native" ${item.nativity === 'Non-native' ? 'selected' : ''}>Non-native</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" placeholder="Zone" value="${item.zone || ''}" oninput="App.updateInventory(${index}, 'zone', this.value)">
+                    </td>
+                    <td style="text-align:center;">
+                       <button type="button" class="btn-row-delete" onclick="App.removeInventoryRow(${index})" title="Remove Row">
+                            <i class="fa-solid fa-trash-can"></i>
+                       </button>
+                    </td>
+                </tr>
+            `}).join('');
+            
+            this.updateFooterStats();
+        },
+
+        handleSpeciesChange(index, value) {
+            this.state.data.bio.inventory[index].species = value === 'Other' ? '' : value;
+            this.renderInventoryRows();
+        },
+        resetSpecies(index) {
+            this.state.data.bio.inventory[index].species = 'Teak';
+            this.renderInventoryRows();
+        },
+        updateInventory(index, field, value) {
+            if (field === 'count' || field === 'age') value = parseFloat(value) || 0;
+            this.state.data.bio.inventory[index][field] = value;
+            if(field === 'age') { this.renderInventoryRows(); } 
+            else { this.updateFooterStats(); this.updateSidebar(this.getTotalTrees()); }
+        },
+        updateFooterStats() {
+            const total = this.getTotalTrees();
+            const totalAge = this.state.data.bio.inventory.reduce((sum, item) => sum + (item.age * item.count), 0);
+            const avgAge = total > 0 ? (totalAge / total).toFixed(1) : 0;
+            const elTotal = document.getElementById('statTotal');
+            const elAge = document.getElementById('statAge');
+            if(elTotal) elTotal.innerText = total;
+            if(elAge) elAge.innerText = avgAge;
+        },
+        addInventoryRow() {
+            this.state.data.bio.inventory.push({ species: 'Teak', count: 0, age: 1, condition: 'Healthy', nativity: 'Native', zone: '' });
+            this.renderInventoryRows();
+        },
+        removeInventoryRow(index) {
+            if(this.state.data.bio.inventory.length > 1) {
+                this.state.data.bio.inventory.splice(index, 1);
+                this.renderInventoryRows();
+                this.updateFooterStats();
+                this.updateSidebar(this.getTotalTrees());
+            }
+        },
+        getTotalTrees() {
+            return this.state.data.bio.inventory.reduce((sum, item) => sum + item.count, 0);
+        },
+
+        // --- UPLOAD LOGIC ---
+        renderVisualDropzone(key, label, icon, isRequired) {
+            const file = this.state.data.files.visual[key];
+            const reqHtml = isRequired ? '<span class="req">*</span>' : '';
+            return this.buildDropzoneHtml('visual', key, label, icon, file, reqHtml);
+        },
+        renderDocDropzone(key, label, isRequired) {
+            const file = this.state.data.files.docs[key];
+            const reqHtml = isRequired ? '<span class="req">*</span>' : '';
+            return this.buildDropzoneHtml('docs', key, label, '📄', file, reqHtml);
+        },
+        buildDropzoneHtml(type, key, label, icon, file, reqHtml) {
+            let content = `
+                <input type="file" onchange="App.handleFileSelect(this, '${type}', '${key}')">
+                <span class="zone-icon" style="font-size:1.5rem;">${icon}</span>
+                <span class="zone-text">${label} ${reqHtml}</span>
+            `;
+            let zoneStyle = 'padding: 16px; min-height:120px;';
+            if (file) {
+                zoneStyle += 'background: #ECFDF5; border-color: var(--col-accent);';
+                content += `
+                    <div class="file-pill" title="${file.name}">
+                        <span>${file.name}</span> 
+                        <span class="remove-file" onclick="App.removeFile(event, '${type}', '${key}')">×</span>
+                    </div>
+                `;
+            }
+            return `<div class="file-dropzone" style="${zoneStyle}">${content}</div>`;
+        },
+        handleFileSelect(input, type, key) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                this.state.data.files[type][key] = { name: file.name, type: file.type };
+                this.renderForm();
+            }
+        },
+        removeFile(e, type, key) {
+            e.stopPropagation(); 
+            this.state.data.files[type][key] = null;
+            this.renderForm();
+        },
+
+        // --- NEW GALLERY UPLOADER LOGIC ---
+        renderPlantationGallery() {
+            const gallery = this.state.data.files.galleryMedia;
+            const maxFiles = 15;
+            
+            let galleryHtml = '';
+
+            if (!gallery || gallery.length === 0) {
+                galleryHtml = `
+                    <div class="file-dropzone" style="grid-column: 1 / -1; padding: 40px; margin: 16px 0 32px 0; border-width: 2px;" onclick="document.getElementById('galleryInput').click()">
+                        <input type="file" id="galleryInput" multiple accept="image/*,video/mp4,video/quicktime,video/webm" onchange="App.handleGalleryUpload(this)" style="display:none;">
+                        <span class="zone-icon" style="font-size:2.5rem; margin-bottom:16px; color:var(--col-primary);"><i class="fa-regular fa-images"></i></span>
+                        <span class="zone-text" style="font-size:1.1rem;">Project Media Gallery</span>
+                        <span class="zone-sub" style="font-size:0.95rem;">Upload all tree plantation photos & videos</span>
+                        <span class="zone-sub" style="margin-top:8px;">Max ${maxFiles} files. Supported: JPG, PNG, WEBP, MP4, MOV, WEBM</span>
+                    </div>
+                `;
+            } else {
+                const currentIndex = this.state.galleryIndex;
+                const currentMedia = gallery[currentIndex];
+                const isVideo = currentMedia.type === 'video';
+
+                const previewHtml = isVideo 
+                    ? `<video src="${currentMedia.preview}" controls style="width:100%; height:100%; object-fit:contain;"></video>`
+                    : `<img src="${currentMedia.preview}" style="width:100%; height:100%; object-fit:contain;">`;
+
+                galleryHtml = `
+                    <div class="scientific-card" style="margin-top: 16px; margin-bottom: 24px; overflow: visible;">
+                        <div class="sc-header">
+                            <div class="sc-title"><i class="fa-regular fa-images"></i> Project Media Gallery</div>
+                            <div class="sc-subtitle" style="font-weight:600;">${gallery.length} / ${maxFiles} items</div>
+                        </div>
+                        <div class="sc-body" style="position:relative; text-align:center; padding: 24px;">
+                            
+                            <div class="gallery-preview-wrapper">
+                                ${previewHtml}
+                            </div>
+                            
+                            ${gallery.length > 1 ? `
+                                <button type="button" class="gallery-nav-btn left" onclick="App.prevGalleryItem(event)" title="Previous"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button type="button" class="gallery-nav-btn right" onclick="App.nextGalleryItem(event)" title="Next"><i class="fa-solid fa-chevron-right"></i></button>
+                            ` : ''}
+                            
+                            <div class="gallery-controls-wrapper">
+                                <button type="button" class="btn-gallery-remove" onclick="App.removeGalleryItem(${currentIndex})">
+                                    <i class="fa-solid fa-trash-can"></i> Remove
+                                </button>
+                                
+                                <div style="font-size:0.95rem; font-weight:700; color:var(--text-main); flex-grow: 1;">
+                                    ${currentIndex + 1} of ${gallery.length}
+                                </div>
+
+                                ${gallery.length < maxFiles ? `
+                                    <div>
+                                        <button type="button" class="btn-gallery-add" onclick="document.getElementById('galleryInputMore').click()">
+                                            <i class="fa-solid fa-cloud-arrow-up"></i> Add Another
+                                        </button>
+                                        <input type="file" id="galleryInputMore" multiple accept="image/*,video/mp4,video/quicktime,video/webm" onchange="App.handleGalleryUpload(this)" style="display:none;">
+                                    </div>
+                                ` : `
+                                    <span style="font-size:0.85rem; color:#F59E0B; font-weight:600; padding:8px 16px; background: #FFFBEB; border-radius: 50px; border: 1px solid #FDE68A;">Maximum 15 files reached</span>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const noteHtml = `
+                <div class="gallery-info-note">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span><strong>Note:</strong> Please upload at least 10 images and at least 1 proper video covering the complete plantation project for better project verification.</span>
+                </div>
+            `;
+
+            return galleryHtml + noteHtml;
+        },
+
+        handleGalleryUpload(input) {
+            const files = Array.from(input.files);
+            if (!files.length) return;
+
+            const gallery = this.state.data.files.galleryMedia;
+            const maxFiles = 15;
+            let added = 0;
+
+            files.forEach(file => {
+                if (gallery.length >= maxFiles) return;
+                
+                const isImage = file.type.startsWith('image/');
+                const isVideo = file.type.startsWith('video/');
+                
+                if (isImage || isVideo) {
+                    gallery.push({
+                        id: 'gal_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        name: file.name,
+                        type: isVideo ? "video" : "image",
+                        mimeType: file.type,
+                        preview: URL.createObjectURL(file),
+                        source: "gallery",
+                        caption: "",
+                        uploadedAt: new Date().toISOString()
+                    });
+                    added++;
+                }
+            });
+
+            if (added > 0) {
+                this.state.galleryIndex = gallery.length - 1; 
+                this.renderForm(); 
+            }
+        },
+
+        removeGalleryItem(index) {
+            const gallery = this.state.data.files.galleryMedia;
+            if (index >= 0 && index < gallery.length) {
+                URL.revokeObjectURL(gallery[index].preview); 
+                gallery.splice(index, 1);
+                if (this.state.galleryIndex >= gallery.length) {
+                    this.state.galleryIndex = Math.max(0, gallery.length - 1);
+                }
+                this.renderForm();
+            }
+        },
+
+        nextGalleryItem(e) {
+            if(e) e.preventDefault();
+            const gallery = this.state.data.files.galleryMedia;
+            if (gallery.length > 0) {
+                this.state.galleryIndex = (this.state.galleryIndex + 1) % gallery.length;
+                this.renderForm();
+            }
+        },
+
+        prevGalleryItem(e) {
+            if(e) e.preventDefault();
+            const gallery = this.state.data.files.galleryMedia;
+            if (gallery.length > 0) {
+                this.state.galleryIndex = (this.state.galleryIndex - 1 + gallery.length) % gallery.length;
+                this.renderForm();
+            }
+        },
+
+        // --- SUBMIT & PAYLOAD CONSTRUCTION ---
+        buildProjectPayload() {
+            const d = this.state.data;
+            const totalTrees = this.getTotalTrees();
+            const estImpact = totalTrees * 0.025;
+            
+            const reqDocs = this.getRequiredDocuments();
+            const optionalDocs = this.getOptionalDocuments();
+            const docsUploaded = reqDocs.filter(doc => d.files.docs[doc.key]).length;
+            const optionalDocsCount = optionalDocs.filter(doc => d.files.docs[doc.key]).length;
+
+            const metrics = {
+                totalTrees: totalTrees,
+                totalAreaHectares: parseFloat(d.location.areaHectares) || 0,
+                estimatedAnnualImpact: estImpact,
+                estimatedCredits: Math.floor(estImpact * 0.9),
+                mediaCount: d.files.galleryMedia.length,
+                imageCount: d.files.galleryMedia.filter(m => m.type === 'image').length,
+                videoCount: d.files.galleryMedia.filter(m => m.type === 'video').length,
+                requiredDocsUploaded: docsUploaded,
+                requiredDocsTotal: reqDocs.length,
+                optionalDocsUploaded: optionalDocsCount,
+                documentReadinessPercent: reqDocs.length ? Math.floor((docsUploaded / reqDocs.length) * 100) : 0
+            };
+
+            let dominantSpecies = "";
+            if (d.bio.inventory.length > 0) {
+                const maxSpecies = d.bio.inventory.reduce((prev, current) => (prev.count > current.count) ? prev : current);
+                dominantSpecies = maxSpecies.species;
+            }
+
+            let topHighlights = [];
+            if (totalTrees > 0 && metrics.totalAreaHectares > 0) topHighlights.push(`${totalTrees.toLocaleString()} trees across ${metrics.totalAreaHectares} hectares`);
+            if (d.bio.inventory.length > 0) topHighlights.push(`${d.bio.inventory.length} distinct species utilized`);
+            if (d.identity.communityImpact) topHighlights.push(`Community-focused initiative`);
+            if (metrics.documentReadinessPercent > 80) topHighlights.push(`Field media and documentation uploaded`);
+            if (d.location.latitude && d.location.longitude) topHighlights.push(`Mapped plantation site with geo-details`);
+
+            const buyerSummary = {
+                title: d.identity.projectName || "Untitled Forestry Project",
+                subtitle: d.identity.developerOrg ? `Developed by ${d.identity.developerOrg}` : "",
+                shortObjective: d.identity.objective || "",
+                projectTypeLabel: "Tree Plantation",
+                activityType: d.identity.activityType || "Forestry",
+                status: d.identity.plantationStatus || "Planned",
+                developerOrg: d.identity.developerOrg,
+                locationLabel: [d.location.village, d.location.district, d.location.state, d.location.country].filter(Boolean).join(', '),
+                areaLabel: `${metrics.totalAreaHectares} Hectares`,
+                keyScaleLabel: `${totalTrees.toLocaleString()} Trees`,
+                impactLabel: `${estImpact.toFixed(1)} tCO₂e / Year`,
+                evidenceLabel: `${metrics.mediaCount} Media Items`,
+                topHighlights: topHighlights,
+                heroMedia: d.files.galleryMedia,
+                mapData: {
+                    latitude: d.location.latitude,
+                    longitude: d.location.longitude,
+                    addressLabel: d.location.fullSiteAddress || d.location.boundaryDescription || ""
+                },
+                documentSummary: {
+                    readinessLabel: `${metrics.documentReadinessPercent}% Verified`,
+                    requiredUploaded: metrics.requiredDocsUploaded,
+                    requiredTotal: metrics.requiredDocsTotal,
+                    optionalUploaded: metrics.optionalDocsUploaded
+                }
+            };
+
+            const projectId = 'FR-' + Math.floor(Math.random() * 10000 + 1000);
+            
+            return {
+                id: projectId,
+                type: "tree",
+                projectType: "Tree Plantation",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                sourcePage: "TP.html",
+                viewContextDefault: "seller",
+                status: "Submitted",
+                version: "v1",
+                identity: d.identity,
+                location: d.location,
+                bio: d.bio,
+                files: d.files,
+                metrics: metrics,
+                buyerSummary: buyerSummary,
+                sellerDetails: {
+                    fullFormSnapshot: JSON.parse(JSON.stringify(d)), 
+                    rawFiles: d.files, 
+                    checklist: {
+                        identityComplete: !!(d.identity.projectName && d.identity.developerOrg && d.identity.projectStartDate),
+                        locationComplete: !!(d.location.landTenure && d.location.areaHectares > 0 && d.location.latitude && d.location.fullSiteAddress),
+                        bioComplete: !!(d.bio.inventory && d.bio.inventory.length > 0 && d.bio.inventory[0].species),
+                        docsComplete: !!(d.files.visual.matureTree && d.files.visual.activityPhoto)
+                    },
+                    rawFlags: {
+                        testingModeUsed: this.TESTING_MODE
+                    }
+                }
+            };
+        },
+
+        submit() {
+            const btn = document.getElementById('btnNext');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Minting Registry...';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+            
+            const finalPayload = this.buildProjectPayload();
+
+            setTimeout(() => {
+                const currentProjects = JSON.parse(localStorage.getItem('blueCredProjects') || '[]');
+                currentProjects.unshift(finalPayload);
+                localStorage.setItem('blueCredProjects', JSON.stringify(currentProjects));
+                
+                localStorage.setItem("projectViewContext", "seller");
+                localStorage.setItem("activeProjectId", finalPayload.id);
+
+                const sidebar = document.querySelector('.sidebar-sticky');
+                const shell = document.querySelector('.app-shell');
+                const formFooter = document.querySelector('.form-footer');
+
+                if(sidebar) sidebar.style.display = 'none';
+                if(shell) shell.classList.add('full-width');
+                if(formFooter) formFooter.style.display = 'none';
+
+                const container = document.getElementById('stepContainer');
+                container.innerHTML = `
+                    <div style="text-align:center; padding:100px 20px; animation:fadeIn 0.8s; min-height:60vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                        <div style="width:80px; height:80px; background:#DCFCE7; color:#16A34A; border-radius:50%; font-size:40px; display:flex; align-items:center; justify-content:center; margin-bottom:24px;">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <h1 class="form-title" style="margin-bottom:12px;">Protocol Submitted</h1>
+                        <p class="form-sub" style="max-width:550px;">Your Forestry Project data has been locked and submitted for registry validation.</p>
+                        
+                        <p style="margin-top:40px; color:var(--text-muted); font-size:0.9rem;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Redirecting to Dashboard...
+                        </p>
+                    </div>
+                `;
+
+                this.scrollToStepTop();
+
+                setTimeout(() => {
+                    window.location.href = 'dashngo.html';
+                }, 2000);
+
+            }, 1500);
+        }
+    };
+
+    App.init();
+</script>
+   <script>
+document.addEventListener("keydown", function(e) {
+    // Check if Ctrl key (or Meta key on Mac) is pressed along with 'u' (keyCode 85)
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 117)) {
+        e.preventDefault(); // Prevents the view source action
+        // alert("View source is disabled."); // Optional: alert user
+    }
+});
+</script>
+</body>
+</html>

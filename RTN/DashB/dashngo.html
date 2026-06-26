@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>PRΛN | Climate Intelligence Dashboard</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ====================================================================
+           1. CORE DESIGN TOKENS
+           ==================================================================== */
+        :root {
+            /* Brand Palette */
+            --col-primary: #14532D;      /* Deep Forest */
+            --col-accent: #16A34A;       /* Vibrant Green */
+            --col-accent-hover: #15803D;
+            --col-body: #475569;
+            
+            --text-main: #022C22;
+            --text-body: #374151;
+            --text-muted: #64748B;
+            
+            /* Glass Engine */
+            --glass-surface: rgba(255, 255, 255, 0.7);
+            
+            /* Spacing */
+            --nav-height: 80px;
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            
+            --font-display: "Space Grotesk", sans-serif;
+            --font-body: "Manrope", sans-serif;
+            --font-nav: "Inter", sans-serif;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
+
+        /* --- RESET --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-font-smoothing: antialiased; }
+        
+        body {
+            font-family: var(--font-body);
+            background: #F8FAFC;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(22, 163, 74, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.06) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.03) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-top: var(--nav-height);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ====================================================================
+           2. NAVBAR
+           ==================================================================== */
+        .glass-nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(22, 163, 74, 0.15);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 60px;
+            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .nav-logo {
+            font-family: var(--font-display); font-size: 1.75rem; font-weight: 700;
+            letter-spacing: -0.02em; color: var(--col-primary); display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .nav-logo::after { content: ''; width: 8px; height: 8px; background: var(--col-accent); border-radius: 50%; }
+        .nav-logo span { color: var(--col-accent); }
+
+        .nav-right { display: flex; align-items: center; gap: 40px; }
+        .nav-items { display: flex; align-items: center; gap: 32px; list-style: none; margin: 0; padding: 0;}
+
+        .nav-link {
+            font-family: var(--font-nav); font-weight: 500; color: var(--col-body); font-size: 1rem;
+            transition: color 0.3s ease; text-decoration: none; display: flex; align-items: center; gap: 6px; cursor: pointer;
+        }
+        .nav-link:hover, .nav-link.active { color: var(--col-accent); }
+
+        /* NAV PROFILE */
+        .nav-profile {
+            display: flex; align-items: center; gap: 10px; cursor: pointer;
+            padding: 6px 14px 6px 6px; background: rgba(255,255,255,0.5); 
+            border: 1px solid rgba(22, 163, 74, 0.15); border-radius: 50px;
+            transition: 0.3s var(--ease-out);
+        }
+        .nav-profile:hover { border-color: var(--col-accent); background: white; transform: translateY(-1px); }
+        .avatar {
+            width: 32px; height: 32px; background: linear-gradient(135deg, #14532D, #16A34A);
+            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
+        }
+        .profile-name { font-size: 0.9rem; font-weight: 600; color: var(--col-primary); font-family: var(--font-nav); }
+
+        .hamburger { display: none; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1002; background: none; border: none; }
+        .line { width: 24px; height: 2px; background: var(--col-primary); border-radius: 2px; transition: 0.3s ease; }
+
+        /* ====================================================================
+           3. DASHBOARD CONTENT
+           ==================================================================== */
+        .container { max-width: 1280px; margin: 0 auto; padding: 48px 24px; flex: 1; width: 100%; }
+
+        /* Header */
+        .dash-header { 
+            margin-bottom: 40px; padding-bottom: 24px; 
+            border-bottom: 1px solid rgba(20, 83, 45, 0.05);
+            animation: fadeIn 0.8s var(--ease-out);
+            display: flex; justify-content: space-between; align-items: flex-end;
+        }
+        .welcome h1 {
+            font-family: var(--font-display); font-size: 2.25rem; font-weight: 700; 
+            color: var(--col-primary); margin-bottom: 6px; letter-spacing: -0.03em; line-height: 1.1;
+        }
+        .welcome p { font-size: 1.05rem; color: var(--text-muted); opacity: 0.9; }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 56px;
+            animation: slideUp 0.8s var(--ease-out) 0.1s backwards;
+        }
+
+        /* STAT CARDS - Data Driven Style */
+        .stat-card {
+            grid-column: span 1; background: #FFFFFF; border: 1px solid rgba(22, 163, 74, 0.08); 
+            border-radius: var(--radius-lg); padding: 24px; 
+            display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 160px; box-shadow: var(--shadow-sm); 
+            transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), border-color 0.4s; 
+            position: relative; overflow: hidden;
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--col-accent); }
+        
+        .stat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: auto; }
+        .stat-icon {
+            width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; transition: 0.3s;
+        }
+        
+        /* Typography optimized for data */
+        .stat-val { 
+            font-family: var(--font-display); font-size: 2.25rem; font-weight: 700; 
+            color: var(--col-primary); line-height: 1; margin-bottom: 8px; letter-spacing: -0.03em; 
+        }
+        .stat-label { 
+            font-size: 0.8rem; font-weight: 600; color: var(--text-muted); 
+            text-transform: uppercase; letter-spacing: 0.08em; 
+        }
+        .stat-context { font-size: 0.85rem; color: var(--col-accent); font-weight: 500; margin-top: 4px; }
+
+        /* Action Cards (Updated for Protocol Look) */
+        .action-card {
+            grid-column: span 2; min-height: 280px; border-radius: var(--radius-xl);
+            position: relative; overflow: hidden; cursor: pointer;
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 36px;
+            background-size: cover; background-position: center;
+            box-shadow: var(--shadow-card); border: 1px solid rgba(255,255,255,0.3);
+            transition: transform 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+        }
+        .card-tree { background-image: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2613&auto=format&fit=crop'); }
+        .card-solar { background-image: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2632&auto=format&fit=crop'); }
+        .action-card::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(2, 44, 34, 0.95) 0%, rgba(2, 44, 34, 0.4) 60%, rgba(2, 44, 34, 0.1) 100%);
+            z-index: 1; transition: 0.5s ease;
+        }
+        .action-card:hover::before { background: linear-gradient(to top, rgba(2, 44, 34, 1) 0%, rgba(2, 44, 34, 0.5) 60%); }
+        .action-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+        .ac-content { position: relative; z-index: 2; color: white; transform: translateY(0); transition: 0.5s var(--ease-out); }
+        
+        .micro-label {
+            display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+            color: #F0FDF4; background: rgba(255,255,255,0.1); backdrop-filter: blur(4px);
+            padding: 6px 10px; border-radius: 4px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .ac-content h3 { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .ac-content p { font-size: 0.95rem; opacity: 0.9; max-width: 90%; line-height: 1.5; font-weight: 400; color: #E2E8F0; }
+        .ac-btn {
+            position: absolute; bottom: 36px; right: 36px; z-index: 2;
+            width: 48px; height: 48px; border-radius: 50%; background: #fff;
+            color: var(--col-primary); display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: translateX(10px); transition: 0.4s var(--ease-out);
+            font-size: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .action-card:hover .ac-btn { opacity: 1; transform: translateX(0); }
+
+        /* Projects List */
+        .section-header { margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
+        .section-title { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--col-primary); }
+        .projects-wrapper {
+            background: #FFFFFF; border: 1px solid rgba(22, 163, 74, 0.08);
+            border-radius: var(--radius-xl); padding: 0; box-shadow: var(--shadow-sm); overflow: hidden;
+        }
+        
+        /* Updated Grid for Project Row - Strict Alignment */
+        .project-row {
+            display: grid; 
+            /* Columns: Icon | Name | ID | Type | Date | Status | Action */
+            grid-template-columns: 50px 2fr 1.2fr 1.2fr 1.2fr 1.5fr 50px;
+            align-items: center; gap: 20px; 
+            border-bottom: 1px solid #F1F5F9; padding: 20px 32px;
+            transition: background-color 0.2s; cursor: pointer;
+        }
+        .project-row:last-child { border-bottom: none; }
+        .project-row:hover { background-color: #F8FAFC; }
+        
+        .row-visual { 
+            width: 40px; height: 40px; border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem; 
+        }
+        .vis-tree { background: #DCFCE7; color: #166534; }
+        .vis-solar { background: #FEF3C7; color: #B45309; }
+        
+        .row-text-primary { font-weight: 700; font-size: 0.95rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .row-text-secondary { font-family: 'Space Grotesk'; font-size: 0.85rem; color: var(--text-muted); letter-spacing: 0.03em; }
+        .row-text-meta { font-size: 0.9rem; color: var(--text-body); font-weight: 500; }
+        
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 700; width: fit-content; text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .sb-verified { background: #DCFCE7; color: #14532D; border: 1px solid #86EFAC; }
+        .sb-pending { background: #E0F2FE; color: #0369A1; border: 1px solid #7DD3FC; }
+        .sb-draft { background: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; }
+        
+        .btn-arrow {
+            width: 32px; height: 32px; border-radius: 50%; border: 1px solid #e2e8f0; background: #fff;
+            color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .project-row:hover .btn-arrow { background: var(--col-primary); color: white; border-color: var(--col-primary); }
+
+        /* Empty State */
+        .empty-state { padding: 80px 40px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .btn-cta {
+            margin-top: 16px; padding: 12px 28px; background: var(--col-primary); color: white;
+            border-radius: 50px; font-weight: 700; border: none; cursor: pointer; font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(20, 83, 45, 0.2); transition: 0.3s;
+        }
+        .btn-cta:hover { background: var(--col-accent); transform: translateY(-2px); }
+
+        /* --------------------------------------------------------
+           ORGANIZATION COMPLIANCE PROFILE STYLES
+           -------------------------------------------------------- */
+        .profile-view { display: none; animation: fadeIn 0.4s; }
+        
+        .profile-layout {
+            display: grid; grid-template-columns: 1fr; gap: 32px;
+        }
+
+        .compliance-card {
+            background: #fff; border: 1px solid rgba(22, 163, 74, 0.1); 
+            border-radius: var(--radius-xl); padding: 40px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profile-header-block {
+            padding-bottom: 24px; border-bottom: 1px solid #F1F5F9; margin-bottom: 32px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+        }
+
+        .org-id-badge {
+            font-family: 'Space Grotesk', monospace;
+            background: #F0FDF4; border: 1px solid #BBF7D0; color: #15803D;
+            padding: 12px 20px; border-radius: 8px; font-size: 1.1rem; font-weight: 600;
+            display: inline-block; margin-top: 8px; letter-spacing: 0.05em;
+        }
+
+        .data-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px;
+        }
+
+        .data-group { margin-bottom: 8px; }
+        .data-label {
+            display: block; font-size: 0.75rem; font-weight: 700; 
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        .data-value {
+            font-size: 1.1rem; color: var(--text-main); font-weight: 600;
+            padding-bottom: 8px; border-bottom: 1px solid #F1F5F9;
+        }
+
+        .doc-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px; background: #F8FAFC; border: 1px solid #E2E8F0;
+            border-radius: 12px; margin-bottom: 12px;
+        }
+        .doc-info { display: flex; align-items: center; gap: 12px; font-weight: 600; color: var(--text-body); }
+        
+        /* New: Doc Action Button */
+        .btn-view-doc {
+            background: white; border: 1px solid #CBD5E1; color: var(--text-body);
+            padding: 6px 16px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;
+            cursor: pointer; transition: 0.2s; margin-left: 12px;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-view-doc:hover { border-color: var(--col-primary); color: var(--col-primary); }
+
+        .security-zone {
+            margin-top: 40px; padding-top: 32px; border-top: 1px dashed #E2E8F0;
+            display: flex; gap: 20px; justify-content: flex-end;
+        }
+        
+        .btn-outline-danger {
+            background: transparent; border: 1px solid #FCA5A5; color: #EF4444;
+            padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .btn-outline-danger:hover { background: #FEF2F2; border-color: #EF4444; }
+
+        .btn-outline-neutral {
+            background: transparent; border: 1px solid #CBD5E1; color: var(--text-body);
+            padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .btn-outline-neutral:hover { background: #F1F5F9; }
+
+
+        /* Footer */
+        .glass-footer {
+            background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-top: 1px solid rgba(22, 163, 74, 0.15); padding: 80px 60px 40px;
+            position: relative; z-index: 20; width: 100%; margin-top: auto; font-family: var(--font-nav);
+        }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; }
+        .footer-brand h3 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--col-primary); margin-bottom: 16px; }
+        .footer-brand p { color: var(--col-body); line-height: 1.6; font-size: 0.95rem; max-width: 300px; }
+        .footer-heading { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--col-accent); margin-bottom: 24px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; }
+        .footer-links a { color: var(--col-body); font-size: 0.95rem; transition: color 0.2s; text-decoration: none; }
+        .footer-links a:hover { color: var(--col-primary); }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; border-top: 1px solid rgba(22, 163, 74, 0.1); font-size: 0.9rem; color: var(--col-body); }
+
+        /* Keyframes & Media */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 1024px) {
+            .glass-nav { padding: 0 30px; }
+            .nav-right { display: none; }
+            .hamburger { display: flex; }
+            .bento-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+            .action-card { grid-column: span 1; min-height: 240px; }
+            .stat-card { grid-column: span 1; }
+            .project-row { grid-template-columns: 1fr; gap: 12px; padding: 24px; }
+            .row-visual { display: none; }
+            .section-header { display: none; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+            .glass-footer { padding: 60px 30px 30px; }
+            .data-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav">
+        <a href="../index.html" class="nav-logo"><span>PRΛN</span></a>
+        
+        <div class="nav-right">
+            <ul class="nav-items">
+                <li><a href="#" class="nav-link active" onclick="App.switch('dashboard')">Dashboard</a></li>
+                <li><a href="#" class="nav-link" onclick="App.switch('projects')">My Projects</a></li>
+            </ul>
+            
+            <div class="nav-profile" onclick="App.switch('profile')" title="View Organization Profile">
+                <div class="avatar" id="navAvatar">O</div>
+                <span class="profile-name" id="navProfileName">Org Name</span>
+            </div>
+        </div>
+
+        <button class="hamburger" aria-label="Menu">
+            <span class="line"></span><span class="line"></span><span class="line"></span>
+        </button>
+    </nav>
+
+    <main class="container">
+        
+        <div id="view-dashboard">
+            <header class="dash-header">
+                <div class="welcome">
+                    <h1 id="welcomeUser">Dashboard Overview</h1>
+                    <p>Track your climate impact and project status.</p>
+                </div>
+            </header>
+
+            <section class="bento-grid">
+                
+                <div class="action-card card-tree" onclick="window.location.href='TP.html'">
+                    <div class="ac-content">
+                        
+                        <h3>Tree Plantation Project</h3>
+                        <p>Initiate reforestation registration for satellite verification and carbon indexing.</p>
+                    </div>
+                    <div class="ac-btn"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+
+                <div class="action-card card-solar" onclick="window.location.href='SP.html'">
+                    <div class="ac-content">
+                        
+                        <h3>Solar Energy Project</h3>
+                        <p>Register renewable energy assets for automated output tracking and credit minting.</p>
+                    </div>
+                    <div class="ac-btn"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background:#F0FDF4; color:#16A34A;"><i class="fa-solid fa-layer-group"></i></div>
+                    </div>
+                    <div>
+                        <div class="stat-val" id="statActive">--</div>
+                        <div class="stat-label">Total Projects</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background:#EFF6FF; color:#2563EB;"><i class="fa-solid fa-spinner"></i></div>
+                    </div>
+                    <div>
+                        <div class="stat-val" id="statVerifying">--</div>
+                        <div class="stat-label">Under Verification</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background:#F0F9FF; color:#0891B2;"><i class="fa-solid fa-circle-check"></i></div>
+                    </div>
+                    <div>
+                        <div class="stat-val" id="statVerified">--</div>
+                        <div class="stat-label">Verified Assets</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon" style="background:#FFFBEB; color:#B45309;"><i class="fa-solid fa-coins"></i></div>
+                    </div>
+                    <div>
+                        <div class="stat-val" id="statCredits">--</div>
+                        <div class="stat-label">Est. Credits</div>
+                    </div>
+                </div>
+
+            </section>
+
+            <section id="projects-section">
+                <div class="section-header">
+                    <div class="section-title">Recent Projects</div>
+                </div>
+                
+                <div id="projects-wrapper" class="projects-wrapper">
+                    </div>
+            </section>
+        </div>
+
+        <div id="view-profile" class="profile-view">
+            <header class="dash-header" style="border:none;">
+                <div class="welcome">
+                    <button onclick="App.switch('dashboard')" style="background:none; border:none; color:var(--text-muted); font-weight:600; cursor:pointer; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                    </button>
+                    <h1>Organization Overview</h1>
+                </div>
+               
+            </header>
+
+            <div class="profile-layout">
+                <div class="compliance-card">
+                    <div class="profile-header-block">
+                        <div>
+                            <h2 id="profOrgName" style="color:var(--col-primary); font-size:1.8rem; margin-bottom:4px; font-family:var(--font-display);">Organization Name</h2>
+                            <p id="profEmail" style="color:var(--text-muted);">admin@org.com</p>
+                        </div>
+                        <div style="text-align:right;">
+                            <label style="display:block; font-size:0.7rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Ledger Identity (Login ID)</label>
+                            <span id="profGenID" class="org-id-badge">BCX-N-RJ-A7K9</span>
+                        </div>
+                    </div>
+
+                    <div class="data-grid">
+                        <div class="data-group">
+                            <label class="data-label">Legal Entity Structure</label>
+                            <div class="data-value" id="profType">Society</div>
+                        </div>
+                        <div class="data-group">
+                            <label class="data-label">Operating State / UT</label>
+                            <div class="data-value" id="profRegion">Rajasthan</div>
+                        </div>
+                        <div class="data-group">
+                            <label class="data-label">Platform Member Since</label>
+                            <div class="data-value" id="profDate">Jan 2025</div>
+                        </div>
+                        <div class="data-group">
+                            <label class="data-label">Local Registration No.</label>
+                            <div class="data-value" id="profRegNo">RJ-XXX-XXX</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:32px; padding-top:24px; border-top:1px solid #F1F5F9;"></div>
+
+                    <h3 style="font-size:1.1rem; color:var(--col-primary); font-weight:700; margin-bottom:20px;">Authorized Signatory</h3>
+                    <div class="data-grid">
+                        <div class="data-group">
+                            <label class="data-label">Full Name</label>
+                            <div class="data-value" id="profAuthName">Name</div>
+                        </div>
+                        <div class="data-group">
+                            <label class="data-label">Designation</label>
+                            <div class="data-value" id="profAuthRole">Director</div>
+                        </div>
+                        <div class="data-group">
+                            <label class="data-label">Contact Email</label>
+                            <div class="data-value" id="profAuthEmail">email@org.com</div>
+                        </div>
+                        <div class="data-group">
+                            <label class="data-label">Contact Mobile</label>
+                            <div class="data-value" id="profAuthPhone">+91 0000000000</div>
+                        </div>
+                    </div>
+
+                    <h3 style="font-size:1.1rem; color:var(--col-primary); font-weight:700; margin:32px 0 20px;">Compliance Documents</h3>
+                    
+                    <div class="doc-item">
+                        <div class="doc-info"><i class="fa-solid fa-file-contract" style="color:#64748B;"></i> Registration Certificate</div>
+                        <div>
+                            <span class="status-badge sb-verified">Verified</span>
+                            <button class="btn-view-doc" onclick="App.viewDoc('Registration Cert')"><i class="fa-regular fa-eye"></i> View</button>
+                        </div>
+                    </div>
+                    
+                    <div class="doc-item">
+                        <div class="doc-info"><i class="fa-solid fa-id-card" style="color:#64748B;"></i> Organization PAN</div>
+                        <div>
+                            <span class="status-badge sb-verified">Verified</span>
+                            <button class="btn-view-doc" onclick="App.viewDoc('Organization PAN')"><i class="fa-regular fa-eye"></i> View</button>
+                        </div>
+                    </div>
+                    
+                    <div class="doc-item">
+                        <div class="doc-info"><i class="fa-solid fa-landmark" style="color:#64748B;"></i> Bank Authorization</div>
+                        <div>
+                            <span class="status-badge sb-pending">Under Review</span>
+                            <button class="btn-view-doc" onclick="App.viewDoc('Bank Auth')"><i class="fa-regular fa-eye"></i> View</button>
+                        </div>
+                    </div>
+
+                    <div class="security-zone">
+                        <button class="btn-outline-neutral">Change Password</button>
+                        <button class="btn-outline-danger" onclick="App.logout()">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="glass-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+            <a href="MainPage.html" class="nav-logo"><span>PRΛN</span></a>
+            <br><br>
+          <p>The world's first transparent, blockchain-verified ecological ledger.</p>
+        </div>
+        
+        <div class="footer-col">
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="#">Register NGO</a></li>
+            <li><a href="#">Buy Credits</a></li>
+            <li><a href="#">Community</a></li>
+            <li><a href="#">Explorer</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Impact Reports</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Compliance</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2025 PRΛN Registry. All rights reserved.</div>
+        <div style="display: flex; gap: 20px;">
+            <a href="#" style="color:var(--col-accent);"><i class="fa-brands fa-twitter fa-lg"></i></a>
+            <a href="#" style="color:var(--col-accent);"><i class="fa-brands fa-linkedin fa-lg"></i></a>
+            <a href="#" style="color:var(--col-accent);"><i class="fa-brands fa-instagram fa-lg"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+        // State Code Mapping (India) for ISO-style codes
+        const STATE_MAP = {
+            "rajasthan": "RJ", "maharashtra": "MH", "karnataka": "KA", "delhi": "DL",
+            "uttar_pradesh": "UP", "gujarat": "GJ", "tamil_nadu": "TN", "west_bengal": "WB",
+            "madhya_pradesh": "MP", "bihar": "BR", "andhra_pradesh": "AP", "telangana": "TG",
+            "kerala": "KL", "punjab": "PB", "haryana": "HR", "assam": "AS", "odisha": "OD",
+            "jharkhand": "JH", "chhattisgarh": "CG", "uttarakhand": "UK", "himachal_pradesh": "HP",
+            "tripura": "TR", "meghalaya": "ML", "manipur": "MN", "nagaland": "NL",
+            "goa": "GA", "arunachal_pradesh": "AR", "mizoram": "MZ", "sikkim": "SK",
+            "chandigarh": "CH", "puducherry": "PY", "ladakh": "LA", "jammu_kashmir": "JK"
+        };
+
+        const ENTITY_MAP = {
+            'society': 'N', 'trust': 'N', 'section8': 'N', 'ngo': 'N', // NGO
+            'muni': 'M', 'panchayat': 'M', // Municipal
+            'edu': 'E', // Education
+            'corp': 'B', // Corporate Buyer
+            'comm': 'C' // Community
+        };
+
+        const App = {
+            user: null,
+
+            init() {
+                // 1. Auth Check
+                const session = localStorage.getItem('blueCredUser');
+                if (!session) {
+                    window.location.href = 'NGOregister.html';
+                    return;
+                }
+                this.user = JSON.parse(session);
+
+                // 2. Generate/Retrieve Standardized ID (BCX-ENTITY-STATE-HASH)
+                if(!this.user.ledgerID || !this.user.ledgerID.startsWith('BCX')) {
+                    this.user.ledgerID = this.generateEntityID(this.user);
+                    localStorage.setItem('blueCredUser', JSON.stringify(this.user));
+                }
+
+                // 3. Populate Navbar & Dashboard
+                this.safeText('navProfileName', this.user.name);
+                this.safeText('welcomeUser', `Welcome, ${this.user.name}`);
+                
+                // Dynamic Avatar (First Letter)
+                const initial = (this.user.name && this.user.name.length > 0) ? this.user.name.charAt(0).toUpperCase() : 'O';
+                document.getElementById('navAvatar').innerText = initial;
+
+                // 4. Populate Organization Console (Profile View)
+                this.renderOrgProfile();
+
+                // 5. Render Projects & Stats
+                this.renderProjects();
+                this.calculateStats();
+                
+                // Mobile Nav Setup
+                this.setupMobileNav();
+            },
+
+            // Format "Platform Member Since" date
+            formatJoinDate(dateString) {
+                if (!dateString) return 'Pending';
+                try {
+                    const d = new Date(dateString);
+                    if (isNaN(d.getTime())) return dateString; // Fallback if invalid
+                    
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const month = months[d.getMonth()];
+                    const year = d.getFullYear();
+                    
+                    return `${day} ${month} ${year}`;
+                } catch (e) {
+                    return dateString;
+                }
+            },
+
+            // --- NEW: SECURE ID GENERATION (BCX FORMAT) ---
+            generateEntityID(user) {
+                // Entity Code
+                let rawType = (user.type || 'ngo').toLowerCase();
+                // Handle complex types from form like "section8" or "trust"
+                let entityCode = 'N'; // Default NGO
+                Object.keys(ENTITY_MAP).forEach(key => {
+                    if(rawType.includes(key)) entityCode = ENTITY_MAP[key];
+                });
+
+                // State Code
+                const rawState = (user.state || 'IN').toLowerCase();
+                const stateCode = STATE_MAP[rawState] || 'IN';
+                
+                // Secure Hash (4 chars, simple random for demo)
+                const hash = Math.random().toString(36).substring(2, 6).toUpperCase();
+
+                // Format: BCX-N-RJ-A7K9
+                return `BCX-${entityCode}-${stateCode}-${hash}`;
+            },
+
+            safeText(id, text) {
+                const el = document.getElementById(id);
+                if(el) el.innerText = text;
+            },
+
+            renderOrgProfile() {
+                // Identity
+                this.safeText('profOrgName', this.user.name);
+                this.safeText('profEmail', this.user.email);
+                this.safeText('profGenID', this.user.ledgerID);
+                
+                // Metadata - Source of Truth
+                const strType = this.user.type || 'Non-Profit';
+                this.safeText('profType', strType.charAt(0).toUpperCase() + strType.slice(1));
+                
+                let cleanState = (this.user.state || 'India').replace(/_/g, ' ');
+                cleanState = cleanState.replace(/\b\w/g, l => l.toUpperCase());
+                this.safeText('profRegion', cleanState);
+
+                this.safeText('profDate', this.formatJoinDate(this.user.joined));
+                this.safeText('profRegNo', this.user.id || 'Pending');
+
+                // Signatory - Full Details
+                this.safeText('profAuthName', this.user.person || 'Not Listed');
+                this.safeText('profAuthRole', this.user.designation || 'Authorized Signatory');
+                this.safeText('profAuthEmail', this.user.authEmail || this.user.email); 
+                this.safeText('profAuthPhone', this.user.authPhone || this.user.phone);
+            },
+
+            viewDoc(docName) {
+                alert(`Opening secure preview for: ${docName}\n\n[In production, this opens a pre-signed URL modal]`);
+            },
+
+            // --- NEW: REAL-TIME STAT CALCULATION ---
+            calculateStats() {
+                const storedProjects = JSON.parse(localStorage.getItem('blueCredProjects') || '[]');
+                
+                // 1. Total Projects (Non-Archived)
+                const total = storedProjects.length;
+                
+                // 2. Under Verification (Submitted or Under Review)
+                const verifying = storedProjects.filter(p => 
+                    p.status === 'Submitted' || p.status === 'Under Verification'
+                ).length;
+                
+                // 3. Verified Assets
+                const verified = storedProjects.filter(p => p.status === 'Verified').length;
+                
+                // 4. Credits Generated (Calculated Simulation)
+                // If 'credits' field exists, sum it. Else, estimate based on Verified projects.
+                let credits = 0;
+                storedProjects.forEach(p => {
+                    if (p.status === 'Verified') {
+                        // If project has explicit credits, use it, else generic multiplier
+                        credits += (p.credits ? parseInt(p.credits) : 500); 
+                    }
+                });
+
+                // Update DOM
+                this.safeText('statActive', total);
+                this.safeText('statVerifying', verifying);
+                this.safeText('statVerified', verified);
+                this.safeText('statCredits', credits > 0 ? credits.toLocaleString() : '0');
+            },
+
+            openProject(id) {
+                // 1. Save ID to State
+                localStorage.setItem('activeProjectId', id);
+                // 2. Redirect
+                window.location.href = 'RP.html';
+            },
+
+            renderProjects() {
+                const container = document.getElementById('projects-wrapper');
+                const storedProjects = JSON.parse(localStorage.getItem('blueCredProjects') || '[]');
+                
+                if (storedProjects.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fa-solid fa-folder-open" style="font-size:3rem; color:#CBD5E1; margin-bottom:20px;"></i>
+                            <h3 style="margin-bottom:8px; color:var(--col-primary); font-family:'Space Grotesk'; font-size:1.5rem;">No projects yet</h3>
+                            <p style="color:var(--text-muted);">Get started by uploading your first project above.</p>
+                            <button class="btn-cta" onclick="window.location.href='TP.html'">Upload First Project</button>
+                        </div>`;
+                    return;
+                }
+
+                container.innerHTML = storedProjects.map(p => {
+                    const isTree = p.type && p.type.includes('Tree');
+                    const icon = isTree ? 'fa-tree' : 'fa-solar-panel';
+                    const visClass = isTree ? 'vis-tree' : 'vis-solar';
+                    
+                    let statusClass = 'sb-draft';
+                    if (p.status === 'Verified') statusClass = 'sb-verified';
+                    else if (p.status === 'Submitted' || p.status === 'Under Verification') statusClass = 'sb-pending';
+
+                    // Strict Columns: Icon | Name | ID | Type | Date | Status | Action
+                    return `
+                    <div class="project-row" onclick="App.openProject('${p.id}')">
+                        <div class="row-visual ${visClass}">
+                            <i class="fa-solid ${icon}"></i>
+                        </div>
+                        <div class="row-text-primary">
+                            ${p.name}
+                        </div>
+                        <div class="row-text-secondary">
+                            ${p.id}
+                        </div>
+                        <div class="row-text-meta">
+                             ${p.type}
+                        </div>
+                        <div class="row-text-meta">
+                             ${p.date}
+                        </div>
+                        <div>
+                            <span class="status-badge ${statusClass}">
+                                <div class="sb-dot"></div> ${p.status}
+                            </span>
+                        </div>
+                        <div style="text-align:right;">
+                            <button class="btn-arrow"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>`;
+                }).join('');
+            },
+
+            switch(view) {
+                const dash = document.getElementById('view-dashboard');
+                const profile = document.getElementById('view-profile');
+                const links = document.querySelectorAll('.nav-link');
+
+                links.forEach(l => l.classList.remove('active'));
+
+                if(view === 'dashboard' || view === 'projects') {
+                    dash.style.display = 'block';
+                    profile.style.display = 'none';
+                    
+                    if(view === 'projects') {
+                        document.getElementById('projects-section').scrollIntoView({behavior:'smooth'});
+                        if(links[1]) links[1].classList.add('active');
+                    } else {
+                        if(links[0]) links[0].classList.add('active');
+                    }
+                } else if(view === 'profile') {
+                    dash.style.display = 'none';
+                    profile.style.display = 'block';
+                }
+            },
+
+            logout() {
+                if(confirm('Securely sign out of PRΛN Console?')) {
+                    localStorage.removeItem('blueCredUser');
+                    window.location.href = 'NGOregister.html';
+                }
+            },
+
+            setupMobileNav() {
+                const hamburger = document.querySelector('.hamburger');
+                const navRight = document.querySelector('.nav-right');
+                if (hamburger) {
+                    hamburger.addEventListener('click', () => {
+                        hamburger.classList.toggle('active');
+                        if(navRight.style.maxHeight) {
+                            navRight.style.maxHeight = null;
+                            navRight.style.opacity = 0;
+                        } else {
+                            navRight.style.display = 'flex';
+                            navRight.style.position = 'fixed';
+                            navRight.style.top = '80px';
+                            navRight.style.left = '0';
+                            navRight.style.width = '100%';
+                            navRight.style.background = 'white';
+                            navRight.style.flexDirection = 'column';
+                            navRight.style.padding = '40px';
+                            navRight.style.maxHeight = '400px';
+                            navRight.style.opacity = 1;
+                        }
+                    });
+                }
+            }
+        };
+
+        App.init();
+    </script>
+   <script>
+document.addEventListener("keydown", function(e) {
+    // Check if Ctrl key (or Meta key on Mac) is pressed along with 'u' (keyCode 85)
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 117)) {
+        e.preventDefault(); // Prevents the view source action
+        // alert("View source is disabled."); // Optional: alert user
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>PRΛN | Upload Solar Protocol (Registry Grade)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ====================================================================
+           1. SHARED DESIGN SYSTEM
+           ==================================================================== */
+        :root {
+            --col-primary: #14532D;      
+            --col-accent: #16A34A;       
+            --col-accent-hover: #15803D;
+            --col-surface: #F0FDF4;      
+            
+            --text-main: #022C22;
+            --text-body: #374151;
+            --text-muted: #64748B;
+            
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-blur: blur(20px);
+            --shadow-float: 0 20px 40px -10px rgba(20, 83, 45, 0.08);
+            
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-sm: 8px;
+            --nav-height: 80px;
+            --transition: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* --- RESET & BASE --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #F8FAFC;
+            color: var(--text-body);
+            min-height: 100vh;
+            padding-top: var(--nav-height);
+            display: flex; flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- VIDEO BACKGROUND --- */
+        .bg-video-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .bg-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(0) brightness(0.9) contrast(0.9);
+            transform: scale(1.1);
+        }
+
+        /* --- NAVBAR --- */
+        .glass-nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid rgba(22, 163, 74, 0.15); z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 60px;
+        }
+        .nav-logo {
+            font-family: 'Space Grotesk', sans-serif; font-size: 1.75rem; font-weight: 700;
+            color: var(--col-primary); display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .nav-logo span { color: var(--col-accent); }
+        .nav-logo::after { content: ''; width: 8px; height: 8px; background: var(--col-accent); border-radius: 50%; }
+        .nav-right { display: flex; align-items: center; gap: 40px; }
+        .nav-link { font-weight: 500; color: var(--text-body); text-decoration: none; transition: 0.3s; }
+        .user-pill {
+            display: flex; align-items: center; gap: 10px; padding: 8px 16px;
+            background: rgba(22, 163, 74, 0.1); border-radius: 50px; color: var(--col-primary); font-weight: 600; font-size: 0.9rem;
+        }
+        .user-avatar { width: 28px; height: 28px; background: var(--col-accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; }
+        
+        /* --- LAYOUT --- */
+        .app-shell {
+            max-width: 1400px; margin: 0 auto; padding: 40px 20px;
+            display: grid; grid-template-columns: 320px 1fr; gap: 40px;
+            position: relative; z-index: 2; flex: 1; transition: all 0.5s ease;
+        }
+        .app-shell.full-width { grid-template-columns: 1fr; max-width: 1000px; }
+
+        .sidebar-sticky { position: sticky; top: 120px; display: flex; flex-direction: column; gap: 30px; transition: opacity 0.5s ease; }
+        .progress-card {
+            background: var(--glass-bg); backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
+            padding: 30px; box-shadow: var(--shadow-float);
+        }
+        
+        /* --- STEPPER --- */
+        .stepper { display: flex; flex-direction: column; gap: 0; position: relative; }
+        .stepper::before {
+            content: ''; position: absolute; left: 14px; top: 15px; bottom: 15px; width: 2px;
+            background: rgba(22, 163, 74, 0.15); z-index: 0;
+        }
+        .step-node {
+            display: flex; align-items: center; gap: 16px; padding: 12px 0;
+            position: relative; z-index: 1; opacity: 0.5; transition: 0.3s;
+        }
+        .step-node.active { opacity: 1; }
+        .step-node.completed { opacity: 1; }
+        .step-marker {
+            width: 30px; height: 30px; border-radius: 50%; background: #F8FAFC; border: 2px solid #E2E8F0;
+            display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700;
+            transition: 0.4s var(--transition);
+        }
+        .step-node.active .step-marker {
+            background: var(--col-accent); border-color: var(--col-accent); color: white;
+            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2); transform: scale(1.1);
+        }
+        .step-node.completed .step-marker {
+            background: var(--col-primary); border-color: var(--col-primary); color: white; content: '✓';
+        }
+        .step-label { font-weight: 600; font-size: 0.95rem; }
+
+        /* --- WIDGET (SOLAR THEMED) --- */
+        .live-impact-widget {
+            background: linear-gradient(145deg, #1E3A8A 0%, #1E40AF 100%);
+            border-radius: var(--radius-lg); padding: 25px; color: white;
+            position: relative; overflow: hidden;
+        }
+        .live-impact-widget::before {
+            content: ''; position: absolute; top: -50px; right: -50px; width: 100px; height: 100px;
+            background: #60A5FA; filter: blur(60px); opacity: 0.5;
+        }
+        .widget-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.8; margin-bottom: 15px; }
+        .widget-metric { margin-bottom: 15px; }
+        .metric-val { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 700; line-height: 1; display: block; }
+        .metric-lbl { font-size: 0.8rem; opacity: 0.8; }
+        .live-badge { 
+            display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; 
+            background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 0.7rem; margin-top: 10px;
+        }
+        .pulse-dot { width: 6px; height: 6px; background: #93C5FD; border-radius: 50%; animation: pulse 2s infinite; }
+        
+        /* --- FORM --- */
+        .form-canvas {
+            background: #ffffff; border-radius: var(--radius-xl); box-shadow: var(--shadow-float);
+            padding: 50px 60px; min-height: 700px; position: relative; display: flex; flex-direction: column;
+            scroll-margin-top: 100px;
+        }
+        .form-header { margin-bottom: 40px; border-bottom: 1px solid #F1F5F9; padding-bottom: 20px; }
+        .form-title { font-family: 'Space Grotesk'; font-size: 2.5rem; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.02em; }
+        .form-sub { color: var(--text-muted); font-size: 1.1rem; }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .full-span { grid-column: span 2; }
+        .field { display: flex; flex-direction: column; gap: 8px; position: relative; }
+        .field-wrapper { display: flex; flex-direction: column; gap: 8px; width: 100%;}
+        label { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        .req { color: #EF4444; margin-left: 2px; }
+        input, select, textarea {
+            width: 100%; padding: 14px 16px; border-radius: 12px;
+            border: 1px solid #E2E8F0; background: #F8FAFC;
+            font-family: 'Manrope'; font-size: 1rem; color: var(--text-main); transition: 0.2s;
+            appearance: none; -webkit-appearance: none;
+        }
+        input:focus, select:focus, textarea:focus {
+            background: #FFFFFF; border-color: var(--col-accent); box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+        }
+        input.invalid, select.invalid, textarea.invalid {
+            border-color: #EF4444; background: #FEF2F2;
+        }
+        .card-select-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px;}
+        .selector-option {
+            border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px;
+            text-align: center; cursor: pointer; transition: 0.2s; background: #FFFFFF;
+            font-weight: 600; color: var(--text-muted); font-size: 0.95rem;
+        }
+        .selector-option:hover { transform: translateY(-2px); border-color: var(--col-accent); }
+        .selector-option.selected {
+            background: #F0FDF4; border-color: var(--col-accent); color: var(--col-primary);
+        }
+        .form-footer {
+            margin-top: auto; padding-top: 40px; border-top: 1px solid #F1F5F9;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .btn {
+            padding: 16px 32px; border-radius: 50px; font-weight: 700; cursor: pointer; border: none; font-size: 1rem;
+            transition: 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-ghost { background: transparent; color: var(--text-muted); }
+        .btn-ghost:hover { background: #F1F5F9; color: var(--text-main); }
+        .btn-primary {
+            background: var(--col-primary); color: white;
+            box-shadow: 0 10px 20px -5px rgba(20, 83, 45, 0.3);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: var(--col-accent); transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(22, 163, 74, 0.4);
+        }
+        .btn-primary:disabled { background: #94A3B8; cursor: not-allowed; box-shadow: none; transform: none; }
+        
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* --- SCIENTIFIC CARDS & COMPONENTS --- */
+        .scientific-card {
+            background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; margin-bottom: 32px;
+            box-shadow: 0 4px 20px -5px rgba(0,0,0,0.03); overflow: hidden; display: flex; flex-direction: column;
+        }
+        .sc-header {
+            padding: 16px 24px; background: linear-gradient(to right, #F0FDF4, #FFFFFF);
+            border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;
+        }
+        .sc-title { font-weight: 700; color: var(--col-primary); font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+        .sc-subtitle { font-size: 0.8rem; color: var(--text-muted); }
+        .sc-body { padding: 20px; background: #FCFCFD; }
+
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 16px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; margin-bottom: 12px; gap: 16px;}
+        .toggle-label { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0;}
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #CBD5E1; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--col-accent); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .validation-alert { background: #FEF2F2; border: 1px solid #FECACA; color: #DC2626; padding: 16px; border-radius: 12px; margin-bottom: 24px; font-size: 0.9rem; font-weight: 600; display: none; }
+        
+        /* --- REVIEW COMPONENTS --- */
+        .review-section { margin-bottom: 32px; }
+        .review-section h3 { font-family: 'Space Grotesk'; font-size: 1.2rem; color: var(--col-primary); margin-bottom: 16px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px; }
+        .review-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.95rem; }
+        .review-item { display: flex; flex-direction: column; gap: 4px; }
+        .review-lbl { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+        .review-val { font-weight: 500; color: var(--text-main); word-break: break-word;}
+        .checklist-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+        .check-pass { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+        .check-fail { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+        .consent-label { display: flex; gap: 16px; align-items: center; cursor: pointer; padding: 16px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; transition: 0.2s; }
+        .consent-label:hover { border-color: var(--col-accent); background: #F0FDF4; }
+
+        /* --- EVIDENCE UPLOAD & GALLERY --- */
+        .evidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .doc-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+        
+        .file-dropzone {
+            border: 2px dashed #D1D5DB; border-radius: 16px; padding: 24px; text-align: center;
+            transition: 0.3s; background: rgba(249, 250, 251, 0.5); cursor: pointer;
+            position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .file-dropzone:hover { background: #ECFDF5; border-color: var(--col-accent); }
+        .file-dropzone input { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+        
+        .zone-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; color: var(--col-accent); }
+        .zone-text { font-size: 0.85rem; color: var(--text-body); font-weight: 600; line-height: 1.3;}
+        .zone-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: block; }
+        .file-pill {
+            display: inline-flex; align-items: center; gap: 8px; background: #D1FAE5; color: var(--col-primary);
+            padding: 6px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; margin-top: 12px;
+            z-index: 2; position: relative; max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+        }
+        .remove-file { cursor: pointer; color: #EF4444; margin-left: auto; transition:0.2s; padding-left: 4px;}
+        .remove-file:hover { color: #DC2626; transform:scale(1.2); }
+
+        .gallery-nav-btn {
+            position: absolute;
+            top: calc(50% - 20px);
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid #E2E8F0;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            color: var(--col-primary);
+            transition: 0.2s;
+            z-index: 10;
+        }
+        .gallery-nav-btn:hover { background: #FFFFFF; transform: scale(1.1); color: var(--col-accent); }
+        .gallery-nav-btn.left { left: 16px; }
+        .gallery-nav-btn.right { right: 16px; }
+        
+        .gallery-preview-wrapper {
+            width: 100%; height: 350px; 
+            border-radius: 12px; 
+            background: #F8FAFC; 
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+            border: 1px solid #E2E8F0;
+        }
+
+        .btn-gallery-add {
+            border: 2px solid var(--col-accent);
+            color: var(--col-primary);
+            background: #FFFFFF;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.1);
+        }
+        .btn-gallery-add:hover {
+            background: #F0FDF4;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px -1px rgba(22, 163, 74, 0.15);
+        }
+
+        .btn-gallery-remove {
+            color: #EF4444;
+            background: #FEF2F2;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #FECACA;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        .btn-gallery-remove:hover {
+            background: #FEE2E2;
+            color: #DC2626;
+            border-color: #FCA5A5;
+            transform: translateY(-2px);
+        }
+
+        .gallery-controls-wrapper {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .gallery-info-note {
+            background: #F0FDF4;
+            border: 1px solid #BBF7D0;
+            color: var(--col-primary);
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 4px rgba(22, 163, 74, 0.05);
+        }
+        .gallery-info-note i {
+            margin-top: 3px;
+            color: var(--col-accent);
+            font-size: 1.1rem;
+        }
+
+        /* --- FOOTER --- */
+        .glass-footer {
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px); border-top: 1px solid var(--glass-border);
+            padding: 80px 60px 40px; position: relative; z-index: 20; width: 100%; margin-top: auto;
+        }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; }
+        .footer-heading { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--col-accent); margin-bottom: 24px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .footer-links a { color: var(--text-body); font-size: 0.95rem; transition: color 0.2s; text-decoration: none; }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; border-top: 1px solid rgba(22, 163, 74, 0.1); font-size: 0.9rem; color: var(--text-body); flex-wrap: wrap; gap: 16px;}
+        
+        /* --- RESPONSIVE POLISH --- */
+        @media(max-width: 1024px) {
+            .app-shell { grid-template-columns: 1fr; padding: 20px; }
+            .sidebar-sticky { display: none; }
+            .doc-grid { grid-template-columns: 1fr 1fr; }
+            .glass-nav { padding: 0 30px; }
+            .glass-footer { padding: 60px 30px 30px; }
+        }
+
+        @media(max-width: 768px) {
+            .input-row { grid-template-columns: 1fr; gap: 16px; }
+            .evidence-grid { grid-template-columns: 1fr; }
+            .doc-grid { grid-template-columns: 1fr; }
+            .review-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+            .form-canvas { padding: 40px 24px; min-height: auto; }
+            .form-title { font-size: 2rem; }
+            .gallery-preview-wrapper { height: 280px; }
+        }
+
+        @media(max-width: 576px) {
+            .glass-nav { padding: 0 16px; }
+            .nav-right { gap: 16px; }
+            .nav-link { display: none; }
+            .form-canvas { padding: 30px 16px; border-radius: 16px; }
+            .gallery-controls-wrapper { flex-direction: column-reverse; align-items: stretch; text-align: center; }
+            .gallery-controls-wrapper > div { display: flex; justify-content: space-between; align-items: center; }
+            .btn-gallery-add, .btn-gallery-remove { width: 100%; justify-content: center; }
+            .form-footer { flex-direction: column-reverse; gap: 16px; }
+            .form-footer .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-video-container">
+        <video autoplay muted loop playsinline class="bg-video">
+            <source src="9.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <nav class="glass-nav">
+        <a href="../../index.html" class="nav-logo"><span>PRΛN</span></a>
+        <div class="nav-right">
+            <a href="dashngo.html" class="nav-link">Dashboard</a>
+            <a href="dashngo.html" class="nav-link">Projects</a>
+            <div class="user-pill">
+                <div class="user-avatar">GE</div>
+                GreenEarth NGO
+            </div>
+        </div>
+    </nav>
+
+    <main class="app-shell">
+        
+        <aside class="sidebar-sticky">
+            <div class="progress-card">
+                <div style="font-family:'Space Grotesk'; font-weight:700; color:var(--col-primary); margin-bottom:20px; text-transform:uppercase; letter-spacing:1px; font-size:0.8rem;">Protocol Steps</div>
+                <div class="stepper" id="stepperNav"></div>
+            </div>
+
+            <div class="live-impact-widget">
+                <div class="widget-title">Live Estimates</div>
+                <div class="widget-metric">
+                    <span class="metric-val" id="dispImpact">0</span>
+                    <span class="metric-lbl">Tons CO₂e / Year</span>
+                </div>
+                <div class="widget-metric">
+                    <span class="metric-val" id="dispGen">0</span>
+                    <span class="metric-lbl">Est. Annual MWh</span>
+                </div>
+                <div class="live-badge"><div class="pulse-dot"></div> Solar Model Active</div>
+            </div>
+        </aside>
+
+        <section class="form-canvas" id="mainFormCanvas">
+            <div id="validationAlert" class="validation-alert">
+                <i class="fa-solid fa-triangle-exclamation"></i> <span id="alertMsg">Please complete all mandatory fields.</span>
+            </div>
+
+            <form id="projectForm" onsubmit="return false;">
+                
+                <div id="stepContainer" class="fade-in"></div>
+
+                <div class="form-footer">
+                    <button type="button" class="btn btn-ghost" id="btnPrev" onclick="App.prev()">Back</button>
+                    <button type="button" class="btn btn-primary" id="btnNext" onclick="App.next()">Save & Continue</button>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+
+    <footer class="glass-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+            <a href="../../index.html" class="nav-logo"><span>PRΛN</span></a>
+            <br><br>
+          <p style="color:var(--text-muted); line-height:1.6; font-size:0.95rem; max-width:300px;">
+            The world's first transparent, blockchain-verified ecological ledger. 
+            Connecting capital to ground-truth data.
+          </p>
+        </div>
+        
+        <div class="footer-col">
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="#">Register NGO</a></li>
+            <li><a href="#">Buy Credits</a></li>
+            <li><a href="#">Explorer</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Impact Reports</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Compliance</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>&copy; 2025 PRΛN Registry. All rights reserved.</div>
+        <div>
+           <span style="opacity:0.6;">v3.6.0 Solar Release (Registry Grade)</span>
+        </div>
+      </div>
+    </footer>
+
+  <script>
+    /**
+     * PRΛN Solar Protocol Engine v3.6 (Registry Grade)
+     */
+    const App = {
+        // TESTING MODE FLAG: Set to true to bypass strict validation blocking during dev/testing.
+        TESTING_MODE: true,
+
+        state: {
+            step: 1,
+            galleryIndex: 0,
+            data: {
+                identity: {
+                    projectName: "",
+                    projectType: "Solar Project",
+                    activityType: "",
+                    status: "Planned",
+                    developerOrg: "",
+                    contactName: "",
+                    contactEmail: "",
+                    contactPhone: "",
+                    contactAddress: "",
+                    startDate: "",
+                    commissioningDate: "",
+                    creditingStart: "",
+                    creditingEnd: "",
+                    lifetime: 25,
+                    objective: "",
+                    funding: "",
+                    impactNote: "",
+                    ppa: ""
+                },
+                location: {
+                    country: "India",
+                    state: "",
+                    district: "",
+                    city: "",
+                    pin: "",
+                    address: "",
+                    latitude: "",
+                    longitude: "",
+                    installType: "Rooftop Solar",
+                    landArea: "",
+                    roofArea: "",
+                    ownership: "",
+                    category: "",
+                    discom: "",
+                    gridConn: "Grid-Connected",
+                    boundary: "",
+                    shadowNote: "",
+                    reqNetMeter: false,
+                    reqInspector: false,
+                    reqLease: false,
+                    reqOpenAccess: false
+                },
+                technical: {
+                    capacityMW: "",
+                    capacityKW: "",
+                    dcCap: "",
+                    acCap: "",
+                    panels: "",
+                    modWattage: "",
+                    modMfg: "",
+                    modModel: "",
+                    techType: "Monocrystalline",
+                    invMfg: "",
+                    invModel: "",
+                    invType: "String",
+                    inverters: "",
+                    mounting: "",
+                    tilt: "",
+                    azimuth: "",
+                    hasBattery: false,
+                    batteryCap: "",
+                    annualGenMWh: "",
+                    annualGenKWh: "",
+                    genSource: "",
+                    baselineEF: 0.82,
+                    baselineEFUnit: "tCO2/MWh",
+                    netMeterEnabled: "Yes",
+                    meterId: "",
+                    specYield: "",
+                    cuf: "",
+                    pr: "",
+                    degradation: "",
+                    omPlan: ""
+                },
+                files: {
+                    visual: { wide: null, panel: null, inverter: null, site: null, nameplate: null, grid: null, projectGallery: [] },
+                    docs: {
+                        draftPdd: null, finalPdd: null, monitoringPlan: null, emissionCalc: null,
+                        smartMeter: null, dpr: null, sld: null, layout: null, modData: null, invData: null,
+                        commCert: null, netMeterApp: null, elecBill: null, consent: null, epc: null,
+                        genEst: null, installRep: null, omPlanDoc: null, 
+                        ceig: null, discomApp: null, openAccess: null, batteryDoc: null, structural: null, leaseDoc: null
+                    }
+                }
+            }
+        },
+        
+        user: null,
+
+        steps: [
+            { id: 1, label: "Project Identity" },
+            { id: 2, label: "Location & Site" },
+            { id: 3, label: "Technical Configuration" },
+            { id: 4, label: "Digital Evidence" },
+            { id: 5, label: "Review & Mint" }
+        ],
+
+        init() {
+            const session = localStorage.getItem('blueCredUser');
+            this.user = session ? JSON.parse(session) : { name: "Demo User" };
+            this.renderStepper();
+            this.renderForm();
+            this.updateSidebar();
+        },
+
+        // --- NAVIGATION & VALIDATION ---
+        next() {
+            // Run validation check (to surface alerts or asterisks if needed)
+            const isValid = this.validateCurrentStep();
+
+            // TESTING MODE: validation enforcement temporarily disabled
+            if (!this.TESTING_MODE && !isValid) {
+                 return; // Block navigation in production
+            }
+
+            if (this.state.step < 5) {
+                const btn = document.getElementById('btnNext');
+                btn.innerHTML = 'Saving...';
+                
+                setTimeout(() => {
+                    this.state.step++;
+                    this.renderStepper();
+                    this.renderForm();
+                    this.scrollToStepTop();
+                }, 300);
+            } else {
+                this.submit();
+            }
+        },
+
+        prev() {
+            if (this.state.step > 1) {
+                this.state.step--;
+                this.renderStepper();
+                this.renderForm();
+                this.scrollToStepTop();
+            }
+        },
+
+        scrollToStepTop() {
+            const formCanvas = document.getElementById('mainFormCanvas');
+            if (formCanvas) {
+                const y = formCanvas.getBoundingClientRect().top + window.scrollY - 100; // offset for fixed nav
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        },
+
+        showAlert(msg) {
+            const alert = document.getElementById('validationAlert');
+            document.getElementById('alertMsg').innerText = msg;
+            alert.style.display = 'block';
+            this.scrollToStepTop();
+        },
+
+        hideAlert() {
+            document.getElementById('validationAlert').style.display = 'none';
+        },
+
+        validateCurrentStep() {
+            this.hideAlert();
+            const d = this.state.data;
+            let isValid = true;
+            let missing = [];
+
+            const check = (val, name) => {
+                if (!val || val.toString().trim() === '') {
+                    isValid = false;
+                    missing.push(name);
+                }
+            };
+
+            if (this.state.step === 1) {
+                check(d.identity.projectName, "Project Name");
+                check(d.identity.activityType, "Solar Activity Type");
+                check(d.identity.developerOrg, "Developer Organization");
+                check(d.identity.contactName, "Contact Person");
+                check(d.identity.startDate, "Project Start Date");
+            } 
+            else if (this.state.step === 2) {
+                check(d.location.installType, "Installation Type");
+                check(d.location.latitude, "Latitude");
+                check(d.location.longitude, "Longitude");
+                check(d.location.pin, "PIN Code");
+            }
+            else if (this.state.step === 3) {
+                check(d.technical.capacityKW, "Installed Capacity (kW)");
+                check(d.technical.annualGenMWh, "Annual Generation (MWh)");
+                check(d.technical.baselineEF, "Baseline Emission Factor");
+            }
+            else if (this.state.step === 4) {
+                const reqDocs = this.getRequiredDocuments();
+                // Visuals (Soft enforcement)
+                if (!d.files.visual.wide) missing.push("Installation Wide Shot");
+                if (!d.files.visual.inverter) missing.push("Inverter / Meter Photo");
+                
+                reqDocs.forEach(doc => {
+                    if (!d.files.docs[doc.key]) missing.push(doc.label);
+                });
+                
+                if (missing.length > 0) isValid = false;
+            }
+
+            if (!isValid && !this.TESTING_MODE) {
+                this.showAlert(`Please resolve the following: ${missing.join(', ')}`);
+            }
+            return isValid;
+        },
+
+        getRequiredDocuments() {
+            const loc = this.state.data.location;
+            const tech = this.state.data.technical;
+            
+            let docs = [
+                { key: 'dpr', label: 'Detailed Project Report (DPR)' },
+                { key: 'sld', label: 'Single Line Diagram (SLD)' },
+                { key: 'commCert', label: 'Commissioning Certificate' },
+                { key: 'genEst', label: 'Generation Estimate Sheet' }
+            ];
+
+            if (loc.reqNetMeter) docs.push({ key: 'netMeterApp', label: 'Net Metering Approval' });
+            if (loc.reqInspector) docs.push({ key: 'ceig', label: 'CEIG/Electrical Inspector Approval' });
+            if (loc.reqLease) docs.push({ key: 'leaseDoc', label: 'Land Lease Documents' });
+            if (loc.reqOpenAccess) docs.push({ key: 'openAccess', label: 'Open Access Approval' });
+            if (tech.hasBattery) docs.push({ key: 'batteryDoc', label: 'Battery System Docs' });
+            if (loc.installType === 'Rooftop Solar') docs.push({ key: 'structural', label: 'Structural Stability Certificate' });
+
+            return docs;
+        },
+
+        // --- STATE BINDING HELPER ---
+        bind(path, value) {
+            const keys = path.split('.');
+            let current = this.state.data;
+            for (let i = 0; i < keys.length - 1; i++) current = current[keys[i]];
+            current[keys[keys.length - 1]] = value;
+        },
+
+        // --- CALCULATION HANDLERS ---
+        handleCapacityChange(val, unit) {
+            let kw = 0; let mw = 0;
+            if(unit === 'kw') {
+                kw = parseFloat(val) || 0;
+                mw = kw / 1000;
+                this.state.data.technical.capacityKW = kw || '';
+                this.state.data.technical.capacityMW = mw || '';
+            } else {
+                mw = parseFloat(val) || 0;
+                kw = mw * 1000;
+                this.state.data.technical.capacityMW = mw || '';
+                this.state.data.technical.capacityKW = kw || '';
+            }
+            
+            // Auto-estimate generation if blank
+            if(!this.state.data.technical.annualGenMWh && kw > 0) {
+                this.state.data.technical.annualGenMWh = (kw * 1.45).toFixed(2);
+                this.state.data.technical.annualGenKWh = (kw * 1450).toFixed(0);
+            }
+            this.updateSidebar();
+        },
+
+        handleGenChange(val, unit) {
+            let kwh = 0; let mwh = 0;
+            if(unit === 'mwh') {
+                mwh = parseFloat(val) || 0;
+                kwh = mwh * 1000;
+                this.state.data.technical.annualGenMWh = mwh || '';
+                this.state.data.technical.annualGenKWh = kwh || '';
+            } else {
+                kwh = parseFloat(val) || 0;
+                mwh = kwh / 1000;
+                this.state.data.technical.annualGenKWh = kwh || '';
+                this.state.data.technical.annualGenMWh = mwh || '';
+            }
+            this.updateSidebar();
+        },
+
+        updateSidebar() {
+            const mwh = parseFloat(this.state.data.technical.annualGenMWh) || 0;
+            const ef = parseFloat(this.state.data.technical.baselineEF) || 0.82;
+            const estCo2 = (mwh * ef).toFixed(1);
+
+            const elImp = document.getElementById('dispImpact');
+            const elGen = document.getElementById('dispGen');
+            
+            if(elImp) elImp.innerText = estCo2;
+            if(elGen) elGen.innerText = mwh.toFixed(1);
+        },
+
+        // --- RENDERING ---
+        renderStepper() {
+            const nav = document.getElementById('stepperNav');
+            nav.innerHTML = this.steps.map(s => `
+                <div class="step-node ${s.id === this.state.step ? 'active' : ''} ${s.id < this.state.step ? 'completed' : ''}">
+                    <div class="step-marker">${s.id < this.state.step ? '✓' : s.id}</div>
+                    <span class="step-label">${s.label}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('btnPrev').style.visibility = this.state.step === 1 ? 'hidden' : 'visible';
+            
+            const btnNext = document.getElementById('btnNext');
+            if (this.state.step === 5) {
+                btnNext.innerHTML = 'Submit Protocol';
+            } else {
+                btnNext.innerHTML = 'Save & Continue';
+            }
+        },
+
+        renderForm() {
+            const container = document.getElementById('stepContainer');
+            container.classList.remove('fade-in');
+            void container.offsetWidth; 
+            container.classList.add('fade-in');
+
+            let html = '';
+            const d = this.state.data;
+
+            // =========================================================
+            // STEP 1: PROJECT IDENTITY
+            // =========================================================
+            if (this.state.step === 1) {
+                html = `
+                    <div class="form-header">
+                        <h1 class="form-title">Project Identity</h1>
+                        <p class="form-sub">Define the solar asset metadata and commercial profile.</p>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Project Name <span class="req">*</span></label>
+                            <input type="text" value="${d.identity.projectName}" oninput="App.bind('identity.projectName', this.value)" placeholder="e.g. Jaipur Industrial Solar Roof" autofocus>
+                        </div>
+                        <div class="field">
+                            <label>Solar Activity Type <span class="req">*</span></label>
+                            <select onchange="App.bind('identity.activityType', this.value)">
+                                <option value="">Select Activity</option>
+                                <option value="Rooftop Solar" ${d.identity.activityType === 'Rooftop Solar'?'selected':''}>Rooftop Solar</option>
+                                <option value="Ground Mounted Solar" ${d.identity.activityType === 'Ground Mounted Solar'?'selected':''}>Ground Mounted Solar</option>
+                                <option value="Floating Solar" ${d.identity.activityType === 'Floating Solar'?'selected':''}>Floating Solar</option>
+                                <option value="Solar + Battery" ${d.identity.activityType === 'Solar + Battery'?'selected':''}>Solar + Battery</option>
+                                <option value="Hybrid Solar" ${d.identity.activityType === 'Hybrid Solar'?'selected':''}>Hybrid Solar</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Developer / Organization <span class="req">*</span></label>
+                            <input type="text" value="${d.identity.developerOrg}" oninput="App.bind('identity.developerOrg', this.value)" placeholder="Entity Name">
+                        </div>
+                         <div class="field">
+                            <label>Project Status</label>
+                            <select onchange="App.bind('identity.status', this.value)">
+                                <option value="Planned" ${d.identity.status === 'Planned'?'selected':''}>Planned</option>
+                                <option value="Under Construction" ${d.identity.status === 'Under Construction'?'selected':''}>Under Construction</option>
+                                <option value="Operational" ${d.identity.status === 'Operational'?'selected':''}>Operational</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="scientific-card" style="margin-top:16px;">
+                        <div class="sc-header"><div class="sc-title">Contact & Admin Details</div></div>
+                        <div class="sc-body">
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Contact Person Name</label>
+                                    <input type="text" value="${d.identity.contactName}" oninput="App.bind('identity.contactName', this.value)">
+                                </div>
+                                <div class="field">
+                                    <label>Official Phone</label>
+                                    <input type="tel" value="${d.identity.contactPhone}" oninput="App.bind('identity.contactPhone', this.value)">
+                                </div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:0;">
+                                <div class="field">
+                                    <label>Official Email</label>
+                                    <input type="email" value="${d.identity.contactEmail}" oninput="App.bind('identity.contactEmail', this.value)">
+                                </div>
+                                <div class="field">
+                                    <label>Organization Address</label>
+                                    <input type="text" value="${d.identity.contactAddress}" oninput="App.bind('identity.contactAddress', this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                         <div class="field">
+                            <label>Project Start Date</label>
+                            <input type="date" value="${d.identity.startDate}" oninput="App.bind('identity.startDate', this.value)">
+                        </div>
+                        <div class="field">
+                            <label>Commissioning Date</label>
+                            <input type="date" value="${d.identity.commissioningDate}" oninput="App.bind('identity.commissioningDate', this.value)">
+                        </div>
+                    </div>
+                    
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Crediting Period Start</label>
+                            <input type="date" value="${d.identity.creditingStart}" oninput="App.bind('identity.creditingStart', this.value)">
+                        </div>
+                        <div class="field">
+                            <label>Crediting Period End</label>
+                            <input type="date" value="${d.identity.creditingEnd}" oninput="App.bind('identity.creditingEnd', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Project Lifetime (Years)</label>
+                            <input type="number" value="${d.identity.lifetime}" oninput="App.bind('identity.lifetime', this.value)">
+                        </div>
+                        <div class="field">
+                            <label>PPA / Off-taker</label>
+                            <input type="text" value="${d.identity.ppa}" oninput="App.bind('identity.ppa', this.value)" placeholder="e.g. State DISCOM / Corporate PPA">
+                        </div>
+                    </div>
+
+                    <div class="field full-span" style="margin-bottom:16px;">
+                        <label>Project Objective / Overview</label>
+                        <textarea placeholder="Briefly describe the energy goals..." rows="2" oninput="App.bind('identity.objective', this.value)">${d.identity.objective}</textarea>
+                    </div>
+                `;
+            }
+
+            // =========================================================
+            // STEP 2: LOCATION & SITE
+            // =========================================================
+            else if (this.state.step === 2) {
+                html = `
+                     <div class="form-header">
+                        <h1 class="form-title">Location & Site</h1>
+                        <p class="form-sub">Physical site, legal context, and utility connection details.</p>
+                    </div>
+
+                    <div class="scientific-card">
+                        <div class="sc-header"><div class="sc-title">Site Coordinates & Geography</div></div>
+                        <div class="sc-body">
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Latitude <span class="req">*</span></label>
+                                    <input type="number" step="any" value="${d.location.latitude}" oninput="App.bind('location.latitude', this.value)" placeholder="e.g. 26.9124">
+                                </div>
+                                <div class="field">
+                                    <label>Longitude <span class="req">*</span></label>
+                                    <input type="number" step="any" value="${d.location.longitude}" oninput="App.bind('location.longitude', this.value)" placeholder="e.g. 75.7873">
+                                </div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field"><label>Country</label><input type="text" value="${d.location.country}" oninput="App.bind('location.country', this.value)"></div>
+                                <div class="field"><label>State / UT</label><input type="text" value="${d.location.state}" oninput="App.bind('location.state', this.value)"></div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field"><label>District</label><input type="text" value="${d.location.district}" oninput="App.bind('location.district', this.value)"></div>
+                                <div class="field"><label>City / Village</label><input type="text" value="${d.location.city}" oninput="App.bind('location.city', this.value)"></div>
+                            </div>
+                            <div class="field full-span" style="margin-bottom:16px;">
+                                <label>Full Site Address</label>
+                                <textarea rows="2" placeholder="Complete address..." oninput="App.bind('location.address', this.value)">${d.location.address}</textarea>
+                            </div>
+                            <div class="input-row" style="margin-bottom:0;">
+                                <div class="field"><label>PIN Code <span class="req">*</span></label><input type="text" value="${d.location.pin}" oninput="App.bind('location.pin', this.value)"></div>
+                                <div class="field"><label>Site Boundary Description</label><input type="text" value="${d.location.boundary}" oninput="App.bind('location.boundary', this.value)" placeholder="Parcel details or landmarks"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Installation Type <span class="req">*</span></label>
+                            <select onchange="App.bind('location.installType', this.value)">
+                                <option value="Rooftop Solar" ${d.location.installType==='Rooftop Solar'?'selected':''}>Rooftop Solar</option>
+                                <option value="Ground Mounted" ${d.location.installType==='Ground Mounted'?'selected':''}>Ground Mounted</option>
+                                <option value="Floating" ${d.location.installType==='Floating'?'selected':''}>Floating</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Site Category</label>
+                            <select onchange="App.bind('location.category', this.value)">
+                                <option value="">Select Category</option>
+                                <option value="Residential" ${d.location.category==='Residential'?'selected':''}>Residential</option>
+                                <option value="Commercial" ${d.location.category==='Commercial'?'selected':''}>Commercial</option>
+                                <option value="Industrial" ${d.location.category==='Industrial'?'selected':''}>Industrial</option>
+                                <option value="Institutional" ${d.location.category==='Institutional'?'selected':''}>Institutional</option>
+                                <option value="Utility-scale" ${d.location.category==='Utility-scale'?'selected':''}>Utility-scale</option>
+                                <option value="Agricultural" ${d.location.category==='Agricultural'?'selected':''}>Agricultural</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="field">
+                            <label>Land Area (Hectares)</label>
+                            <input type="number" step="0.01" value="${d.location.landArea}" oninput="App.bind('location.landArea', this.value)">
+                        </div>
+                        <div class="field">
+                            <label>Rooftop / Usable Area (sqm)</label>
+                            <input type="number" step="0.01" value="${d.location.roofArea}" oninput="App.bind('location.roofArea', this.value)">
+                        </div>
+                    </div>
+                    
+                    <div class="input-row">
+                        <div class="field">
+                            <label>DISCOM / Utility Name</label>
+                            <input type="text" value="${d.location.discom}" oninput="App.bind('location.discom', this.value)">
+                        </div>
+                        <div class="field">
+                            <label>Site Ownership / Access</label>
+                            <input type="text" value="${d.location.ownership}" oninput="App.bind('location.ownership', this.value)" placeholder="Owned / Leased">
+                        </div>
+                    </div>
+
+                    <div class="scientific-card" style="margin-top:24px;">
+                        <div class="sc-header"><div class="sc-title">Approval & Compliance Flags</div></div>
+                        <div class="sc-body" style="padding:0;">
+                            <div class="toggle-row" style="border:none; border-bottom:1px solid #E2E8F0; border-radius:0; margin:0;">
+                                <span class="toggle-label">Net Metering approval required?</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${d.location.reqNetMeter?'checked':''} onchange="App.bind('location.reqNetMeter', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-row" style="border:none; border-bottom:1px solid #E2E8F0; border-radius:0; margin:0;">
+                                <span class="toggle-label">Electrical inspector (CEIG) approval required?</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${d.location.reqInspector?'checked':''} onchange="App.bind('location.reqInspector', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-row" style="border:none; border-bottom:1px solid #E2E8F0; border-radius:0; margin:0;">
+                                <span class="toggle-label">Land lease / ownership proof required?</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${d.location.reqLease?'checked':''} onchange="App.bind('location.reqLease', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-row" style="border:none; border-radius:0; margin:0;">
+                                <span class="toggle-label">Open access / wheeling approval involved?</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${d.location.reqOpenAccess?'checked':''} onchange="App.bind('location.reqOpenAccess', this.checked)">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // =========================================================
+            // STEP 3: TECHNICAL CONFIGURATION
+            // =========================================================
+            else if (this.state.step === 3) {
+                html = `
+                    <div class="form-header">
+                        <h1 class="form-title">Technical Configuration</h1>
+                        <p class="form-sub">System specifications, generation estimates, and carbon baseline.</p>
+                    </div>
+
+                    <div class="scientific-card">
+                        <div class="sc-header"><div class="sc-title">System Capacity & Modules</div></div>
+                        <div class="sc-body">
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Installed Capacity (kW) <span class="req">*</span></label>
+                                    <input type="number" step="any" placeholder="e.g. 50" value="${d.technical.capacityKW}" oninput="App.handleCapacityChange(this.value, 'kw')">
+                                </div>
+                                 <div class="field">
+                                    <label>Installed Capacity (MW)</label>
+                                    <input type="number" step="any" placeholder="e.g. 0.05" value="${d.technical.capacityMW}" oninput="App.handleCapacityChange(this.value, 'mw')">
+                                </div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Technology Type</label>
+                                    <select onchange="App.bind('technical.techType', this.value)">
+                                        <option value="Monocrystalline" ${d.technical.techType==='Monocrystalline'?'selected':''}>Monocrystalline</option>
+                                        <option value="Polycrystalline" ${d.technical.techType==='Polycrystalline'?'selected':''}>Polycrystalline</option>
+                                        <option value="Thin-film" ${d.technical.techType==='Thin-film'?'selected':''}>Thin-film</option>
+                                        <option value="Bifacial" ${d.technical.techType==='Bifacial'?'selected':''}>Bifacial</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label>Number of Panels</label>
+                                    <input type="number" value="${d.technical.panels}" oninput="App.bind('technical.panels', this.value)">
+                                </div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:0;">
+                                <div class="field"><label>Module Wattage (Wp)</label><input type="number" value="${d.technical.modWattage}" oninput="App.bind('technical.modWattage', this.value)"></div>
+                                <div class="field"><label>Module Manufacturer</label><input type="text" value="${d.technical.modMfg}" oninput="App.bind('technical.modMfg', this.value)"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scientific-card">
+                        <div class="sc-header"><div class="sc-title">Inverter & Balance of System</div></div>
+                        <div class="sc-body">
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Inverter Type</label>
+                                    <select onchange="App.bind('technical.invType', this.value)">
+                                        <option value="String" ${d.technical.invType==='String'?'selected':''}>String Inverter</option>
+                                        <option value="Central" ${d.technical.invType==='Central'?'selected':''}>Central Inverter</option>
+                                        <option value="Micro" ${d.technical.invType==='Micro'?'selected':''}>Micro-inverter</option>
+                                    </select>
+                                </div>
+                                <div class="field"><label>Number of Inverters</label><input type="number" value="${d.technical.inverters}" oninput="App.bind('technical.inverters', this.value)"></div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field"><label>Mounting Type</label><input type="text" placeholder="Fixed / Tracker" value="${d.technical.mounting}" oninput="App.bind('technical.mounting', this.value)"></div>
+                                <div class="field"><label>Tilt Angle / Azimuth</label><input type="text" placeholder="e.g. 20 deg / 180 S" value="${d.technical.tilt}" oninput="App.bind('technical.tilt', this.value)"></div>
+                            </div>
+                            <div class="toggle-row" style="padding:0 0 16px 0; border:none; background:transparent;">
+                                <span class="toggle-label" style="font-size:0.9rem;">Battery Storage Included?</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" ${d.technical.hasBattery?'checked':''} onchange="App.bind('technical.hasBattery', this.checked); App.renderForm();">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            ${d.technical.hasBattery ? `
+                            <div class="field" style="animation: fadeIn 0.3s;">
+                                <label>Battery Capacity (kWh / MWh)</label>
+                                <input type="text" value="${d.technical.batteryCap}" oninput="App.bind('technical.batteryCap', this.value)">
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <div class="scientific-card">
+                        <div class="sc-header"><div class="sc-title">Energy Generation & Carbon Inputs</div></div>
+                        <div class="sc-body">
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Annual Generation (MWh) <span class="req">*</span></label>
+                                    <input type="number" step="any" style="font-size:1.2rem; font-weight:700; color:var(--col-primary);" value="${d.technical.annualGenMWh}" oninput="App.handleGenChange(this.value, 'mwh')">
+                                </div>
+                                <div class="field">
+                                    <label>Annual Generation (kWh)</label>
+                                    <input type="number" step="any" value="${d.technical.annualGenKWh}" oninput="App.handleGenChange(this.value, 'kwh')">
+                                </div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Baseline Emission Factor <span class="req">*</span></label>
+                                    <input type="number" step="any" value="${d.technical.baselineEF}" oninput="App.bind('technical.baselineEF', this.value); App.updateSidebar();">
+                                </div>
+                                <div class="field">
+                                    <label>Baseline EF Unit</label>
+                                    <input type="text" value="${d.technical.baselineEFUnit}" oninput="App.bind('technical.baselineEFUnit', this.value)">
+                                </div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:16px;">
+                                <div class="field">
+                                    <label>Grid Connectivity</label>
+                                    <select onchange="App.bind('location.gridConn', this.value)">
+                                        <option value="Grid-Connected" ${d.location.gridConn==='Grid-Connected'?'selected':''}>Grid-Connected</option>
+                                        <option value="Off-Grid" ${d.location.gridConn==='Off-Grid'?'selected':''}>Off-Grid</option>
+                                        <option value="Hybrid" ${d.location.gridConn==='Hybrid'?'selected':''}>Hybrid</option>
+                                    </select>
+                                </div>
+                                <div class="field">
+                                    <label>Net Metering Enabled?</label>
+                                    <select onchange="App.bind('technical.netMeterEnabled', this.value)">
+                                        <option value="Yes" ${d.technical.netMeterEnabled==='Yes'?'selected':''}>Yes</option>
+                                        <option value="No" ${d.technical.netMeterEnabled==='No'?'selected':''}>No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-row" style="margin-bottom:0;">
+                                <div class="field"><label>Specific Yield (kWh/kWp)</label><input type="number" step="any" value="${d.technical.specYield}" oninput="App.bind('technical.specYield', this.value)"></div>
+                                <div class="field"><label>Performance Ratio (%)</label><input type="number" step="any" value="${d.technical.pr}" oninput="App.bind('technical.pr', this.value)"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // =========================================================
+            // STEP 4: DIGITAL EVIDENCE
+            // =========================================================
+            else if (this.state.step === 4) {
+                const reqDocs = this.getRequiredDocuments();
+                const reqDocKeys = reqDocs.map(r => r.key);
+                
+                const allDocs = [
+                    { key: 'draftPdd', label: 'Draft PDD' },
+                    { key: 'finalPdd', label: 'Final PDD' },
+                    { key: 'monitoringPlan', label: 'Monitoring Plan' },
+                    { key: 'emissionCalc', label: 'Emission Calculation Report' },
+                    { key: 'smartMeter', label: 'Smart Meter Data' },
+                    { key: 'dpr', label: 'Detailed Project Report (DPR)' },
+                    { key: 'sld', label: 'Single Line Diagram (SLD)' },
+                    { key: 'layout', label: 'System Layout Drawing' },
+                    { key: 'modData', label: 'Module Datasheet' },
+                    { key: 'invData', label: 'Inverter Datasheet' },
+                    { key: 'commCert', label: 'Commissioning Certificate' },
+                    { key: 'netMeterApp', label: 'Net Metering Approval' },
+                    { key: 'elecBill', label: 'Electricity Bill / Consumer ID' },
+                    { key: 'consent', label: 'Ownership / Roof Consent' },
+                    { key: 'epc', label: 'EPC / Vendor Agreement' },
+                    { key: 'genEst', label: 'Generation Estimate Sheet' },
+                    { key: 'installRep', label: 'Installation Completion Report' },
+                    { key: 'omPlanDoc', label: 'O&M Plan' },
+                    { key: 'ceig', label: 'CEIG/Electrical Inspector Approval' },
+                    { key: 'discomApp', label: 'DISCOM Interconnection' },
+                    { key: 'openAccess', label: 'Open Access Approval' },
+                    { key: 'batteryDoc', label: 'Battery System Docs' },
+                    { key: 'structural', label: 'Structural Stability Certificate' },
+                    { key: 'leaseDoc', label: 'Land Lease Documents' }
+                ];
+
+                const mandatoryDocsHtml = allDocs.filter(doc => reqDocKeys.includes(doc.key)).map(doc => 
+                    this.renderDocDropzone(doc.key, doc.label, true)
+                ).join('');
+
+                const optionalDocsHtml = allDocs.filter(doc => !reqDocKeys.includes(doc.key)).map(doc => 
+                    this.renderDocDropzone(doc.key, doc.label, false)
+                ).join('');
+
+                html = `
+                    <div class="form-header">
+                        <h1 class="form-title">Digital Evidence</h1>
+                        <p class="form-sub">Upload visual proofs, operational data, and registry documents.</p>
+                    </div>
+                    
+                    <h3 style="font-family:'Space Grotesk'; margin-bottom:16px; color:var(--col-primary);">Section A. Visual Evidence</h3>
+                    <div class="evidence-grid">
+                        ${this.renderVisualDropzone('wide', 'Installation Wide Shot', '🏗️', true)}
+                        ${this.renderVisualDropzone('panel', 'Panel Close-up with Label', '🔍', false)}
+                        ${this.renderVisualDropzone('inverter', 'Inverter / Meter Photo', '⚡', true)}
+                        ${this.renderVisualDropzone('site', 'Site Overview / Mounting', '🏭', false)}
+                    </div>
+                    
+                    ${this.renderPlantationGallery()}
+
+                    <h3 style="font-family:'Space Grotesk'; margin:40px 0 16px; color:var(--col-primary);">Section C & D. Required Documents <span class="req">*</span></h3>
+                    <p class="zone-sub" style="margin-bottom:20px;">Includes conditionally required documents based on your Step 2 selections.</p>
+                    <div class="doc-grid">
+                        ${mandatoryDocsHtml}
+                    </div>
+
+                    <h3 style="font-family:'Space Grotesk'; margin:40px 0 16px; color:var(--col-primary);">Section E. Optional / Supporting</h3>
+                    <div class="doc-grid">
+                        ${optionalDocsHtml}
+                    </div>
+                `;
+            }
+
+            // =========================================================
+            // STEP 5: REVIEW & MINT
+            // =========================================================
+            else if (this.state.step === 5) {
+                const capKW = parseFloat(d.technical.capacityKW) || 0;
+                const mwh = parseFloat(d.technical.annualGenMWh) || 0;
+                const ef = parseFloat(d.technical.baselineEF) || 0.82;
+                const estCarb = (mwh * ef).toFixed(2);
+                
+                // Silent validation check for checklist
+                const isIdValid = !!(d.identity.projectName && d.identity.developerOrg && d.identity.startDate);
+                const isLocValid = !!(d.location.installType && d.location.latitude && d.location.pin);
+                const isTechValid = !!(d.technical.capacityKW && d.technical.annualGenMWh);
+                
+                let isDocsValid = !!(d.files.visual.wide && d.files.visual.inverter);
+                this.getRequiredDocuments().forEach(doc => { if(!d.files.docs[doc.key]) isDocsValid = false; });
+
+                const allValid = isIdValid && isLocValid && isTechValid && isDocsValid;
+
+                html = `
+                    <div class="form-header">
+                        <h1 class="form-title">Review & Submit</h1>
+                        <p class="form-sub">Final compliance check before writing to the ledger.</p>
+                    </div>
+
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:16px; padding:30px; margin-bottom:30px;">
+                        
+                        <div class="review-section">
+                            <h3>1. Project Identity</h3>
+                            <div class="review-grid">
+                                <div class="review-item"><span class="review-lbl">Project Name</span><span class="review-val">${d.identity.projectName || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Developer Org</span><span class="review-val">${d.identity.developerOrg || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Activity Type</span><span class="review-val">${d.identity.activityType || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Status</span><span class="review-val">${d.identity.status || '-'}</span></div>
+                                <div class="review-item full-span"><span class="review-lbl">Contact Details</span><span class="review-val">${d.identity.contactName || '-'} | ${d.identity.contactEmail || '-'}</span></div>
+                                <div class="review-item full-span"><span class="review-lbl">PPA / Off-taker</span><span class="review-val">${d.identity.ppa || '-'}</span></div>
+                            </div>
+                        </div>
+
+                        <div class="review-section">
+                            <h3>2. Location & Site</h3>
+                            <div class="review-grid">
+                                <div class="review-item"><span class="review-lbl">Location</span><span class="review-val">${d.location.city || '-'}, ${d.location.state || '-'}, ${d.location.country || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Coordinates</span><span class="review-val">${d.location.latitude || '-'}, ${d.location.longitude || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Installation Type</span><span class="review-val">${d.location.installType || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Utility / DISCOM</span><span class="review-val">${d.location.discom || '-'}</span></div>
+                            </div>
+                        </div>
+
+                        <div class="review-section">
+                            <h3>3. Technical Configuration</h3>
+                            <div class="review-grid">
+                                <div class="review-item"><span class="review-lbl">Installed Capacity</span><span class="review-val">${capKW} kWp</span></div>
+                                <div class="review-item"><span class="review-lbl">Annual Generation</span><span class="review-val">${mwh} MWh</span></div>
+                                <div class="review-item"><span class="review-lbl">Tech / Modules</span><span class="review-val">${d.technical.techType || '-'} (${d.technical.panels || '0'} panels)</span></div>
+                                <div class="review-item"><span class="review-lbl">Inverter Type</span><span class="review-val">${d.technical.invType || '-'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Grid / Metering</span><span class="review-val">${d.location.gridConn} | Net Meter: ${d.technical.netMeterEnabled}</span></div>
+                                <div class="review-item"><span class="review-lbl">Baseline Emission Factor</span><span class="review-val">${d.technical.baselineEF} ${d.technical.baselineEFUnit}</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="review-section">
+                            <h3>4. Digital Evidence</h3>
+                            <div class="review-grid">
+                                <div class="review-item"><span class="review-lbl">Mandatory Visuals</span><span class="review-val">${d.files.visual.wide && d.files.visual.inverter ? 'Uploaded' : 'Missing'}</span></div>
+                                <div class="review-item"><span class="review-lbl">Project Media Gallery</span><span class="review-val">${d.files.visual.projectGallery.length} items uploaded</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="font-family:'Space Grotesk'; color:var(--col-primary); margin-bottom:16px;">Compliance Checklist</h3>
+                    <div style="margin-bottom:32px;">
+                        <div class="checklist-item ${isIdValid ? 'check-pass' : 'check-fail'}">
+                            <i class="fa-solid ${isIdValid ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> Mandatory Identity Fields Complete
+                        </div>
+                        <div class="checklist-item ${isLocValid ? 'check-pass' : 'check-fail'}">
+                            <i class="fa-solid ${isLocValid ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> Mandatory Location & Site Fields Complete
+                        </div>
+                        <div class="checklist-item ${isTechValid ? 'check-pass' : 'check-fail'}">
+                            <i class="fa-solid ${isTechValid ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> Technical Capacity & Generation Fields Complete
+                        </div>
+                        <div class="checklist-item ${isDocsValid ? 'check-pass' : 'check-fail'}">
+                            <i class="fa-solid ${isDocsValid ? 'fa-circle-check' : 'fa-circle-xmark'}"></i> Mandatory & Conditional Documents Uploaded
+                        </div>
+                    </div>
+
+                    <div style="background:#EFF6FF; border:1px solid #93C5FD; border-radius:16px; padding:24px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; flex-wrap: wrap; gap: 16px;">
+                        <div>
+                            <span style="font-size:0.8rem; text-transform:uppercase; font-weight:700; color:#1E3A8A;">Estimated Impact</span>
+                            <div style="font-size:1.5rem; font-weight:700; color:#1E40AF; font-family:'Space Grotesk';">${estCarb} Tons CO₂e/Yr</div>
+                        </div>
+                        <div style="text-align:right;">
+                             <span style="font-size:0.8rem; text-transform:uppercase; font-weight:700; color:#1E3A8A;">Est. Annual Generation</span>
+                            <div style="font-size:1.5rem; font-weight:700; color:#1E40AF; font-family:'Space Grotesk';">${mwh} MWh</div>
+                        </div>
+                    </div>
+
+                    <div class="field full-span" style="margin-top: 16px;">
+                        <label class="consent-label">
+                             <input type="checkbox" id="termsConsent" onchange="App.checkFinalForm()" style="width:24px; height:24px; accent-color:var(--col-primary); flex-shrink:0; cursor: pointer;">
+                            <span style="font-size:0.95rem; line-height:1.5; color:var(--text-body); font-weight: 500;">
+                                I certify that this solar asset is real, operational, and accurately described. I allow BlueCred to query satellite data for irradiance verification.
+                            </span>
+                        </label>
+                    </div>
+
+                    <script>
+                        App.state.allValid = ${allValid};
+                    <\/script>
+                `;
+            }
+
+            container.innerHTML = html;
+            if (this.state.step === 5) this.checkFinalForm();
+        },
+
+        checkFinalForm() {
+            const btn = document.getElementById('btnNext');
+            const consent = document.getElementById('termsConsent');
+            if (this.state.step === 5 && btn && consent) {
+                // Testing mode allows proceeding without strict full compliance
+                if (this.TESTING_MODE) {
+                    btn.disabled = false;
+                } else {
+                    btn.disabled = !(consent.checked && this.state.allValid);
+                }
+            }
+        },
+
+        // --- UPLOAD LOGIC ---
+        renderVisualDropzone(key, label, icon, isRequired) {
+            const file = this.state.data.files.visual[key];
+            const reqHtml = isRequired ? '<span class="req">*</span>' : '';
+            return this.buildDropzoneHtml('visual', key, label, icon, file, reqHtml);
+        },
+        renderDocDropzone(key, label, isRequired) {
+            const file = this.state.data.files.docs[key];
+            const reqHtml = isRequired ? '<span class="req">*</span>' : '';
+            return this.buildDropzoneHtml('docs', key, label, '📄', file, reqHtml);
+        },
+        buildDropzoneHtml(type, key, label, icon, file, reqHtml) {
+            let content = `
+                <input type="file" onchange="App.handleFileSelect(this, '${type}', '${key}')">
+                <span class="zone-icon" style="font-size:1.5rem;">${icon}</span>
+                <span class="zone-text">${label} ${reqHtml}</span>
+            `;
+            let zoneStyle = 'padding: 16px; min-height:120px;';
+            if (file) {
+                zoneStyle += 'background: #ECFDF5; border-color: var(--col-accent);';
+                content += `
+                    <div class="file-pill" title="${file.name}">
+                        <span>${file.name}</span> 
+                        <span class="remove-file" onclick="App.removeFile(event, '${type}', '${key}')">×</span>
+                    </div>
+                `;
+            }
+            return `<div class="file-dropzone" style="${zoneStyle}">${content}</div>`;
+        },
+        handleFileSelect(input, type, key) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                this.state.data.files[type][key] = { name: file.name, type: file.type };
+                this.renderForm();
+            }
+        },
+        removeFile(e, type, key) {
+            e.stopPropagation(); 
+            this.state.data.files[type][key] = null;
+            this.renderForm();
+        },
+
+        // --- GALLERY UPLOADER LOGIC ---
+        renderPlantationGallery() {
+            const gallery = this.state.data.files.visual.projectGallery;
+            const maxFiles = 15;
+            
+            let galleryHtml = '';
+
+            if (!gallery || gallery.length === 0) {
+                galleryHtml = `
+                    <div class="file-dropzone" style="grid-column: 1 / -1; padding: 40px; margin: 16px 0 32px 0; border-width: 2px;" onclick="document.getElementById('galleryInput').click()">
+                        <input type="file" id="galleryInput" multiple accept="image/*,video/mp4,video/quicktime,video/webm" onchange="App.handleGalleryUpload(this)" style="display:none;">
+                        <span class="zone-icon" style="font-size:2.5rem; margin-bottom:16px; color:var(--col-primary);"><i class="fa-regular fa-images"></i></span>
+                        <span class="zone-text" style="font-size:1.1rem;">Project Media Gallery</span>
+                        <span class="zone-sub" style="font-size:0.95rem;">Upload all solar project photos & videos</span>
+                        <span class="zone-sub" style="margin-top:8px;">Max ${maxFiles} files. Supported: JPG, PNG, WEBP, MP4, MOV, WEBM</span>
+                    </div>
+                `;
+            } else {
+                const currentIndex = this.state.galleryIndex;
+                const currentMedia = gallery[currentIndex];
+                const isVideo = currentMedia.type.startsWith('video/');
+
+                const previewHtml = isVideo 
+                    ? `<video src="${currentMedia.preview}" controls style="width:100%; height:100%; object-fit:contain;"></video>`
+                    : `<img src="${currentMedia.preview}" style="width:100%; height:100%; object-fit:contain;">`;
+
+                galleryHtml = `
+                    <div class="scientific-card" style="margin-top: 16px; margin-bottom: 24px; overflow: visible;">
+                        <div class="sc-header">
+                            <div class="sc-title"><i class="fa-regular fa-images"></i> Project Media Gallery</div>
+                            <div class="sc-subtitle" style="font-weight:600;">${gallery.length} / ${maxFiles} items</div>
+                        </div>
+                        <div class="sc-body" style="position:relative; text-align:center; padding: 24px;">
+                            
+                            <div class="gallery-preview-wrapper">
+                                ${previewHtml}
+                            </div>
+                            
+                            ${gallery.length > 1 ? `
+                                <button type="button" class="gallery-nav-btn left" onclick="App.prevGalleryItem(event)" title="Previous"><i class="fa-solid fa-chevron-left"></i></button>
+                                <button type="button" class="gallery-nav-btn right" onclick="App.nextGalleryItem(event)" title="Next"><i class="fa-solid fa-chevron-right"></i></button>
+                            ` : ''}
+                            
+                            <div class="gallery-controls-wrapper">
+                                <button type="button" class="btn-gallery-remove" onclick="App.removeGalleryItem(${currentIndex})">
+                                    <i class="fa-solid fa-trash-can"></i> Remove
+                                </button>
+                                
+                                <div style="font-size:0.95rem; font-weight:700; color:var(--text-main); flex-grow: 1;">
+                                    ${currentIndex + 1} of ${gallery.length}
+                                </div>
+
+                                ${gallery.length < maxFiles ? `
+                                    <div>
+                                        <button type="button" class="btn-gallery-add" onclick="document.getElementById('galleryInputMore').click()">
+                                            <i class="fa-solid fa-cloud-arrow-up"></i> Add Another
+                                        </button>
+                                        <input type="file" id="galleryInputMore" multiple accept="image/*,video/mp4,video/quicktime,video/webm" onchange="App.handleGalleryUpload(this)" style="display:none;">
+                                    </div>
+                                ` : `
+                                    <span style="font-size:0.85rem; color:#F59E0B; font-weight:600; padding:8px 16px; background: #FFFBEB; border-radius: 50px; border: 1px solid #FDE68A;">Maximum 15 files reached</span>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Note below gallery
+            const noteHtml = `
+                <div class="gallery-info-note">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span><strong>Note:</strong> Please upload at least 10 images and at least 1 proper video covering the complete solar project for better project verification.</span>
+                </div>
+            `;
+
+            return galleryHtml + noteHtml;
+        },
+
+        handleGalleryUpload(input) {
+            const files = Array.from(input.files);
+            if (!files.length) return;
+
+            const gallery = this.state.data.files.visual.projectGallery;
+            const maxFiles = 15;
+            let added = 0;
+
+            files.forEach(file => {
+                if (gallery.length >= maxFiles) return;
+                
+                const isImage = file.type.startsWith('image/');
+                const isVideo = file.type.startsWith('video/');
+                
+                if (isImage || isVideo) {
+                    gallery.push({
+                        id: 'gal_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                        name: file.name,
+                        type: file.type,
+                        preview: URL.createObjectURL(file),
+                        file: file
+                    });
+                    added++;
+                }
+            });
+
+            if (added > 0) {
+                this.state.galleryIndex = gallery.length - 1; 
+                this.renderForm(); 
+            }
+        },
+
+        removeGalleryItem(index) {
+            const gallery = this.state.data.files.visual.projectGallery;
+            if (index >= 0 && index < gallery.length) {
+                URL.revokeObjectURL(gallery[index].preview); 
+                gallery.splice(index, 1);
+                if (this.state.galleryIndex >= gallery.length) {
+                    this.state.galleryIndex = Math.max(0, gallery.length - 1);
+                }
+                this.renderForm();
+            }
+        },
+
+        nextGalleryItem(e) {
+            if(e) e.preventDefault();
+            const gallery = this.state.data.files.visual.projectGallery;
+            if (gallery.length > 0) {
+                this.state.galleryIndex = (this.state.galleryIndex + 1) % gallery.length;
+                this.renderForm();
+            }
+        },
+
+        prevGalleryItem(e) {
+            if(e) e.preventDefault();
+            const gallery = this.state.data.files.visual.projectGallery;
+            if (gallery.length > 0) {
+                this.state.galleryIndex = (this.state.galleryIndex - 1 + gallery.length) % gallery.length;
+                this.renderForm();
+            }
+        },
+
+        // --- SUBMIT LOGIC ---
+        submit() {
+            const btn = document.getElementById('btnNext');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Submitting...';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+            
+            // Construct Expanded Project Object
+            const newProject = {
+                id: 'SOL-' + Math.floor(Math.random() * 10000 + 1000),
+                name: this.state.data.identity.projectName || "Untitled Solar Project",
+                type: "Solar Project",
+                status: "Submitted",
+                date: new Date().toLocaleDateString(),
+                capacity: this.state.data.technical.capacityKW + " kW",
+                fullData: this.state.data
+            };
+
+            setTimeout(() => {
+                const currentProjects = JSON.parse(localStorage.getItem('blueCredProjects') || '[]');
+                currentProjects.unshift(newProject);
+                localStorage.setItem('blueCredProjects', JSON.stringify(currentProjects));
+
+                const sidebar = document.querySelector('.sidebar-sticky');
+                const shell = document.querySelector('.app-shell');
+                const formFooter = document.querySelector('.form-footer');
+
+                if(sidebar) sidebar.style.display = 'none';
+                if(shell) shell.classList.add('full-width');
+                if(formFooter) formFooter.style.display = 'none';
+
+                const container = document.getElementById('stepContainer');
+                container.innerHTML = `
+                    <div style="text-align:center; padding:100px 20px; animation:fadeIn 0.8s; min-height:60vh; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                        <div style="width:80px; height:80px; background:#DBEAFE; color:#2563EB; border-radius:50%; font-size:40px; display:flex; align-items:center; justify-content:center; margin-bottom:24px;">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <h1 class="form-title" style="margin-bottom:12px;">Solar Project Submitted</h1>
+                        <p class="form-sub" style="max-width:500px;">Your energy asset has been queued for irradiance verification.</p>
+                        
+                        <p style="margin-top:40px; color:var(--text-muted); font-size:0.9rem;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Redirecting to Dashboard...
+                        </p>
+                    </div>
+                `;
+
+                this.scrollToStepTop();
+
+                setTimeout(() => {
+                    window.location.href = 'dashngo.html';
+                }, 2000);
+
+            }, 1500);
+        }
+    };
+
+    App.init();
+</script>
+   <script>
+document.addEventListener("keydown", function(e) {
+    // Check if Ctrl key (or Meta key on Mac) is pressed along with 'u' (keyCode 85)
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 117)) {
+        e.preventDefault(); // Prevents the view source action
+        // alert("View source is disabled."); // Optional: alert user
+    }
+});
+</script>
+</body>
+</html>

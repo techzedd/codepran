@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Sign up for BlueCred: The transparent ledger for planetary restoration." />
+  <title>PRΛN — Create Account</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* =========================
+         1. DESIGN TOKENS (Imported from MainPage)
+         ========================= */
+    :root {
+      /* Backgrounds */
+      --bg-page: #F8FAFC;
+      --bg-gradient: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 100%);
+
+      /* Glass Effects */
+      --glass-surface: rgba(255, 255, 255, 0.65);
+      --glass-border: rgba(22, 163, 74, 0.15);
+      --glass-highlight: rgba(255, 255, 255, 0.9);
+      --glass-input: rgba(255, 255, 255, 0.5);
+
+      /* Typography & Brand Colors */
+      --col-primary: #14532D;
+      --col-body: #475569;
+      --col-accent: #2e864e;
+      --col-accent-hover: #15803D;
+      --col-error: #ef4444;
+
+      /* Spacing & Physics */
+      --font-display: "Space Grotesk", sans-serif;
+      --font-body: "Inter", sans-serif;
+      --card-radius: 20px;
+      --input-radius: 12px;
+      --shadow-soft: 0 20px 40px -10px rgba(20, 83, 45, 0.06);
+      --shadow-hover: 0 25px 50px -12px rgba(20, 83, 45, 0.12);
+      --transition: 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+      --nav-height: 80px;
+    }
+
+    /* Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      outline: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+    }
+
+    body {
+      background: var(--bg-page);
+      background-image: var(--bg-gradient);
+      color: var(--col-body);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      padding-top: var(--nav-height);
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* =========================
+         2. PREMIUM NAVBAR
+         ========================= */
+    .glass-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--nav-height);
+      background: var(--glass-surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--glass-border);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 60px;
+      transition: var(--transition);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--col-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1002;
+    }
+
+    .nav-logo::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--col-accent);
+      border-radius: 50%;
+    }
+
+    .nav-logo span {
+      color: var(--col-accent);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .nav-items {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-link {
+      font-weight: 500;
+      color: var(--col-body);
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--col-accent);
+    }
+
+    .btn-login {
+      background: transparent;
+      color: var(--col-accent);
+      padding: 10px 28px;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      border: 1px solid var(--col-accent);
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .btn-login:hover {
+      background: var(--col-accent);
+      color: white;
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      z-index: 1002;
+      background: none;
+      border: none;
+    }
+
+    .line {
+      width: 24px;
+      height: 2px;
+      background: var(--col-primary);
+      border-radius: 2px;
+      transition: 0.3s ease;
+    }
+
+    /* =========================
+         3. LAYOUT (Split Screen)
+         ========================= */
+    .split-screen {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      min-height: calc(100vh - var(--nav-height));
+      flex: 1;
+    }
+
+    /* =========================
+         4. LEFT PANEL (Sticky Brand)
+         ========================= */
+    .brand-panel {
+      position: sticky;
+      top: var(--nav-height);
+      height: calc(100vh - var(--nav-height));
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: transparent;
+      border-right: 1px solid rgba(22, 163, 74, 0.08);
+      z-index: 10;
+    }
+
+    .ambient-orb {
+      position: absolute;
+      top: 20%;
+      left: 20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(134, 239, 172, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+      filter: blur(60px);
+      z-index: -1;
+      animation: float 12s infinite ease-in-out;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(20px, -20px) scale(1.1); }
+    }
+
+    .brand-headline {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      color: var(--col-primary);
+      font-weight: 600;
+    }
+
+    .highlight-text {
+      background: linear-gradient(135deg, var(--col-primary) 0%, var(--col-accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-sub {
+      font-size: 1.1rem;
+      color: var(--col-body);
+      line-height: 1.6;
+      border-left: 3px solid var(--col-accent);
+      padding-left: 24px;
+      max-width: 400px;
+    }
+
+    /* =========================
+         5. RIGHT PANEL (Form Content)
+         ========================= */
+    .content-stream {
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 100px;
+    }
+
+    /* Form Card */
+    .glass-card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--glass-surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-soft);
+      border-radius: var(--card-radius);
+      padding: 40px;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .glass-card:hover {
+        box-shadow: var(--shadow-hover);
+        border-color: rgba(22, 163, 74, 0.3);
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--col-primary);
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 0.95rem;
+      color: var(--col-body);
+      margin-bottom: 32px;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--col-primary);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: var(--input-radius);
+      border: 1px solid rgba(22, 163, 74, 0.2);
+      background: var(--glass-input);
+      color: var(--col-primary);
+      font-size: 1rem;
+      font-family: var(--font-body);
+      transition: var(--transition);
+    }
+
+    .form-input::placeholder {
+      color: #94a3b8;
+    }
+
+    .form-input:focus {
+      border-color: var(--col-accent);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--col-accent);
+      color: white;
+      padding: 14px;
+      border-radius: var(--input-radius);
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 12px;
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+    }
+
+    .btn-submit:hover {
+      background: var(--col-accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(22, 163, 74, 0.35);
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 32px 0;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(22, 163, 74, 0.15);
+    }
+
+    .divider span {
+      padding: 0 16px;
+    }
+
+    /* Social Buttons */
+    .social-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .btn-social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px;
+      border-radius: var(--input-radius);
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(22, 163, 74, 0.15);
+      color: var(--col-body);
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-social:hover {
+      background: white;
+      border-color: var(--col-accent);
+      transform: translateY(-1px);
+    }
+
+    .btn-social svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Login Link */
+    .login-link {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 0.9rem;
+      color: var(--col-body);
+    }
+
+    .login-link a {
+      color: var(--col-accent);
+      font-weight: 600;
+      text-decoration: underline;
+      text-decoration-color: rgba(22, 163, 74, 0.3);
+      text-underline-offset: 4px;
+    }
+
+    .login-link a:hover {
+      color: var(--col-accent-hover);
+    }
+
+    /* =========================
+         6. FOOTER
+         ========================= */
+    .glass-footer {
+      background: var(--glass-surface);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-top: 1px solid var(--glass-border);
+      padding: 60px;
+      position: relative;
+      z-index: 20;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: var(--col-body);
+    }
+
+    /* =========================
+         7. RESPONSIVE
+         ========================= */
+    @media (max-width: 1024px) {
+      .glass-nav { padding: 0 30px; }
+      .split-screen { grid-template-columns: 1fr; }
+      
+      .brand-panel {
+        position: relative;
+        height: auto;
+        top: 0;
+        padding: 60px 30px 20px;
+        border-right: none;
+        text-align: center;
+        align-items: center;
+      }
+      
+      .brand-sub { border-left: none; padding-left: 0; border-bottom: 3px solid var(--col-accent); padding-bottom: 12px; }
+      .content-stream { padding: 40px 24px; }
+      
+      /* Mobile Nav */
+      .hamburger { display: flex; }
+      .nav-right {
+        position: fixed;
+        top: var(--nav-height);
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 40px;
+        gap: 30px;
+        border-bottom: 1px solid var(--glass-border);
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: all 0.4s ease;
+      }
+      .nav-right.active { max-height: 400px; opacity: 1; box-shadow: var(--shadow-hover); }
+      .nav-items { flex-direction: column; }
+      
+      .social-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .brand-headline { font-size: 2.5rem; }
+      .glass-nav { padding: 0 20px; }
+      .glass-card { padding: 24px; }
+      .content-stream { padding: 20px; }
+    }
+
+     .glass-footer {
+      background: var(--glass-surface);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-top: 1px solid var(--glass-border);
+      padding: 80px 60px 40px;
+      position: relative;
+      z-index: 20;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 60px;
+    }
+
+    .footer-brand h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--col-primary);
+      margin-bottom: 16px;
+    }
+
+    .footer-brand p {
+      color: var(--col-body);
+      line-height: 1.6;
+      font-size: 0.95rem;
+      max-width: 300px;
+    }
+
+    .footer-heading {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      color: var(--col-accent);
+      margin-bottom: 24px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      color: var(--col-body);
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--col-primary);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 32px;
+      border-top: 1px solid rgba(22, 163, 74, 0.1);
+      font-size: 0.9rem;
+      color: var(--col-body);
+    }
+
+    /* =========================
+         7. RESPONSIVE
+         ========================= */
+    @media (max-width: 1024px) {
+      .glass-nav {
+        padding: 0 30px;
+      }
+
+      .split-screen {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-panel {
+        position: relative;
+        height: auto;
+        top: 0;
+        padding: 60px 30px 40px;
+        border-right: none;
+        border-bottom: 1px solid rgba(238, 8, 8, 0.05);
+      }
+
+      .brand-headline {
+        font-size: 3rem;
+        margin-top: 20px;
+      }
+
+      .content-stream {
+        padding: 40px 24px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+      }
+
+      .glass-footer {
+        padding: 60px 30px 30px;
+      }
+
+      /* Mobile Navigation */
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-right {
+        position: fixed;
+        top: var(--nav-height);
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        /* opacity increased */
+        backdrop-filter: blur(198px) saturate(180%);
+        -webkit-backdrop-filter: blur(198px) saturate(180%);
+        flex-direction: column;
+        padding: 40px;
+        gap: 30px;
+        border-bottom: 1px solid var(--glass-border);
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      .nav-right.active {
+        max-height: 400px;
+        opacity: 1;
+        box-shadow: var(--shadow-hover);
+      }
+
+      .nav-items {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+      }
+
+      .nav-link {
+        font-size: 1.2rem;
+      }
+
+      .hamburger.active .line:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+      }
+
+      .hamburger.active .line:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger.active .line:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -6px);
+      }
+    }
+
+    @media (max-width: 640px) {
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand-headline {
+        font-size: 2.5rem;
+      }
+
+      .glass-nav {
+        padding: 0 20px;
+      }
+    }
+
+    .social {
+      display: flex;
+      gap: 20px;
+    }
+
+    .social:hover {
+      color: var(--col-primary);
+    }
+
+    /* Remove ambient orb on narrow screens (prevents any accidental overflow) */
+    @media (max-width: 1024px) {
+      .ambient-orb {
+        display: none !important;
+      }
+    }
+
+    /* Make long words/wide elements wrap instead of forcing width */
+    .brand-message,
+    .brand-headline,
+    .card-desc,
+    .glass-card {
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+
+    /* Tighten content padding on very small screens (avoid extra horizontal space) */
+    @media (max-width: 480px) {
+      .glass-nav {
+        padding: 0 14px;
+      }
+
+      .content-stream {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .brand-panel {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    }
+
+
+
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="glass-nav">
+    <a href="../index.html" class="nav-logo"><span>PRΛN</span></a>
+    <div class="nav-right">
+      <ul class="nav-items">
+        <li><a href="../MainPage.html" class="nav-link">Home</a></li>
+        <li><a href="#" class="nav-link">About</a></li>
+      </ul>
+      <a href="#" class="btn-login">Login</a>
+    </div>
+    <button class="hamburger" aria-label="Menu">
+      <span class="line"></span>
+      <span class="line"></span>
+      <span class="line"></span>
+    </button>
+  </nav>
+
+  <main class="split-screen">
+    <!-- LEFT SIDEBAR -->
+    <aside class="brand-panel">
+      <div class="ambient-orb"></div>
+      <div class="brand-message">
+        <h1 class="brand-headline">
+          Start your <br>
+          <span class="highlight-text">Impact Journey.</span>
+        </h1>
+        <p class="brand-sub">
+          Create an account to access the verified ledger, track transparent data, and participate in the regenerative economy.
+        </p>
+      </div>
+    </aside>
+
+    <!-- RIGHT CONTENT (Form) -->
+    <section class="content-stream">
+      <div class="glass-card" id="signup-card">
+        <h2 class="card-title">Create Account</h2>
+        <p class="card-desc">Enter your details to join PRΛN.</p>
+
+        <form action="#" method="POST" onsubmit="event.preventDefault(); document.getElementById('success-msg').style.display='block';">
+          <div class="form-group">
+            <label for="username" class="form-label">Full Name</label>
+            <input type="text" id="username" class="form-input" placeholder="Enter your name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+          </div>
+
+          <button type="submit" class="btn-submit">Sign Up</button>
+          
+          <!-- Mock Success Message -->
+          <div id="success-msg" style="display: none; color: var(--col-accent); margin-top: 10px; font-weight: 600; text-align: center;">
+            Account created successfully!
+          </div>
+        </form>
+
+        <div class="divider">
+          <span>Or continue with</span>
+        </div>
+
+        <div class="social-grid">
+          <button class="btn-social">
+            <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+              <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
+                <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
+                <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.734 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
+                <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.424 44.599 -10.174 45.789 L -6.704 42.319 C -8.804 40.359 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
+              </g>
+            </svg>
+            Google
+          </button>
+
+          <button class="btn-social">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1877F2">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            Facebook
+          </button>
+        </div>
+
+        <div class="login-link">
+          Already have an account? <a href="login.html">Login here</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="glass-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="MainPage.html" class="nav-logo"><span>PRΛN</span></a>
+        <br>
+        <p>
+          The world's first transparent, blockchain-verified ecological ledger.
+          Connecting capital to ground-truth data for a greener planet.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Platform</h4>
+        <ul class="footer-links">
+          <li><a href="#">Register NGO</a></li>
+          <li><a href="#">Buy Credits</a></li>
+          <li><a href="#">Community</a></li>
+          <li><a href="#">Explorer</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Impact Reports</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Legal</h4>
+        <ul class="footer-links">
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Compliance</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>&copy; 2025 PRΛN Registry. All rights reserved.</div>
+      <div style="display: flex; gap: 20px;">
+        <a href="#" target="_blank">
+          <svg width="26" height="26" fill="var(--col-accent)" viewBox="0 0 24 24">
+            <path
+              d="M22.675 0h-21.35C.597 0 0 .597 0 1.325v21.351C0 23.403.597 24 1.325 24h11.495v-9.294H9.691v-3.622h3.129V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.764v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.403 24 24 23.403 24 22.676V1.325C24 .597 23.403 0 22.675 0z" />
+          </svg>
+        </a>
+
+        <a href="#" target="_blank">
+          <svg width="26" height="26" fill="var(--col-accent)" viewBox="0 0 24 24">
+            <path
+              d="M19 0h-14C2.239 0 0 2.239 0 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5V5c0-2.761-2.238-5-5-5zm-8 19H8V9h3v10zm-1.5-11.268c-.966 0-1.75-.79-1.75-1.764 0-.975.784-1.764 1.75-1.764s1.75.789 1.75 1.764c0 .974-.784 1.764-1.75 1.764zM20 19h-3v-5.604c0-3.368-4-3.113-4 0V19h-3V9h3v1.528c1.395-2.586 7-2.777 7 2.476V19z" />
+          </svg>
+        </a>
+
+        <a href="#" target="_blank">
+          <svg width="26" height="26" fill="var(--col-accent)" viewBox="0 0 24 24">
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26L22.5 21.75h-6.438l-5.033-6.588-5.756 6.588H1.965l7.73-8.85L1.5 2.25h6.594l4.536 6.042 5.614-6.042z" />
+          </svg>
+        </a>
+
+        <a href="#" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg width="24px" height="24px" fill="var(--col-accent)" viewBox="0 0 24 24" role="img"
+            xmlns="http://www.w3.org/2000/svg">
+            <title>Instagram icon</title>
+            <path
+              d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678c-3.405 0-6.162 2.76-6.162 6.162 0 3.405 2.76 6.162 6.162 6.162 3.405 0 6.162-2.76 6.162-6.162 0-3.405-2.76-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.646-1.44-1.44 0-.794.646-1.439 1.44-1.439.793-.001 1.44.645 1.44 1.439z" />
+          </svg>
+        </a>
+
+
+      </div>
+    </div>
+  </footer>
+
+
+  <script>
+    // 1. Fade In Effect (Matches MainPage Logic)
+    document.addEventListener('DOMContentLoaded', () => {
+      const card = document.getElementById('signup-card');
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      
+      setTimeout(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, 100);
+    });
+
+    // 2. Mobile Menu Toggle
+    const hamburger = document.querySelector('.hamburger');
+    const navRight = document.querySelector('.nav-right');
+
+    if (hamburger) {
+      hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('active');
+        navRight.classList.toggle('active');
+      });
+    }
+
+    // 3. 3D Tilt Effect for Form Card
+    document.addEventListener("mousemove", (e) => {
+      const card = document.getElementById('signup-card');
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Only apply if mouse is somewhat near the card
+      const isNear = e.clientX > rect.left - 50 && 
+                     e.clientX < rect.right + 50 && 
+                     e.clientY > rect.top - 50 && 
+                     e.clientY < rect.bottom + 50;
+
+      if (isNear) {
+        const rotateX = ((y / rect.height) - 0.5) * -2; // Reduced intensity for form usability
+        const rotateY = ((x / rect.width) - 0.5) * 2;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      } else {
+        card.style.transform = `perspective(1000px) rotateX(0) rotateY(0)`;
+      }
+    });
+  </script>
+   <script>
+document.addEventListener("keydown", function(e) {
+    // Check if Ctrl key (or Meta key on Mac) is pressed along with 'u' (keyCode 85)
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 117)) {
+        e.preventDefault(); // Prevents the view source action
+        // alert("View source is disabled."); // Optional: alert user
+    }
+});
+</script>
+	<script>
+(function () {
+    document.addEventListener('keydown', function (e) {
+
+        // Block Ctrl+U
+        if (e.ctrlKey && e.key.toLowerCase() === 'u') {
+            e.preventDefault();
+            return false;
+        }
+
+        // Block Ctrl+Shift+I
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') {
+            e.preventDefault();
+            return false;
+        }
+
+        // Block F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            return false;
+        }
+
+        // Block Ctrl+Shift+J
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'j') {
+            e.preventDefault();
+            return false;
+        }
+
+        // Block Ctrl+S
+        if (e.ctrlKey && e.key.toLowerCase() === 's') {
+            e.preventDefault();
+            return false;
+        }
+
+    });
+
+    // Disable Right Click
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+})();
+</script>
+</body>
+</html>

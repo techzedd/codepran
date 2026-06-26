@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>PRΛN | Project Detail View</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ====================================================================
+           DESIGN TOKENS & SAAS POLISH (Unchanged UI)
+           ==================================================================== */
+        :root {
+            --col-primary: #0F172A;      
+            --col-accent: #16A34A;       
+            --col-accent-hover: #15803D;
+            --col-bg: #F8FAFC;
+            
+            --text-main: #0F172A;
+            --text-body: #334155;
+            --text-muted: #64748B;
+            
+            --radius-xl: 20px;
+            --radius-lg: 12px;
+            --nav-height: 80px;
+            --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-float: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Manrope', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body {
+            font-family: var(--font-body);
+            background: var(--col-bg);
+            color: var(--text-body);
+            padding-top: var(--nav-height);
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+
+        /* --- NAVBAR (Consistent Shell) --- */
+        .glass-nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid #E2E8F0; z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
+        }
+        .nav-logo {
+            font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
+            color: var(--col-primary); display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .nav-logo span { color: var(--col-accent); }
+        .nav-btn-back {
+            display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-muted); font-size: 0.9rem;
+            text-decoration: none; transition: 0.2s; background: white; padding: 8px 16px; border-radius: 50px;
+            border: 1px solid #E2E8F0;
+        }
+        .nav-btn-back:hover { color: var(--col-primary); border-color: var(--col-primary); }
+
+        /* --- HERO SLIDER --- */
+        .hero-section {
+            width: 100%; 
+            height: 480px; 
+            position: relative; 
+            overflow: hidden;
+            background: #0f172a; 
+        }
+        
+        .slider-track {
+            display: flex; height: 100%; width: 100%;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        .slide-item {
+            min-width: 100%; 
+            height: 100%; 
+            position: relative;
+        }
+        
+        .slide-img {
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            object-position: center center;
+            display: block;
+        }
+        
+        .slide-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0.4) 40%, rgba(15, 23, 42, 0) 100%);
+            pointer-events: none;
+        }
+        
+        .slide-caption {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 40px 60px; z-index: 2;
+        }
+        .caption-text {
+            color: white; font-family: var(--font-display); font-size: 1.5rem; font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3); margin-bottom: 4px;
+        }
+        .caption-sub {
+            color: #CBD5E1; font-size: 0.9rem; font-weight: 400;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        .slider-controls {
+            position: absolute; bottom: 40px; right: 40px; display: flex; gap: 8px; z-index: 10;
+        }
+        .slider-dot {
+            width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3);
+            cursor: pointer; transition: 0.3s;
+        }
+        .slider-dot.active { background: var(--col-accent); width: 24px; border-radius: 4px; }
+
+        /* --- DASHBOARD LAYOUT --- */
+        .dashboard-container {
+            max-width: 1200px; margin: -60px auto 60px; padding: 0 24px;
+            position: relative; z-index: 2;
+        }
+        
+        .project-header-block {
+            background: white; border-radius: var(--radius-xl);
+            padding: 32px; box-shadow: var(--shadow-float);
+            margin-bottom: 32px; border: 1px solid #F1F5F9;
+            display: flex; justify-content: space-between; align-items: flex-end;
+        }
+        .ph-title {
+            font-family: var(--font-display); font-size: 2.25rem; font-weight: 800; 
+            color: var(--col-primary); line-height: 1.1; margin-bottom: 12px; letter-spacing: -0.02em;
+        }
+        .ph-meta-row { display: flex; align-items: center; gap: 12px; }
+        .ph-id {
+            font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted);
+            background: #F1F5F9; padding: 4px 10px; border-radius: 6px; font-weight: 600;
+        }
+        .ph-type {
+            font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+            color: var(--col-accent);
+        }
+
+        .card-badge {
+            font-size: 0.85rem; padding: 8px 16px; border-radius: 8px; font-weight: 700; 
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+
+        .dash-grid {
+            display: grid; grid-template-columns: 2fr 1fr; gap: 32px;
+        }
+
+        .dash-card {
+            background: #FFFFFF; border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-card); border: 1px solid #E2E8F0;
+            padding: 32px; margin-bottom: 32px; overflow: hidden;
+        }
+        
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #F1F5F9;
+        }
+        .card-title {
+            font-family: var(--font-display); font-size: 1.1rem; font-weight: 700;
+            color: var(--col-primary); display: flex; align-items: center; gap: 10px;
+        }
+
+        .data-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        .data-item label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 6px; font-weight: 700; }
+        .data-item .value { font-size: 1.05rem; font-weight: 600; color: var(--text-main); }
+        .full-width { grid-column: span 2; }
+
+        .impact-card {
+            background: linear-gradient(135deg, #064E3B, #14532D); color: white; border: none;
+        }
+        .impact-card .card-title { color: #86EFAC; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .impact-metric { margin-bottom: 20px; }
+        .impact-metric .val { font-family: var(--font-display); font-size: 2.5rem; font-weight: 700; color: white; line-height: 1; }
+        .impact-metric .lbl { font-size: 0.85rem; opacity: 0.8; margin-top: 4px; display: block; font-weight: 500; }
+        
+        .timeline { position: relative; padding-left: 20px; display: flex; flex-direction: column; gap: 24px; margin-top: 10px; }
+        .timeline::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #E2E8F0;
+        }
+        .tl-item { position: relative; padding-left: 24px; }
+        .tl-dot {
+            position: absolute; left: -25px; top: 0; width: 12px; height: 12px; border-radius: 50%;
+            background: white; border: 2px solid #CBD5E1; z-index: 2;
+        }
+        .tl-item.active .tl-dot { background: var(--col-accent); border-color: var(--col-accent); box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1); }
+        .tl-title { font-weight: 700; font-size: 0.9rem; color: var(--text-main); }
+        .tl-date { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+        .action-bar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: white; border-top: 1px solid #E2E8F0; padding: 20px 40px;
+            display: flex; justify-content: flex-end; gap: 16px; z-index: 100;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+        }
+        .btn-action {
+            padding: 12px 24px; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; font-size: 0.95rem; transition: 0.2s;
+        }
+        .btn-sec { background: #F1F5F9; color: var(--text-muted); }
+        .btn-sec:hover { background: #E2E8F0; color: var(--text-main); }
+        .btn-main { background: var(--col-primary); color: white; }
+        .btn-main:hover { background: var(--col-accent); transform: translateY(-1px); }
+
+        @media (max-width: 1024px) {
+            .dash-grid { grid-template-columns: 1fr; }
+            .dashboard-container { margin-top: 20px; }
+            .hero-section { height: 350px; }
+            .ph-title { font-size: 1.75rem; }
+            .project-header-block { flex-direction: column; align-items: flex-start; gap: 20px; }
+        }
+        
+        .error-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; text-align: center; padding: 20px; color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav">
+        <a href="../index.html" class="nav-logo"><span>PRΛN</span></a>
+        <a href="dashngo.html" class="nav-btn-back"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    </nav>
+
+    <section class="hero-section" id="heroSection">
+        <div class="slider-track" id="sliderTrack"></div>
+        <div class="slider-controls" id="sliderDots"></div>
+    </section>
+
+    <main class="dashboard-container" id="mainContent">
+        
+        <div class="project-header-block">
+            <div>
+                <div class="ph-meta-row" style="margin-bottom:8px;">
+                    <span id="headerType" class="ph-type">Loading...</span>
+                    <span id="headerId" class="ph-id">BC-XXXX</span>
+                </div>
+                <h1 id="headerName" class="ph-title">Loading Project...</h1>
+            </div>
+            <div id="statusBadge" class="card-badge" style="background:#F1F5F9; color:#64748B;">
+                Loading...
+            </div>
+        </div>
+
+        <div class="dash-grid">
+            
+            <div class="col-left">
+                
+                <div class="dash-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fa-regular fa-id-card"></i> Basic Details</div>
+                    </div>
+                    <div class="data-list">
+                        <div class="data-item full-width">
+                            <label>Project Objective</label>
+                            <div class="value" id="dispObj">--</div>
+                        </div>
+                        <div class="data-item">
+                            <label>Start Date</label>
+                            <div class="value" id="dispDate">--</div>
+                        </div>
+                        <div class="data-item">
+                            <label>Duration / Lifetime</label>
+                            <div class="value" id="dispDuration">--</div>
+                        </div>
+                        <div class="data-item">
+                            <label>Location</label>
+                            <div class="value" id="dispLoc">--</div>
+                        </div>
+                        <div class="data-item">
+                            <label>Ownership</label>
+                            <div class="value" id="dispOwn">Owned / Leased</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dash-card" id="specificCard"></div>
+
+                <div class="dash-card" style="padding:0; height:320px; position:relative;">
+                    <iframe 
+                        id="mapFrame"
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                    <div style="position:absolute; bottom:16px; left:16px; background:white; padding:8px 16px; border-radius:8px; font-weight:600; font-size:0.8rem; box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+                        <i class="fa-solid fa-location-dot" style="color:var(--col-accent);"></i> <span id="mapLabel">Project Zone</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-right">
+                
+                <div class="dash-card impact-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fa-solid fa-seedling"></i> Ecological Impact</div>
+                    </div>
+                    <div class="impact-metric">
+                        <span class="val" id="impactCO2">0.00</span>
+                        <span class="lbl">Tons CO₂e Avoided / Year</span>
+                    </div>
+                    <div class="impact-metric" style="margin-bottom:0; border-top:1px solid rgba(255,255,255,0.2); padding-top:20px;">
+                        <span class="val" id="impactCredits" style="font-size:1.8rem;">0</span>
+                        <span class="lbl">Estimated Carbon Credits</span>
+                    </div>
+                </div>
+
+                <div class="dash-card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Timeline</div>
+                    </div>
+                    <div class="timeline">
+                        <div class="tl-item active">
+                            <div class="tl-dot"></div>
+                            <div class="tl-title">Project Registered</div>
+                            <div class="tl-date" id="tlDate1">--</div>
+                        </div>
+                        <div class="tl-item active">
+                            <div class="tl-dot"></div>
+                            <div class="tl-title">Submitted for Audit</div>
+                            <div class="tl-date" id="tlDate2">--</div>
+                        </div>
+                        <div class="tl-item" id="tlStep3">
+                            <div class="tl-dot"></div>
+                            <div class="tl-title">Validation Protocol</div>
+                            <div class="tl-date">Ongoing</div>
+                        </div>
+                        <div class="tl-item" id="tlStep4">
+                            <div class="tl-dot"></div>
+                            <div class="tl-title">Minted on Ledger</div>
+                            <div class="tl-date">--</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <div class="action-bar" id="actionBar">
+        <button class="btn-action btn-sec" onclick="window.print()">Download Report</button>
+        <button class="btn-action btn-main" id="btnMainAction">Submit for Audit</button>
+    </div>
+
+    <script>
+        const App = {
+            project: null,
+            projectId: null,
+            sliderIndex: 0,
+            
+            init() {
+                // 1. SAFE DATA FETCHING
+                this.projectId = localStorage.getItem('activeProjectId');
+                
+                if (!this.projectId) {
+                    this.showError("No project ID found. Please select a project from the dashboard.");
+                    return;
+                }
+
+                // Get Source of Truth (Same key used by TP/SP)
+                const allProjects = JSON.parse(localStorage.getItem('blueCredProjects') || '[]');
+                
+                // 2. STRICT EQUALITY CHECK
+                this.project = allProjects.find(p => p.id === this.projectId);
+
+                if (!this.project) {
+                    this.showError("Project not found in registry.");
+                    return;
+                }
+
+                // 3. RENDER UI SAFELY
+                this.renderHeader();
+                this.renderBasicDetails();
+                this.renderSpecificDetails();
+                this.renderImpact();
+                this.renderLocationAndMap();
+                this.renderSlider();
+                
+                setInterval(() => this.nextSlide(), 5000);
+            },
+
+            showError(msg) {
+                document.getElementById('heroSection').style.display = 'none';
+                document.getElementById('mainContent').innerHTML = `
+                    <div class="error-container">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size:3rem; margin-bottom:16px;"></i>
+                        <h2>${msg}</h2>
+                        <a href="dashngo.html" style="margin-top:20px; color:var(--col-accent); font-weight:700;">Return to Dashboard</a>
+                    </div>
+                `;
+                document.getElementById('actionBar').style.display = 'none';
+            },
+
+            // --- HEADER ---
+            renderHeader() {
+                const p = this.project;
+                document.getElementById('headerName').innerText = p.name || "Untitled Project";
+                document.getElementById('headerType').innerText = p.type || "Ecological Asset";
+                document.getElementById('headerId').innerText = p.id;
+                
+                const badge = document.getElementById('statusBadge');
+                badge.innerText = p.status;
+                
+                // Status Styling
+                if(p.status === 'Verified') {
+                    badge.style.background = '#DCFCE7'; badge.style.color = '#14532D';
+                    document.getElementById('btnMainAction').innerText = "View Certificate";
+                } else if(p.status === 'Submitted') {
+                    badge.style.background = '#E0F2FE'; badge.style.color = '#0369A1';
+                    document.getElementById('btnMainAction').innerText = "Under Review";
+                    document.getElementById('btnMainAction').disabled = true;
+                    document.getElementById('btnMainAction').style.opacity = 0.6;
+                }
+                
+                const date = p.date || new Date().toLocaleDateString();
+                document.getElementById('tlDate1').innerText = date;
+                document.getElementById('tlDate2').innerText = date;
+            },
+
+            // --- BASIC DETAILS ---
+            renderBasicDetails() {
+                const p = this.project;
+                document.getElementById('dispObj').innerText = p.objective || "No description provided.";
+                document.getElementById('dispDate').innerText = p.date || "N/A";
+                
+                // Dynamic Duration Logic (Project Type Check)
+                if (p.type.includes('Solar')) {
+                    document.getElementById('dispDuration').innerText = (p.lifetime || 25) + " Years";
+                } else {
+                    document.getElementById('dispDuration').innerText = (p.duration || 15) + " Years";
+                }
+            },
+
+            // --- DYNAMIC LOCATION & MAP ---
+            renderLocationAndMap() {
+                const p = this.project;
+                let locString = "India";
+                let mapQuery = "India";
+                const loc = p.location || {};
+
+                // Handle varied data structures (TP vs SP)
+                const district = loc.district || "";
+                const state = loc.state || "";
+                const city = loc.city || loc.village || "";
+
+                if (city || district) {
+                    // Clean Formatting
+                    const parts = [city, district, state].filter(Boolean);
+                    locString = parts.join(", ");
+                    mapQuery = `${city} ${district} ${state} India`;
+                }
+
+                document.getElementById('dispLoc').innerText = locString;
+                document.getElementById('mapLabel').innerText = locString;
+                
+                // Set Map Source
+                const mapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+                document.getElementById('mapFrame').src = mapUrl;
+            },
+
+            // --- POLYMORPHIC DETAILS (Data-Driven Switch) ---
+            renderSpecificDetails() {
+                const container = document.getElementById('specificCard');
+                let html = '';
+                const p = this.project;
+
+                if (p.type.includes('Tree')) {
+                    // Tree Specifics
+                    html = `
+                        <div class="card-header"><div class="card-title"><i class="fa-solid fa-tree"></i> Plantation Specifics</div></div>
+                        <div class="data-list">
+                            <div class="data-item"><label>Total Trees</label><div class="value">${p.trees || 0} Units</div></div>
+                            <div class="data-item"><label>Total Area</label><div class="value">${p.area || 0} Ha</div></div>
+                            <div class="data-item"><label>Species Count</label><div class="value">${p.inventory ? p.inventory.length : 1}</div></div>
+                            <div class="data-item"><label>Health</label><div class="value" style="color:var(--col-accent);">Good</div></div>
+                        </div>
+                    `;
+                } else {
+                    // Solar Specifics
+                    html = `
+                        <div class="card-header"><div class="card-title"><i class="fa-solid fa-solar-panel"></i> System Config</div></div>
+                        <div class="data-list">
+                            <div class="data-item"><label>Capacity</label><div class="value">${p.capacity || '0 kW'}</div></div>
+                            <div class="data-item"><label>Tech</label><div class="value">${p.config?.tech || 'Standard'}</div></div>
+                            <div class="data-item"><label>Connection</label><div class="value">${p.gen?.grid || 'Grid-Tied'}</div></div>
+                            <div class="data-item"><label>Metering</label><div class="value">${p.gen?.metering || 'Yes'}</div></div>
+                        </div>
+                    `;
+                }
+                container.innerHTML = html;
+            },
+
+            // --- IMPACT CALC ---
+            renderImpact() {
+                let co2 = 0;
+                let credits = 0;
+                const p = this.project;
+
+                if(p.type.includes('Tree')) {
+                    const trees = p.trees || 0;
+                    co2 = (trees * 0.025).toFixed(2); // 25kg/tree/year
+                    credits = Math.floor(co2 * 0.9);
+                } else {
+                    const capNum = parseFloat(p.capacity) || 0;
+                    const estGen = capNum * 1450; // 1450 units/kW/year
+                    co2 = (estGen * 0.00082).toFixed(2); // Grid factor
+                    credits = Math.floor(co2);
+                }
+
+                document.getElementById('impactCO2').innerText = co2;
+                document.getElementById('impactCredits').innerText = credits;
+            },
+
+            // --- IMAGE SLIDER FIX (Handles Metadata & Missing Files) ---
+            renderSlider() {
+                const track = document.getElementById('sliderTrack');
+                const dots = document.getElementById('sliderDots');
+                const p = this.project;
+                
+                let slides = [];
+                
+                // 1. Process 'files' object if it exists
+                if (p.files) {
+                    // Filter out null/empty entries
+                    const entries = Object.entries(p.files).filter(([key, val]) => val && val.name);
+                    
+                    slides = entries.map(([key, file]) => {
+                        // NOTE: In this demo env, we only have metadata (file names).
+                        // We use high-quality Unsplash placeholders mapped to project type to ensure visuals don't break.
+                        // In production, this would be: file.url
+                        let imgUrl = p.type.includes('Tree') 
+                            ? 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1600&q=80' 
+                            : 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1600&q=80';
+
+                        return {
+                            src: imgUrl, 
+                            caption: file.name, // Display actual user filename
+                            sub: `Uploaded Evidence: ${key.toUpperCase()}`
+                        };
+                    });
+                }
+
+                // 2. Fallback Safety (Never show empty slider)
+                if (slides.length === 0) {
+                    const defaultImg = p.type.includes('Tree') 
+                        ? 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1600&q=80'
+                        : 'https://images.unsplash.com/photo-1594818379496-da1e345b0ded?auto=format&fit=crop&w=1600&q=80';
+                    
+                    slides.push({
+                        src: defaultImg,
+                        caption: "Project Overview",
+                        sub: "Default View"
+                    });
+                }
+
+                // 3. Render
+                track.innerHTML = slides.map(s => `
+                    <div class="slide-item">
+                        <img src="${s.src}" class="slide-img" alt="Evidence">
+                        <div class="slide-overlay"></div>
+                        <div class="slide-caption">
+                            <div class="caption-text">${s.caption}</div>
+                            <div class="caption-sub"><i class="fa-solid fa-check-circle" style="color:#4ADE80;"></i> ${s.sub}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+                dots.innerHTML = slides.map((_, i) => 
+                    `<div class="slider-dot ${i===0?'active':''}" onclick="App.goToSlide(${i})"></div>`
+                ).join('');
+            },
+
+            goToSlide(index) {
+                const track = document.getElementById('sliderTrack');
+                const dots = document.querySelectorAll('.slider-dot');
+                if(!track) return;
+                
+                this.sliderIndex = index;
+                track.style.transform = `translateX(-${index * 100}%)`;
+                
+                dots.forEach(d => d.classList.remove('active'));
+                if(dots[index]) dots[index].classList.add('active');
+            },
+
+            nextSlide() {
+                const dots = document.querySelectorAll('.slider-dot');
+                if(dots.length === 0) return;
+                const nextIndex = (this.sliderIndex + 1) % dots.length;
+                this.goToSlide(nextIndex);
+            }
+        };
+
+        App.init();
+    </script>
+   <script>
+document.addEventListener("keydown", function(e) {
+    // Check if Ctrl key (or Meta key on Mac) is pressed along with 'u' (keyCode 85)
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 117)) {
+        e.preventDefault(); // Prevents the view source action
+        // alert("View source is disabled."); // Optional: alert user
+    }
+});
+</script>
+</body>
+</html>
