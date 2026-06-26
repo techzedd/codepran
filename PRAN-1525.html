@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wind Power Project In Gujarat | PRΛN Marketplace</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        /* =========================================
+           0. PRAN DESIGN SYSTEM & VARIABLES
+           ========================================= */
+        :root {
+            --bg-base: #F4F7F5; 
+            --bg-accent: #FFFFFF;
+            --brand-primary: #14532D; 
+            --brand-vibrant: #22C55E; 
+            --brand-soft: #F0FDF4;    
+            --text-body: #475569;     
+            --text-heading: #0F172A;  
+            --glass-surface: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(20, 83, 45, 0.08);
+            --border-light: #E2E8F0;
+            --font-display: "Space Grotesk", sans-serif;
+            --font-body: "Inter", sans-serif;
+            --nav-height: 80px;
+        }
+
+        body { 
+            background: var(--bg-base); 
+            color: var(--text-body); 
+            font-family: var(--font-body); 
+            line-height: 1.6;
+            margin: 0; padding: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        * { box-sizing: border-box; outline: none; }
+
+        /* =========================================
+           1. NAVBAR (Inherited from mp2.html)
+           ========================================= */
+        nav {
+            position: fixed; top: 0; width: 100%; height: var(--nav-height);
+            background: var(--glass-surface); backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 5%; z-index: 10000;
+        }
+        .nav-logo { display: flex; align-items: center; text-decoration: none; }
+        .nav-logo svg { height: 68px; width: auto; object-fit: contain; }
+        
+        .nav-links { display: flex; gap: 32px; list-style: none; align-items: center; margin:0; padding:0; }
+        .nav-link { color: var(--text-heading); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: 0.3s; font-family: var(--font-body);}
+        .nav-link:hover { color: var(--brand-vibrant); }
+
+        .btn-green {
+            background: var(--brand-vibrant); color: #fff; padding: 12px 28px;
+            border-radius: 100px; font-weight: 600; text-decoration: none;
+            display: flex; align-items: center; justify-content: center; transition: 0.4s ease;
+            font-family: var(--font-body); border:none; cursor: pointer;
+        }
+        .btn-green:hover { background: var(--brand-primary); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2); }
+        .btn-full { width: 100%; margin-top: 16px; font-size: 16px; padding: 16px; }
+
+        /* =========================================
+           2. FULL WIDTH HERO MAP
+           ========================================= */
+        .hero-map-wrapper {
+            position: relative;
+            width: 100%;
+            height: 65vh;
+            min-height: 500px;
+            margin-top: var(--nav-height);
+        }
+        
+        #hero-map {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.8) 100%);
+            z-index: 2;
+            pointer-events: none; /* Let clicks pass through to map */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 5% 5% 40px 5%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            pointer-events: auto;
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 4vw, 4rem);
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0 0 16px 0;
+            line-height: 1.1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .hero-badge {
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: var(--font-body);
+            letter-spacing: 0.5px;
+        }
+
+        /* =========================================
+           3. PROJECT CONTENT AREA (Two-Column)
+           ========================================= */
+        .pdp-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 60px 5%;
+            display: grid;
+            grid-template-columns: 65% calc(35% - 40px);
+            gap: 40px;
+        }
+
+        .premium-card {
+            background: var(--bg-accent);
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+
+        .premium-card:hover {
+            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+        }
+
+        .card-heading {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            color: var(--text-heading);
+            font-weight: 600;
+            margin: 0 0 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* --- Left Column --- */
+        .gallery-container {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 32px;
+            background: var(--bg-accent);
+            border: 1px solid var(--border-light);
+            padding: 16px;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            transition: opacity 0.3s ease;
+        }
+
+        .thumbnail-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .thumbnail-wrapper {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .thumbnail-img {
+            width: 100%;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            opacity: 0.6;
+            transition: 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .thumbnail-wrapper.active .thumbnail-img, 
+        .thumbnail-wrapper:hover .thumbnail-img {
+            opacity: 1;
+        }
+
+        .thumbnail-wrapper.active .thumbnail-img {
+            border-color: var(--brand-vibrant);
+        }
+
+        .thumbnail-label {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 11px;
+            padding: 4px;
+            text-align: center;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .content-prose h3 {
+            font-family: var(--font-display);
+            color: var(--text-heading);
+            font-size: 1.5rem;
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+
+        .content-prose p {
+            font-size: 1.05rem;
+            color: var(--text-body);
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+
+        .content-prose ul {
+            list-style: none; padding: 0; margin: 0 0 24px 0;
+        }
+
+        .content-prose ul li {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+        
+        .content-prose ul li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--brand-vibrant);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* --- Right Column --- */
+        .price-huge {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            font-family: var(--font-display);
+            margin-bottom: 8px;
+        }
+
+        .listing-meta {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 16px;
+        }
+
+        .meta-col { display: flex; flex-direction: column; }
+        .meta-label { font-size: 0.85rem; color: #64748B; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .meta-val { font-size: 1.1rem; color: var(--text-heading); font-weight: 600; }
+        .meta-val-link { color: var(--brand-primary); text-decoration: underline; }
+
+        .seller-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .seller-avatar {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--brand-soft);
+            display: flex; align-items: center; justify-content: center; color: var(--brand-primary);
+            font-weight: bold;
+        }
+
+        /* Registry Card */
+        .registry-flex { display: flex; align-items: center; gap: 20px; margin-bottom: 16px; }
+        .registry-logo { width: 80px; height: auto; }
+        .verification-status { display: flex; align-items: center; gap: 8px; color: var(--brand-vibrant); font-weight: 600; }
+        .verification-status svg { width: 20px; height: 20px; fill: currentColor; }
+
+        /* SDG Card */
+        .sdg-grid { display: flex; gap: 12px; flex-wrap: wrap; }
+        .sdg-icon { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; transition: 0.3s; cursor: pointer; }
+        .sdg-icon:hover { transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+        /* Stats Card */
+        .stat-row { margin-bottom: 20px; }
+        .stat-row:last-child { margin-bottom: 0; }
+        .stat-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+        .stat-label { color: var(--text-body); font-weight: 500; }
+        .stat-value { color: var(--text-heading); font-weight: 600; }
+        .progress-track { width: 100%; height: 8px; background: var(--bg-base); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--brand-primary); border-radius: 4px; }
+        .progress-fill.accent { background: #FCD34D; }
+
+        /* Certs Card */
+        .certs-flex { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+        .cert-badge { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--bg-base); border-radius: 8px; font-weight: 500; font-size: 0.9rem;}
+        .cert-badge img { height: 24px; width: auto; object-fit: contain; }
+
+        /* =========================================
+           4. IMPACT HIGHLIGHTS SECTION
+           ========================================= */
+        .impact-section {
+            background: #ffffff;
+            padding: 80px 5%;
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .section-title {
+            text-align: center; font-family: var(--font-display); font-size: 2.5rem; color: var(--text-heading); margin: 0 0 48px 0;
+        }
+
+        .impact-grid {
+            max-width: 1440px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+        }
+
+        .impact-card {
+            background: var(--bg-base); padding: 40px 24px; border-radius: 16px; text-align: center;
+            transition: 0.3s; border: 1px solid transparent;
+        }
+        .impact-card:hover { background: var(--brand-soft); border-color: var(--brand-vibrant); transform: translateY(-5px); }
+
+        .impact-number { font-family: var(--font-display); font-size: 3rem; font-weight: 700; color: var(--brand-primary); margin-bottom: 8px; }
+        .impact-label { font-size: 1.1rem; color: var(--text-body); font-weight: 500; }
+
+        /* =========================================
+           5. BUY CTA SECTION
+           ========================================= */
+        .cta-section {
+            background: var(--brand-primary);
+            padding: 100px 5%;
+            text-align: center;
+            color: #ffffff;
+        }
+        .cta-content { max-width: 800px; margin: 0 auto; }
+        .cta-content h2 { font-family: var(--font-display); font-size: 3rem; margin: 0 0 20px 0; }
+        .cta-content p { font-size: 1.2rem; color: rgba(255,255,255,0.9); margin: 0 0 40px 0; }
+        .cta-buttons { display: flex; justify-content: center; gap: 20px; }
+        
+        .btn-white {
+            background: #ffffff; color: var(--brand-primary); padding: 16px 32px;
+            border-radius: 100px; font-weight: 600; text-decoration: none; font-size: 1.1rem; transition: 0.3s;
+        }
+        .btn-white:hover { background: var(--bg-base); transform: translateY(-2px); }
+        .btn-outline {
+            background: transparent; border: 2px solid #ffffff; color: #ffffff; padding: 14px 32px;
+            border-radius: 100px; font-weight: 600; text-decoration: none; font-size: 1.1rem; transition: 0.3s;
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+        /* =========================================
+           6. RELATED PROJECTS (Inherited MP2 cards)
+           ========================================= */
+        .related-section { padding: 80px 5%; max-width: 1440px; margin: 0 auto; }
+        .mp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+        
+        .project-card {
+            width: 100%; min-height: 520px; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 16px;
+            display: flex; flex-direction: column; transition: all 0.3s ease;
+        }
+        .project-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.08); }
+        .card-image { width: 100%; height: 240px; object-fit: cover; border-radius: 16px 16px 0 0; }
+        .card-content { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
+        .project-price { font-size: 32px; font-weight: 700; color: #111827; font-family: 'Inter', sans-serif; margin-bottom: 12px; }
+        .card-title { font-size: 24px; font-weight: 700; line-height: 1.3; color: #111827; font-family: 'Inter', sans-serif; margin: 0 0 12px 0; }
+        .card-desc { font-size: 16px; line-height: 1.6; color: #6B7280; font-family: 'Inter', sans-serif; margin: 0 0 20px 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .badge { padding: 6px 14px; border: 1px solid #D1D5DB; background: #ffffff; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: 'Inter', sans-serif; color: #374151; }
+        .card-sdgs { display: flex; gap: 8px; margin-bottom: 24px; align-items: center; }
+        .sdg-img { height: 32px; width: 32px; object-fit: cover; border-radius: 4px; }
+        .card-footer { margin-top: auto; display: flex; align-items: center; }
+        .btn-view { font-size: 15px; font-weight: 600; color: #16A34A; text-decoration: none; font-family: 'Inter', sans-serif; transition: 0.3s ease; display: inline-block; }
+        .btn-view:hover { transform: translateX(4px); }
+
+        /* =========================================
+           7. FOOTER (Inherited from mp2.html)
+           ========================================= */
+        .site-footer { background: #ffffff; border-top: 1px solid var(--border-light); padding: 80px 5% 40px; }
+        .footer-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px; }
+        .footer-brand svg { height: 128px; width: auto; margin-bottom: 0px; }
+        .footer-brand p { font-family: var(--font-body); font-size: 1rem; color: var(--text-body); max-width: 320px; line-height: 1.6; }
+        .footer-nav h4 { font-family: var(--font-display); font-size: 1.1rem; color: var(--text-heading); margin: 0 0 20px 0; font-weight: 600; }
+        .footer-nav ul { list-style: none; padding: 0; margin: 0; }
+        .footer-nav li { margin-bottom: 12px; }
+        .footer-nav a { font-family: var(--font-body); color: var(--text-body); text-decoration: none; font-size: 0.95rem; transition: color 0.2s; }
+        .footer-nav a:hover { color: var(--brand-vibrant); }
+        .footer-bottom { max-width: 1400px; margin: 60px auto 0; padding-top: 30px; border-top: 1px solid var(--border-light); display: flex; justify-content: space-between; font-family: var(--font-body); font-size: 0.9rem; color: #64748B; }
+
+        @media (max-width: 1024px) {
+            .pdp-container { grid-template-columns: 1fr; }
+            .mp-grid { grid-template-columns: repeat(2, 1fr); }
+            .impact-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-title { font-size: 3rem; }
+        }
+
+        @media (max-width: 768px) {
+            .mp-grid { grid-template-columns: 1fr; }
+            .impact-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 40px; }
+            .cta-buttons { flex-direction: column; }
+            .hero-title { font-size: 2.5rem; }
+        }
+
+
+
+         /* Social icons right side */
+.footer-socials {
+  margin-left: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 18px !important;
+}
+
+/* Simple professional icon style */
+.footer-social-link {
+  position: relative !important;
+
+  width: auto !important;
+  height: auto !important;
+  min-width: auto !important;
+  min-height: auto !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  color: #14532D !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+
+  filter: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+
+  text-decoration: none !important;
+  transform: none !important;
+
+  transition: color 0.22s ease, opacity 0.22s ease !important;
+}
+
+/* Icon size */
+.footer-social-link svg {
+  width: 21px !important;
+  height: 21px !important;
+  display: block !important;
+  fill: currentColor !important;
+
+  transform: none !important;
+  filter: none !important;
+  transition: color 0.22s ease, opacity 0.22s ease !important;
+}
+
+/* Simple hover only */
+.footer-social-link:hover {
+  color: none !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+.footer-social-link:hover svg {
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Simple focus state */
+.footer-social-link:focus-visible {
+  outline: 1px solid rgba(255, 255, 255, 0.45) !important;
+  outline-offset: 5px !important;
+  border-radius: 3px !important;
+}
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="nav-logo" aria-label="PRAN Home">
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="110 110 820 820" class="pran-logo" aria-label="PRAN Logo" role="img" style="height:68px;">
+                  <g fill="#12A33A">
+                            <path d="M554.838257,142.286926 C529.725281,138.792343 504.981201,138.088684 480.177612,140.478699 C441.793365,144.177307 404.790009,153.438614 369.163391,168.210968 C337.418457,181.373795 307.847015,198.388870 281.172852,219.990402 C224.350143,266.007111 183.037735,323.211121 158.709488,392.425323 C146.815750,426.263184 140.397507,461.091522 138.015152,496.850311 C136.029221,526.659058 139.010590,556.015808 143.741333,585.323730 C144.236710,588.392761 145.495880,591.857300 140.953110,593.072815 C136.993301,594.132324 134.436050,592.252197 133.499146,587.384460 C126.562492,551.345093 124.954735,515.104370 128.343750,478.514343 C130.965546,450.207794 136.420609,422.547791 144.928574,395.503418 C151.834076,373.552826 160.752747,352.376251 171.589783,332.047577 C186.464432,304.144836 204.421692,278.367249 225.374283,254.695709 C235.981430,242.712112 247.369812,231.509323 259.393036,220.924042 C279.466248,203.251526 301.121826,187.827484 324.523010,174.929047 C349.955750,160.910828 376.569244,149.755554 404.508118,141.550797 C425.519073,135.380554 446.893188,131.268387 468.495239,128.474213 C491.494995,125.499260 514.673706,125.244530 537.822205,127.182541 C562.264954,129.228897 586.375916,133.304306 609.948608,140.103729 C629.802185,145.830414 649.042114,153.222916 667.712036,162.171219 C679.768555,167.949783 691.136780,174.827225 702.350952,182.008240 C704.612122,183.456238 706.875732,183.871109 709.424316,183.850479 C728.006104,183.699905 746.290161,186.105347 764.302063,190.556595 C791.057739,197.168686 814.559143,210.100937 834.807434,228.583313 C854.658936,246.703461 870.269531,268.129913 882.781799,292.011078 C901.651978,328.026978 912.424377,366.331085 917.432373,406.492676 C919.124573,420.062500 920.551453,433.613068 920.281067,447.306366 C920.123352,455.297974 917.081787,457.727264 909.582458,455.208405 C870.417664,442.053955 833.018982,425.191010 798.666504,401.993256 C763.586182,378.303986 736.068115,347.754913 716.766113,310.119934 C704.412476,286.033020 697.701599,260.141876 694.830444,233.220398 C693.504150,220.784225 692.623840,208.346024 693.014832,195.846985 C693.129883,192.170120 691.547180,190.028427 688.443298,188.331284 C666.361023,176.257431 643.981873,164.877411 619.924866,157.119507 C598.798279,150.306625 577.223083,145.536514 554.838257,142.286926 M734.536621,197.102768 C730.700989,196.838287 726.844482,195.360291 722.948914,196.967102 C723.384827,198.954941 724.808411,199.647644 725.977783,200.530243 C749.766052,218.485046 770.457153,239.628387 789.603088,262.355835 C799.377625,273.958832 807.828369,286.543976 816.532410,298.938629 C818.658508,301.966217 819.484253,305.437927 816.351868,307.893829 C813.015320,310.509888 809.749023,308.800598 807.187378,305.856842 C806.751404,305.355835 806.356262,304.813538 805.989685,304.258942 C780.107178,265.110840 747.986328,231.863876 710.665955,203.546310 C709.188293,202.425079 707.912231,200.534256 705.611328,201.243393 C704.752747,202.567200 705.048035,203.922119 705.023315,205.239288 C704.810486,216.596069 706.108337,227.887695 707.565186,239.074310 C713.838867,287.247253 735.504211,327.879120 769.490662,362.143188 C791.038391,383.866882 816.377441,400.468567 843.247070,414.706543 C863.262268,425.312439 884.472412,433.345306 905.482483,441.755737 C906.375854,442.113342 907.345886,442.602539 908.365112,441.732330 C909.243286,440.252380 908.851196,438.539764 908.761780,436.924896 C907.360718,411.611023 903.868835,386.663239 897.175354,362.118835 C887.175598,325.451019 872.383972,291.252747 848.749939,261.124725 C819.735413,224.137833 782.140930,202.647278 734.536621,197.102768 z"/>
+                            <path d="M657.196045,875.150757 C688.697937,863.476501 717.500305,847.564026 744.006287,827.684814 C768.862915,809.042480 791.325623,787.796875 811.044250,763.658020 C827.635986,743.347046 842.674622,722.013306 854.984985,698.866577 C868.614136,673.240112 879.721924,646.572876 887.906189,618.637024 C900.517883,575.588806 906.189331,531.747620 904.676025,486.949158 C904.563660,483.624176 904.947876,480.854614 909.180054,480.735901 C913.192688,480.623352 915.063232,482.806702 915.080078,486.548859 C915.136353,499.045227 915.443115,511.556915 914.954651,524.035339 C914.251404,542.003662 912.454102,559.904175 909.244263,577.616516 C905.860046,596.291687 901.373108,614.675598 895.584229,632.797302 C888.312439,655.560852 879.004333,677.440491 868.111816,698.614197 C855.366943,723.388611 840.490051,746.840088 822.586060,768.325806 C810.094055,783.316895 797.107971,797.778748 782.760254,811.037109 C753.418945,838.150757 720.938782,860.707275 684.544739,877.146545 C659.488220,888.464661 633.368958,896.976501 606.310059,902.497375 C575.504028,908.782776 544.452759,912.262817 513.032349,910.905823 C482.161377,909.572571 451.810394,904.674133 422.038757,896.132080 C390.964783,887.216309 361.462280,874.805908 333.896942,857.894958 C330.621826,855.885742 327.328613,855.049011 323.511047,855.180786 C290.487122,856.321350 259.777466,848.227600 231.493713,831.283325 C204.674911,815.216736 183.923264,792.959045 167.045242,766.858032 C145.057663,732.855408 132.781006,695.290283 125.749016,655.721313 C123.849815,645.034485 123.092094,634.253479 121.987602,623.496643 C121.162094,615.456848 124.316956,612.817261 132.256836,614.362366 C162.136063,620.176758 191.082596,628.934387 218.300125,642.680115 C259.191498,663.331665 292.053802,692.797119 314.020508,733.340942 C329.035522,761.054138 337.551422,790.831909 339.396606,822.446899 C339.814301,829.603394 340.305389,836.741882 340.096344,843.903259 C340.006012,846.996033 341.313568,848.864075 344.014679,850.176025 C358.814423,857.364319 373.143005,865.536621 388.557617,871.438660 C405.043060,877.750793 421.740601,883.317322 438.877777,887.702209 C472.531372,896.313110 506.686157,900.024353 541.316711,898.503479 C578.425781,896.873718 614.687622,890.311279 649.718994,877.620483 C652.063721,876.771118 654.463318,876.073303 657.196045,875.150757 M180.862686,638.619873 C165.438797,633.865906 150.005905,629.148621 133.661011,625.940979 C134.565094,645.445862 137.683868,663.432495 142.413498,681.140259 C153.850739,723.961243 172.383194,762.885376 204.123901,794.770996 C230.671799,821.440125 262.125549,837.943970 299.604004,842.507263 C303.229614,842.948669 307.025848,843.854553 311.064270,842.291565 C307.969086,838.295105 303.853394,836.259827 300.489746,833.349304 C277.247437,813.238159 255.624847,791.580566 237.244904,766.865601 C233.981689,762.477661 230.306244,758.315247 228.009750,753.247192 C227.033218,751.092163 226.889709,748.993225 228.758377,747.279602 C230.680695,745.516785 232.927811,745.395386 235.265625,746.483765 C236.995926,747.289307 238.256683,748.625122 239.196701,750.218994 C244.815216,759.745178 252.143906,767.957947 259.200134,776.381042 C278.556732,799.487183 300.662201,819.633118 324.970093,837.400452 C325.975006,838.135071 326.974945,839.303528 328.680115,838.283264 C329.379059,833.384521 328.288971,828.464294 327.988434,823.515442 C326.290131,795.546204 319.028168,769.077881 306.474030,744.057861 C292.954346,717.113647 274.169006,694.581055 250.317184,676.077576 C229.415253,659.862793 206.184128,648.181030 180.862686,638.619873 z"/>
+                            <path d="M656.297546,434.370483 C647.762756,440.550446 640.787537,440.602936 632.585266,434.765503 C629.432861,432.521973 626.839783,429.692871 624.517212,426.630798 C619.021362,419.384979 611.555786,415.909027 602.685791,415.095398 C593.825134,414.282684 585.627686,411.644287 579.126160,405.383911 C570.398254,396.979767 569.081177,386.701111 572.292847,375.418884 C574.019409,369.353638 576.048706,363.275604 574.001404,356.821167 C570.622314,346.168732 562.894897,340.715027 552.407410,338.278168 C545.132019,336.587646 537.707153,335.311310 531.120667,331.387024 C517.116760,323.043457 513.717407,310.059784 522.012756,296.183319 C522.694153,295.043427 523.445190,293.922028 524.310608,292.918671 C532.932068,282.923065 530.881836,274.523743 520.132629,263.791992 C517.586060,261.249542 513.874695,261.413055 510.642517,261.465912 C488.734833,261.824066 467.166168,264.695221 446.100647,270.894958 C445.349426,271.116058 444.678802,271.611023 444.196869,271.860992 C443.815094,273.179901 444.460022,273.751068 445.014893,274.360596 C457.523529,288.099579 455.521454,306.572510 440.427551,317.780762 C430.768982,324.952911 419.285706,327.280060 408.075714,330.397858 C405.033203,331.244049 401.947754,332.049042 399.043793,333.260742 C385.668365,338.841858 379.304810,349.048096 378.300720,363.450409 C376.258240,392.746033 356.167664,409.540314 329.596191,414.291107 C315.852509,416.748383 306.369720,418.378571 288.751434,407.513275 C285.536743,410.125122 284.166748,414.016907 283.204590,417.711029 C281.797607,423.113159 278.428741,424.318848 273.580597,424.089111 C268.925293,423.868469 268.192719,423.021210 270.084656,418.591492 C276.496735,403.578247 283.113007,388.654663 291.744476,374.738220 C310.043854,345.234314 333.090302,320.052887 361.028870,299.452850 C396.289673,273.453918 435.500610,257.049866 479.124329,251.631699 C525.770020,245.838196 570.739746,251.850464 613.838867,270.866852 C641.075806,282.884460 665.159058,299.576691 686.919495,319.830658 C716.687195,347.537567 738.735413,380.463654 753.961243,418.039001 C754.755188,419.998169 758.087891,422.750397 754.250183,424.867737 C750.530579,426.919922 744.016235,424.880829 742.592041,421.558929 C739.113525,413.445435 735.277527,405.511780 731.383972,397.587402 C728.781128,392.289948 725.324951,388.762329 719.929443,386.599396 C710.267822,382.726227 700.570374,379.498322 689.904846,380.844788 C677.315552,382.434021 669.420288,389.834717 667.253174,402.502106 C665.825195,410.849243 665.428040,419.421967 661.342773,427.142303 C660.009094,429.662750 658.616638,432.103943 656.297546,434.370483 M573.995972,336.441650 C583.827454,345.921661 588.075684,357.168152 585.019775,370.807739 C584.221008,374.372986 583.670410,377.998596 583.121887,381.614075 C581.675598,391.145966 585.728455,398.241211 594.789795,401.583832 C597.724609,402.666473 600.888550,403.284668 604.003052,403.695923 C616.071350,405.289551 626.300415,410.121460 633.893860,419.930054 C635.213318,421.634491 636.733093,423.205048 638.294678,424.696930 C643.578796,429.745453 649.857422,428.363739 652.460144,421.446106 C653.863770,417.715637 654.574280,413.795227 654.986023,409.773834 C656.044373,399.437958 657.782104,389.259216 665.285645,381.217773 C676.432739,369.271606 690.263062,366.978912 705.595947,369.982880 C708.414001,370.535004 711.190369,371.808350 715.437988,370.852814 C695.692505,342.057678 671.782898,318.655151 643.103577,300.226532 C610.432861,279.233215 574.790100,266.515045 536.131653,262.675812 C535.533630,264.526154 536.254272,265.355621 536.726685,266.179016 C543.375854,277.768555 542.583374,288.705505 533.969727,299.010986 C533.225952,299.900848 532.587219,300.891052 531.989197,301.888306 C526.682434,310.737488 529.621826,319.231018 539.272156,322.715637 C541.925842,323.673859 544.673096,324.415375 547.424683,325.052124 C556.730896,327.205566 565.755554,329.987854 573.995972,336.441650 M304.509094,403.170502 C337.652435,410.725342 363.998962,392.353424 367.892609,359.086060 C368.929352,350.227875 371.060486,341.721680 377.492004,334.935242 C384.083374,327.980103 392.124908,323.510529 401.210358,320.750916 C409.162476,318.335510 417.391418,316.848633 425.097168,313.605652 C430.559875,311.306580 435.452881,308.199127 438.942139,303.309326 C442.904114,297.757050 442.868744,289.234528 439.043793,284.567169 C435.866333,280.689880 425.645538,277.727020 421.297485,279.570129 C406.412720,285.879730 392.035004,293.086761 378.483093,302.027496 C344.383789,324.524170 316.695892,352.904449 297.220337,389.005829 C293.166779,396.519897 293.508148,397.573853 301.030823,401.702606 C301.901642,402.180573 302.849030,402.518982 304.509094,403.170502 z"/>
+                            <path d="M705.285217,701.276794 C683.091309,724.537903 657.895996,743.212036 629.470886,757.388855 C600.419373,771.877930 569.713623,780.639709 537.260742,783.346619 C497.370819,786.673767 458.713837,781.298462 421.772430,766.126221 C381.419556,749.552979 346.647980,724.999756 318.357391,691.328979 C303.448639,673.584961 290.777649,654.612610 280.781158,633.781494 C280.019318,632.193848 278.702850,630.672058 279.413727,628.671936 C288.030914,625.199646 289.441437,625.807617 293.447815,633.441650 C318.505981,681.188232 354.175903,718.463379 401.997803,743.936707 C424.385986,755.862244 448.058136,763.848511 472.777527,769.051331 C474.449768,769.403320 476.138031,770.136414 476.821136,767.748657 C477.839233,764.189819 480.766113,762.537170 483.618317,760.794250 C489.589844,757.144897 495.564240,753.502258 500.900299,748.924744 C502.156830,747.846680 503.511566,746.872009 503.936523,745.166626 C502.924500,743.001953 500.826050,743.323425 499.155609,742.899841 C489.158722,740.364685 478.945618,738.658508 469.211761,735.118835 C461.773529,732.413940 454.860809,728.754333 449.408447,722.901917 C443.024384,716.049500 443.933319,708.749756 451.586792,703.386658 C456.355774,700.044800 461.826050,698.525452 467.453796,697.760925 C476.516357,696.529907 485.579163,695.901184 494.797302,696.638000 C526.291260,699.155518 552.649780,688.360657 575.246521,666.335205 C594.478760,647.589233 617.988586,641.210510 644.678467,645.310059 C664.348083,648.331360 681.542908,656.227234 696.940979,668.532349 C700.966614,671.749329 703.946777,675.983398 707.110291,679.491943 C709.276855,679.298889 710.019531,678.090820 710.779297,677.048889 C718.526794,666.423645 726.734131,656.106812 732.696716,644.282654 C736.049316,637.634216 740.481934,635.850708 749.182495,638.194641 C737.397766,661.281860 723.292053,682.386169 705.285217,701.276794 M642.444275,736.903259 C645.391785,735.027039 648.320862,733.121094 651.289856,731.279419 C667.953552,720.943054 682.515625,708.082031 696.214294,694.148071 C699.455933,690.850708 699.727905,688.215393 696.738342,684.352783 C689.986755,675.629395 681.018066,669.942566 671.443115,665.247009 C650.517090,654.984741 628.827515,651.445801 606.199463,659.477783 C594.589539,663.598877 585.625916,671.530945 576.788574,679.704773 C553.137451,701.580200 525.054749,710.141724 493.197205,707.526855 C483.023834,706.691772 472.897125,707.330139 463.010834,710.209900 C460.767273,710.863403 458.060455,711.325867 457.568024,713.926453 C457.092926,716.435486 459.662292,717.453918 461.358826,718.693359 C466.820221,722.683044 473.034943,725.047974 479.516113,726.706116 C488.372803,728.971985 497.357666,730.778320 506.127655,733.331238 C517.509644,736.644409 519.668274,745.249634 511.683990,754.099060 C507.049194,759.236084 501.180023,762.765869 495.513092,766.572876 C493.678986,767.804993 491.366333,768.555481 490.258209,770.611511 C490.964630,771.739807 491.851349,771.639709 492.657654,771.707886 C517.862915,773.838379 542.837036,772.426758 567.631958,767.262390 C594.478760,761.730469 618.391296,750.495728 642.444275,736.903259 z"/>
+                        </g>
+                        <g fill="#000000">
+                            <path d="M725.113525,562.000000 C725.110779,577.497070 724.943054,592.497070 725.204407,607.489563 C725.286987,612.223755 723.913025,614.230896 719.028137,613.987122 C713.542847,613.713318 708.032715,613.870911 702.534729,613.940247 C699.118835,613.983337 697.456299,612.939087 697.536011,609.014282 C698.246399,574.039001 696.417297,539.069214 697.346008,504.083771 C697.831848,485.779388 697.680420,467.455139 697.597595,449.140839 C697.578857,444.994415 698.997803,443.488861 703.120056,443.651245 C709.109009,443.887146 715.119507,443.825867 721.111816,443.623596 C724.340637,443.514587 726.203003,444.825287 727.996643,447.454926 C754.272339,485.975677 780.659119,524.420654 807.028381,562.877563 C807.481934,563.538940 808.045593,564.124817 808.563904,564.753235 C810.385315,563.797485 809.658569,562.289673 809.658569,561.136108 C809.657837,523.644714 809.648071,486.153107 809.488953,448.662170 C809.472168,444.697418 810.844055,443.164520 814.734802,443.446472 C820.721191,443.880310 826.721191,443.902588 832.703674,443.320587 C836.475403,442.953644 837.714172,444.741913 837.658508,448.325195 C837.273132,473.144745 837.339966,497.958679 837.757568,522.784241 C838.157654,546.572693 837.482056,570.378540 837.351562,594.177185 C837.326904,598.667908 837.454773,603.177246 837.853516,607.647461 C838.245300,612.040466 836.852417,614.281311 832.127441,614.138306 C825.300354,613.931580 818.464478,613.885010 811.634399,613.958557 C807.900024,613.998718 805.633972,612.349182 803.561951,609.275818 C778.246460,571.724182 752.802002,534.259399 727.381958,496.778290 C727.022217,496.247986 726.545959,495.796722 725.114380,494.140076 C725.114380,517.444885 725.114380,539.472473 725.113525,562.000000 z"/>
+                            <path d="M362.761139,449.181885 C362.372375,444.989746 364.131226,443.759827 367.736420,443.771179 C393.235901,443.851379 418.766693,443.014008 444.226837,444.013855 C469.589111,445.009857 487.940308,458.476410 493.254669,483.377960 C498.906586,509.861481 490.820648,536.450256 461.844666,548.443848 C460.336761,549.067993 458.660553,549.500305 457.421600,551.475464 C459.561737,557.206055 463.797791,561.998352 467.181152,567.236572 C475.941528,580.799438 485.035248,594.146790 493.950378,607.610291 C494.921143,609.076294 496.627777,610.622314 495.550995,612.530029 C494.505524,614.382385 492.328339,613.935974 490.527863,613.903137 C483.033508,613.766663 475.535614,613.353699 468.048096,613.502136 C463.886780,613.584595 461.316315,612.176819 459.165466,608.591797 C449.138306,591.878967 438.793091,575.356628 428.791290,558.628906 C426.814301,555.322327 424.600952,554.026855 420.790344,554.148071 C412.798584,554.402222 404.783173,554.456726 396.796814,554.125793 C392.249390,553.937378 391.109924,555.700256 391.161133,559.933533 C391.352631,575.764465 391.100311,591.601379 391.354523,607.430542 C391.428101,612.012451 390.038544,613.701599 385.412201,613.487732 C380.269043,613.249939 375.086243,613.920166 369.938019,613.728943 C362.822449,613.464539 362.761627,613.212036 362.759735,606.159424 C362.750671,572.493042 362.741302,538.826599 362.739655,505.160217 C362.738770,486.660339 362.752960,468.160461 362.761139,449.181885 M463.733124,488.952637 C459.954620,476.981110 451.557343,470.088501 439.306091,469.431183 C424.707581,468.647949 410.036926,469.243866 395.398102,469.148132 C392.446411,469.128845 391.188721,470.250885 391.196747,473.245117 C391.240814,489.713898 391.236511,506.183136 391.145203,522.651672 C391.127289,525.879578 392.479797,527.100891 395.620728,527.070618 C410.091919,526.931335 424.572754,527.154358 439.031677,526.682129 C445.184296,526.481201 451.178253,524.547607 455.843231,520.034729 C464.585938,511.576965 466.409210,501.216980 463.733124,488.952637 z"/>
+                            <path d="M211.886658,529.000000 C211.896301,502.680908 211.903290,476.861786 211.914139,451.042694 C211.917038,444.159851 212.275009,443.798126 219.340576,443.795044 C242.827744,443.784821 266.317505,443.565094 289.801453,443.838806 C325.416016,444.253937 347.839325,471.428955 343.629578,506.018097 C339.904358,536.626404 318.056915,555.187439 287.078217,555.323608 C273.585968,555.382935 260.091400,555.477966 246.602051,555.277771 C242.383774,555.215149 241.112961,556.786743 241.152481,560.822693 C241.304138,576.312744 241.091888,591.806641 241.292068,607.295593 C241.349014,611.702515 240.158691,613.518250 235.423706,613.564575 C229.102112,613.626465 222.793365,613.699219 216.467148,613.622681 C211.929214,613.567871 211.807724,611.299255 211.816971,607.957092 C211.889282,581.804871 211.873825,555.652405 211.886658,529.000000 M294.077179,526.803528 C303.024994,524.064453 309.521942,518.832764 312.723480,509.664612 C318.620911,492.776215 310.126984,472.071472 290.612213,469.893890 C275.217773,468.176086 259.710938,469.417816 244.254959,469.268921 C241.422745,469.241638 241.199463,471.282990 241.200729,473.410828 C241.210770,490.213135 241.254745,507.015533 241.208008,523.817688 C241.199646,526.823364 242.482483,527.972351 245.421875,527.917114 C250.909760,527.813843 256.404053,528.012207 261.890350,527.873535 C272.348663,527.609253 282.848267,528.723450 294.077179,526.803528 z"/>
+                            <path d="M579.691895,515.579834 C568.057678,546.820618 556.509827,577.679382 545.158020,608.610229 C543.852234,612.168213 542.091858,613.566650 538.299927,613.468506 C532.485352,613.317871 526.656982,613.811523 520.833130,613.858276 C518.055359,613.880615 515.189880,613.991516 511.993835,612.278442 C514.808655,605.208313 517.659790,598.191589 520.401978,591.132629 C529.560120,567.558472 538.625977,543.948303 547.835083,520.394104 C552.560974,508.306580 557.545837,496.320557 562.359009,484.266846 C566.984558,472.683289 571.718262,461.137482 576.031311,449.437500 C577.595459,445.194275 579.697754,443.425659 584.375977,443.635162 C591.680725,443.962250 599.027527,443.680756 606.340820,443.329529 C609.379395,443.183624 610.973022,444.254639 612.001953,446.968414 C622.916687,475.755585 633.910522,504.512756 644.813049,533.304565 C654.066284,557.741028 663.218018,582.215881 672.437439,606.665161 C674.864075,613.100342 674.408508,613.876526 667.575012,613.882812 C661.088379,613.888733 654.600891,613.675964 648.115295,613.734009 C644.765503,613.763977 643.511780,611.768738 642.541138,609.054504 C635.256714,588.683655 627.978577,568.310242 620.590576,547.976746 C612.352905,525.304626 604.001038,502.674011 595.702332,480.024078 C595.415710,479.241913 595.149414,478.460876 593.531128,478.136749 C588.991943,490.428101 584.414246,502.823700 579.691895,515.579834 z"/>
+                        </g>
+            </svg>
+        </a>
+        <ul class="nav-links">
+            <li><a href="index.html#participants" class="nav-link">About</a></li>
+            <li><a href="index.html#how-section" class="nav-link">How It Works</a></li>
+            <li><a href="index.html#section12" class="nav-link">Insights</a></li>
+            <li><a href="contact.html" class="btn-green">Contact us</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero-map-wrapper">
+        <div id="hero-map"></div>
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <h1 class="hero-title">Wind Power Project At Jaibhim By SIIL</h1>
+                <div class="hero-badges">
+                    <span class="hero-badge">PRAN-VCS-1525</span>
+                    <span class="hero-badge">India</span>
+                    <span class="hero-badge">Renewable Energy</span>
+                    
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="pdp-container">
+        
+        <div class="left-column">
+            
+            <div class="gallery-container">
+                <img id="main-display-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGbrCaSUoh2d9GQWR5eR49GossHil4Hz9Tc5KZJ3snzQ&s=10" alt="Wind Power Project In Gujarat" class="main-image">
+                
+                <div class="thumbnail-row">
+                    <div class="thumbnail-wrapper active" onclick="changeImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGbrCaSUoh2d9GQWR5eR49GossHil4Hz9Tc5KZJ3snzQ&s=10', this)">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGbrCaSUoh2d9GQWR5eR49GossHil4Hz9Tc5KZJ3snzQ&s=10" alt="Project Overview" class="thumbnail-img">
+                        
+                    </div>
+                    <div class="thumbnail-wrapper" onclick="changeImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxNyi6xUGeFS0X9_tZP6OCrEQ0rAKtEdNeDdSfrwKJ7w&s=10', this)">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxNyi6xUGeFS0X9_tZP6OCrEQ0rAKtEdNeDdSfrwKJ7w&s=10" alt="Wind Turbines" class="thumbnail-img">
+                        
+                    </div>
+                    
+                   
+                </div>
+            </div>
+
+            <div class="premium-card description-card content-prose">
+                <h2 class="card-heading">Project Description</h2>
+                
+                <p>Serum Institute of India Ltd. (SIIL) Wind Power Project in Maharashtra</p>
+                <p>Serum Institute of India Ltd. (SIIL) is taking action to reduce GHG emissions by implementing a wind power project in Maharashtra, India. SIIL is efficient in utilizing the available wind energy to generate electricity and reduce the carbon footprint.</p>
+                <h3>Key Highlights</h3>
+                <ul>
+                    <li>16 wind turbine generators (WTGs) of 2.1 MW were installed in Jaibhim village in Dhule District, Maharashtra, India.</li>
+                    <li>The generated electricity replaces equivalent electricity that would have been produced from conventional fuels like fossil fuels.</li>
+                    <li>The project helps in reducing greenhouse gas emissions and promoting renewable energy.</li>
+                    <li>The project contributes to the sustainable development of the region.</li>
+                    <li>The wind turbines are designed to operate optimally in low-wind conditions, thereby maximizing the utilization of the available wind energy.</li>
+                </ul>
+
+                <p>The Serum Institute of India Ltd. (SIIL) Wind Power Project in Maharashtra is a significant step towards reducing GHG emissions and promoting renewable energy. By generating electricity from wind energy, the project helps in reducing the dependence on conventional fuels and contributes to sustainable development. The project's location in Jaibhim, Dhule District, Maharashtra, India, is ideal for harnessing wind energy and minimizing the carbon footprint.</p>
+            </div>
+
+        </div>
+
+        <div class="right-column">
+            
+            <div class="premium-card listing-card">
+                <div class="price-huge">$0.98 <span style="font-size: 1rem; color: #64748B; font-weight: 500;">/ tonne</span></div>
+                
+                <div class="listing-meta">
+                    <div class="meta-col">
+                        <span class="meta-label">Available</span>
+                        <span class="meta-val">85,718</span>
+                    </div>
+                    <div class="meta-col">
+                        <span class="meta-label">Vintage</span>
+                        <span class="meta-val">2011</span>
+                    </div>
+                </div>
+
+                <div class="listing-meta" style="border-bottom: none; padding-bottom: 0;">
+                    <div class="meta-col">
+                        <span class="meta-label">Registry Asset</span>
+                        <a href="#" class="meta-val meta-val-link">PRAN-VCS-1525-2011</a>
+                    </div>
+                </div>
+
+               
+
+                <button class="btn-green btn-full">BUY NOW</button>
+            </div>
+
+            <div class="premium-card registry-card">
+                <h3 class="card-heading">Registry Verification</h3>
+                <div class="registry-flex">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6bUOm2VEsuhX5NmjExe-wJMZxDkjJpoSHHzRjpMuAhQ&s=10" alt="Verra Standard" class="registry-logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 30\'><text x=\'0\' y=\'20\' font-size=\'16\' font-family=\'sans-serif\' font-weight=\'bold\'>VERRA</text></svg>'">
+                    <div>
+                        <div style="font-weight: 600; color: var(--text-heading);">Verified Carbon Standard</div>
+                    </div>
+                </div>
+                <div class="verification-status">
+                    <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    Verified & Certified
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-body); margin-top: 12px;">Each credit represents one tonne of CO2 emissions reduced, removed, or avoided, as verified by registry-approved third-party auditors.</p>
+            </div>
+
+            <div class="premium-card sdg-card">
+                <h3 class="card-heading">Sustainable Development Goals</h3>
+                <div class="sdg-grid">
+                    <img src="sdg/7.png" alt="SDG 7 - Affordable and Clean Energy" class="sdg-icon" title="Affordable and Clean Energy">
+                    <img src="sdg/8.jpg" alt="SDG 8 - Decent Work and Economic Growth" class="sdg-icon" title="Decent Work and Economic Growth">
+                    <img src="sdg/9.png" alt="SDG 9 - Industry, Innovation and Infrastructure" class="sdg-icon" title="Industry, Innovation and Infrastructure">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdTErxFQyDwL3oy3rsmDNNNHbPycr5WD0Jh1dDmMxx_g&s=10" alt="SDG 9 - Industry, Innovation and Infrastructure" class="sdg-icon" title="Industry, Innovation and Infrastructure">
+                    
+                </div>
+                <a href="https://sdgs.un.org/goals"  target="_blank" style="display: inline-block; margin-top: 16px; font-size: 0.9rem; color: var(--brand-primary); text-decoration: underline; font-weight: 500;">Learn more about the UN's SDGs</a>
+            </div>
+
+            <div class="premium-card stats-card">
+                <h3 class="card-heading">Project Statistics</h3>
+                
+                <div class="stat-row">
+                    <div class="stat-header">
+                        <span class="stat-label">Total Retirements</span>
+                        <span class="stat-value">6,402.46</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: 15%;"></div>
+                    </div>
+                </div>
+
+                <div class="stat-row">
+                    <div class="stat-header">
+                        <span class="stat-label">Total Remaining Supply</span>
+                        <span class="stat-value">85,718</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill accent" style="width: 85%;"></div>
+                    </div>
+                </div>
+
+                
+            </div>
+
+            
+            </div>
+
+        </div>
+    </main>
+
+   
+    
+
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Ready To Support Verified Climate Action?</h2>
+            <p>Purchase verified carbon credits from the Gujarat Wind Power Project and contribute directly to measurable environmental impact.</p>
+            <div class="cta-buttons">
+                <a href="contact.html" class="btn-white">Buy Carbon Credits</a>
+                
+            </div>
+        </div>
+    </section>
+
+    <section class="related-section">
+        <h2 class="card-heading" style="font-size: 2rem; margin-bottom: 40px;">Related Projects</h2>
+        <div class="mp-grid">
+            
+            <div class="project-card">
+                <img src="https://d382rz2cea0pah.cloudfront.net/wp-content/uploads/2025/05/Sulzon-and-Integrum-Bag-BPCLs-100-MW-Wind-Projects.jpg" alt="Wind Farm" class="card-image">
+                <div class="card-content">
+                    <div class="project-price">$1.33</div>
+                    <h3 class="card-title">Wind Power Project In Gujarat</h3>
+                    <p class="card-desc">Mytrah Energy (India) Limited (MEIL) is a renewable energy company that aims to build wind power assets in India. To achieve this goal, they have set up a 25.20 MW wind power project in the Rajkot and Surendranagar districts of Gujarat State.</p>
+                    <div class="card-badges">
+                        <span class="badge">India</span>
+                        <span class="badge">Renewable Energy</span>
+                    </div>
+                    <div class="card-sdgs">
+                        <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-07.jpg" alt="SDG 7" class="sdg-img">
+                        <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-08.jpg" alt="SDG 8" class="sdg-img">
+                        <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-09.jpg" alt="SDG 9" class="sdg-img">
+                        <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-13.jpg" alt="SDG 13" class="sdg-img">
+                  
+                    </div>
+                    <div class="card-footer">
+                        <a href="PRAN-1190.html" class="btn-view">View Full Project &rarr;</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <img src="https://app.carbonmark.com/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fl6of5nwi%2Fproduction%2F16c8e5f580da2c5701fa43942a6e9453c100fa67-1053x420.png&w=1200&q=75" alt="Solar Project" class="card-image">
+                <div class="card-content">
+                    <div class="project-price">$1.26</div>
+                    <h3 class="card-title">Energy Efficiency In Quebec Community</h3>
+                    <p class="card-desc">This carbon project focuses on promoting energy efficiency and solid waste diversion activities across various client facilities.</p>
+                    <div class="card-badges">
+                        <span class="badge">Canada</span>
+                        <span class="badge">Energy Efficiency</span>
+                    </div>
+                    <div class="card-sdgs">
+                        <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-09.jpg" alt="SDG 9" class="sdg-img">
+                        <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-10.jpg" alt="SDG 10" class="sdg-img">
+                        <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-11.jpg" alt="SDG 11" class="sdg-img">
+                        <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-12.jpg" alt="SDG 12" class="sdg-img">
+                        <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-13.jpg" alt="SDG 13" class="sdg-img">
+                        <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-17.jpg" alt="SDG 17" class="sdg-img">
+                    
+                    </div>
+                    <div class="card-footer">
+                        <a href="PRAN-929.html" class="btn-view">View Full Project &rarr;</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <img src="https://app.carbonmark.com/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fl6of5nwi%2Fproduction%2F0b2a619c97b2b8f79c96fe9e36b78ce5cc4e939b-6016x4016.jpg&w=1200&q=75" alt="Mangrove Restoration" class="card-image">
+                <div class="card-content">
+                    <div class="project-price">$6.58</div>
+                    <h3 class="card-title">Pacajai REDD+ Project</h3>
+                    <p class="card-desc">The project is designed to protect over 135,000 hectares of land from deforestation, safeguarding the habitat of endangered species.</p>
+                    <div class="card-badges">
+                        <span class="badge">Brazil</span>
+                        <span class="badge">Forestry</span>
+                    </div>
+                    <div class="card-sdgs">
+                        <img src="https://sp-ao.shortpixel.ai/client/to_webp,q_lossy,ret_img,w_1500,h_1500/https://unhabitat.la/wp-content/uploads/2024/01/E-WEB-Goal-13.png" alt="SDG 13" class="sdg-img">
+                        <img src="data:image/png;base64,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" alt="SDG 15" class="sdg-img">
+                    </div>
+                    <div class="card-footer">
+                        <a href="PRAN-981.html" class="btn-view">View Full Project &rarr;</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="index.html" aria-label="PRAN Home">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="110 110 820 820" class="pran-logo" aria-label="PRAN Logo" role="img" style="height:128px;">
+                          <g fill="#12A33A">
+                            <path d="M554.838257,142.286926 C529.725281,138.792343 504.981201,138.088684 480.177612,140.478699 C441.793365,144.177307 404.790009,153.438614 369.163391,168.210968 C337.418457,181.373795 307.847015,198.388870 281.172852,219.990402 C224.350143,266.007111 183.037735,323.211121 158.709488,392.425323 C146.815750,426.263184 140.397507,461.091522 138.015152,496.850311 C136.029221,526.659058 139.010590,556.015808 143.741333,585.323730 C144.236710,588.392761 145.495880,591.857300 140.953110,593.072815 C136.993301,594.132324 134.436050,592.252197 133.499146,587.384460 C126.562492,551.345093 124.954735,515.104370 128.343750,478.514343 C130.965546,450.207794 136.420609,422.547791 144.928574,395.503418 C151.834076,373.552826 160.752747,352.376251 171.589783,332.047577 C186.464432,304.144836 204.421692,278.367249 225.374283,254.695709 C235.981430,242.712112 247.369812,231.509323 259.393036,220.924042 C279.466248,203.251526 301.121826,187.827484 324.523010,174.929047 C349.955750,160.910828 376.569244,149.755554 404.508118,141.550797 C425.519073,135.380554 446.893188,131.268387 468.495239,128.474213 C491.494995,125.499260 514.673706,125.244530 537.822205,127.182541 C562.264954,129.228897 586.375916,133.304306 609.948608,140.103729 C629.802185,145.830414 649.042114,153.222916 667.712036,162.171219 C679.768555,167.949783 691.136780,174.827225 702.350952,182.008240 C704.612122,183.456238 706.875732,183.871109 709.424316,183.850479 C728.006104,183.699905 746.290161,186.105347 764.302063,190.556595 C791.057739,197.168686 814.559143,210.100937 834.807434,228.583313 C854.658936,246.703461 870.269531,268.129913 882.781799,292.011078 C901.651978,328.026978 912.424377,366.331085 917.432373,406.492676 C919.124573,420.062500 920.551453,433.613068 920.281067,447.306366 C920.123352,455.297974 917.081787,457.727264 909.582458,455.208405 C870.417664,442.053955 833.018982,425.191010 798.666504,401.993256 C763.586182,378.303986 736.068115,347.754913 716.766113,310.119934 C704.412476,286.033020 697.701599,260.141876 694.830444,233.220398 C693.504150,220.784225 692.623840,208.346024 693.014832,195.846985 C693.129883,192.170120 691.547180,190.028427 688.443298,188.331284 C666.361023,176.257431 643.981873,164.877411 619.924866,157.119507 C598.798279,150.306625 577.223083,145.536514 554.838257,142.286926 M734.536621,197.102768 C730.700989,196.838287 726.844482,195.360291 722.948914,196.967102 C723.384827,198.954941 724.808411,199.647644 725.977783,200.530243 C749.766052,218.485046 770.457153,239.628387 789.603088,262.355835 C799.377625,273.958832 807.828369,286.543976 816.532410,298.938629 C818.658508,301.966217 819.484253,305.437927 816.351868,307.893829 C813.015320,310.509888 809.749023,308.800598 807.187378,305.856842 C806.751404,305.355835 806.356262,304.813538 805.989685,304.258942 C780.107178,265.110840 747.986328,231.863876 710.665955,203.546310 C709.188293,202.425079 707.912231,200.534256 705.611328,201.243393 C704.752747,202.567200 705.048035,203.922119 705.023315,205.239288 C704.810486,216.596069 706.108337,227.887695 707.565186,239.074310 C713.838867,287.247253 735.504211,327.879120 769.490662,362.143188 C791.038391,383.866882 816.377441,400.468567 843.247070,414.706543 C863.262268,425.312439 884.472412,433.345306 905.482483,441.755737 C906.375854,442.113342 907.345886,442.602539 908.365112,441.732330 C909.243286,440.252380 908.851196,438.539764 908.761780,436.924896 C907.360718,411.611023 903.868835,386.663239 897.175354,362.118835 C887.175598,325.451019 872.383972,291.252747 848.749939,261.124725 C819.735413,224.137833 782.140930,202.647278 734.536621,197.102768 z"/>
+                            <path d="M657.196045,875.150757 C688.697937,863.476501 717.500305,847.564026 744.006287,827.684814 C768.862915,809.042480 791.325623,787.796875 811.044250,763.658020 C827.635986,743.347046 842.674622,722.013306 854.984985,698.866577 C868.614136,673.240112 879.721924,646.572876 887.906189,618.637024 C900.517883,575.588806 906.189331,531.747620 904.676025,486.949158 C904.563660,483.624176 904.947876,480.854614 909.180054,480.735901 C913.192688,480.623352 915.063232,482.806702 915.080078,486.548859 C915.136353,499.045227 915.443115,511.556915 914.954651,524.035339 C914.251404,542.003662 912.454102,559.904175 909.244263,577.616516 C905.860046,596.291687 901.373108,614.675598 895.584229,632.797302 C888.312439,655.560852 879.004333,677.440491 868.111816,698.614197 C855.366943,723.388611 840.490051,746.840088 822.586060,768.325806 C810.094055,783.316895 797.107971,797.778748 782.760254,811.037109 C753.418945,838.150757 720.938782,860.707275 684.544739,877.146545 C659.488220,888.464661 633.368958,896.976501 606.310059,902.497375 C575.504028,908.782776 544.452759,912.262817 513.032349,910.905823 C482.161377,909.572571 451.810394,904.674133 422.038757,896.132080 C390.964783,887.216309 361.462280,874.805908 333.896942,857.894958 C330.621826,855.885742 327.328613,855.049011 323.511047,855.180786 C290.487122,856.321350 259.777466,848.227600 231.493713,831.283325 C204.674911,815.216736 183.923264,792.959045 167.045242,766.858032 C145.057663,732.855408 132.781006,695.290283 125.749016,655.721313 C123.849815,645.034485 123.092094,634.253479 121.987602,623.496643 C121.162094,615.456848 124.316956,612.817261 132.256836,614.362366 C162.136063,620.176758 191.082596,628.934387 218.300125,642.680115 C259.191498,663.331665 292.053802,692.797119 314.020508,733.340942 C329.035522,761.054138 337.551422,790.831909 339.396606,822.446899 C339.814301,829.603394 340.305389,836.741882 340.096344,843.903259 C340.006012,846.996033 341.313568,848.864075 344.014679,850.176025 C358.814423,857.364319 373.143005,865.536621 388.557617,871.438660 C405.043060,877.750793 421.740601,883.317322 438.877777,887.702209 C472.531372,896.313110 506.686157,900.024353 541.316711,898.503479 C578.425781,896.873718 614.687622,890.311279 649.718994,877.620483 C652.063721,876.771118 654.463318,876.073303 657.196045,875.150757 M180.862686,638.619873 C165.438797,633.865906 150.005905,629.148621 133.661011,625.940979 C134.565094,645.445862 137.683868,663.432495 142.413498,681.140259 C153.850739,723.961243 172.383194,762.885376 204.123901,794.770996 C230.671799,821.440125 262.125549,837.943970 299.604004,842.507263 C303.229614,842.948669 307.025848,843.854553 311.064270,842.291565 C307.969086,838.295105 303.853394,836.259827 300.489746,833.349304 C277.247437,813.238159 255.624847,791.580566 237.244904,766.865601 C233.981689,762.477661 230.306244,758.315247 228.009750,753.247192 C227.033218,751.092163 226.889709,748.993225 228.758377,747.279602 C230.680695,745.516785 232.927811,745.395386 235.265625,746.483765 C236.995926,747.289307 238.256683,748.625122 239.196701,750.218994 C244.815216,759.745178 252.143906,767.957947 259.200134,776.381042 C278.556732,799.487183 300.662201,819.633118 324.970093,837.400452 C325.975006,838.135071 326.974945,839.303528 328.680115,838.283264 C329.379059,833.384521 328.288971,828.464294 327.988434,823.515442 C326.290131,795.546204 319.028168,769.077881 306.474030,744.057861 C292.954346,717.113647 274.169006,694.581055 250.317184,676.077576 C229.415253,659.862793 206.184128,648.181030 180.862686,638.619873 z"/>
+                            <path d="M656.297546,434.370483 C647.762756,440.550446 640.787537,440.602936 632.585266,434.765503 C629.432861,432.521973 626.839783,429.692871 624.517212,426.630798 C619.021362,419.384979 611.555786,415.909027 602.685791,415.095398 C593.825134,414.282684 585.627686,411.644287 579.126160,405.383911 C570.398254,396.979767 569.081177,386.701111 572.292847,375.418884 C574.019409,369.353638 576.048706,363.275604 574.001404,356.821167 C570.622314,346.168732 562.894897,340.715027 552.407410,338.278168 C545.132019,336.587646 537.707153,335.311310 531.120667,331.387024 C517.116760,323.043457 513.717407,310.059784 522.012756,296.183319 C522.694153,295.043427 523.445190,293.922028 524.310608,292.918671 C532.932068,282.923065 530.881836,274.523743 520.132629,263.791992 C517.586060,261.249542 513.874695,261.413055 510.642517,261.465912 C488.734833,261.824066 467.166168,264.695221 446.100647,270.894958 C445.349426,271.116058 444.678802,271.611023 444.196869,271.860992 C443.815094,273.179901 444.460022,273.751068 445.014893,274.360596 C457.523529,288.099579 455.521454,306.572510 440.427551,317.780762 C430.768982,324.952911 419.285706,327.280060 408.075714,330.397858 C405.033203,331.244049 401.947754,332.049042 399.043793,333.260742 C385.668365,338.841858 379.304810,349.048096 378.300720,363.450409 C376.258240,392.746033 356.167664,409.540314 329.596191,414.291107 C315.852509,416.748383 306.369720,418.378571 288.751434,407.513275 C285.536743,410.125122 284.166748,414.016907 283.204590,417.711029 C281.797607,423.113159 278.428741,424.318848 273.580597,424.089111 C268.925293,423.868469 268.192719,423.021210 270.084656,418.591492 C276.496735,403.578247 283.113007,388.654663 291.744476,374.738220 C310.043854,345.234314 333.090302,320.052887 361.028870,299.452850 C396.289673,273.453918 435.500610,257.049866 479.124329,251.631699 C525.770020,245.838196 570.739746,251.850464 613.838867,270.866852 C641.075806,282.884460 665.159058,299.576691 686.919495,319.830658 C716.687195,347.537567 738.735413,380.463654 753.961243,418.039001 C754.755188,419.998169 758.087891,422.750397 754.250183,424.867737 C750.530579,426.919922 744.016235,424.880829 742.592041,421.558929 C739.113525,413.445435 735.277527,405.511780 731.383972,397.587402 C728.781128,392.289948 725.324951,388.762329 719.929443,386.599396 C710.267822,382.726227 700.570374,379.498322 689.904846,380.844788 C677.315552,382.434021 669.420288,389.834717 667.253174,402.502106 C665.825195,410.849243 665.428040,419.421967 661.342773,427.142303 C660.009094,429.662750 658.616638,432.103943 656.297546,434.370483 M573.995972,336.441650 C583.827454,345.921661 588.075684,357.168152 585.019775,370.807739 C584.221008,374.372986 583.670410,377.998596 583.121887,381.614075 C581.675598,391.145966 585.728455,398.241211 594.789795,401.583832 C597.724609,402.666473 600.888550,403.284668 604.003052,403.695923 C616.071350,405.289551 626.300415,410.121460 633.893860,419.930054 C635.213318,421.634491 636.733093,423.205048 638.294678,424.696930 C643.578796,429.745453 649.857422,428.363739 652.460144,421.446106 C653.863770,417.715637 654.574280,413.795227 654.986023,409.773834 C656.044373,399.437958 657.782104,389.259216 665.285645,381.217773 C676.432739,369.271606 690.263062,366.978912 705.595947,369.982880 C708.414001,370.535004 711.190369,371.808350 715.437988,370.852814 C695.692505,342.057678 671.782898,318.655151 643.103577,300.226532 C610.432861,279.233215 574.790100,266.515045 536.131653,262.675812 C535.533630,264.526154 536.254272,265.355621 536.726685,266.179016 C543.375854,277.768555 542.583374,288.705505 533.969727,299.010986 C533.225952,299.900848 532.587219,300.891052 531.989197,301.888306 C526.682434,310.737488 529.621826,319.231018 539.272156,322.715637 C541.925842,323.673859 544.673096,324.415375 547.424683,325.052124 C556.730896,327.205566 565.755554,329.987854 573.995972,336.441650 M304.509094,403.170502 C337.652435,410.725342 363.998962,392.353424 367.892609,359.086060 C368.929352,350.227875 371.060486,341.721680 377.492004,334.935242 C384.083374,327.980103 392.124908,323.510529 401.210358,320.750916 C409.162476,318.335510 417.391418,316.848633 425.097168,313.605652 C430.559875,311.306580 435.452881,308.199127 438.942139,303.309326 C442.904114,297.757050 442.868744,289.234528 439.043793,284.567169 C435.866333,280.689880 425.645538,277.727020 421.297485,279.570129 C406.412720,285.879730 392.035004,293.086761 378.483093,302.027496 C344.383789,324.524170 316.695892,352.904449 297.220337,389.005829 C293.166779,396.519897 293.508148,397.573853 301.030823,401.702606 C301.901642,402.180573 302.849030,402.518982 304.509094,403.170502 z"/>
+                            <path d="M705.285217,701.276794 C683.091309,724.537903 657.895996,743.212036 629.470886,757.388855 C600.419373,771.877930 569.713623,780.639709 537.260742,783.346619 C497.370819,786.673767 458.713837,781.298462 421.772430,766.126221 C381.419556,749.552979 346.647980,724.999756 318.357391,691.328979 C303.448639,673.584961 290.777649,654.612610 280.781158,633.781494 C280.019318,632.193848 278.702850,630.672058 279.413727,628.671936 C288.030914,625.199646 289.441437,625.807617 293.447815,633.441650 C318.505981,681.188232 354.175903,718.463379 401.997803,743.936707 C424.385986,755.862244 448.058136,763.848511 472.777527,769.051331 C474.449768,769.403320 476.138031,770.136414 476.821136,767.748657 C477.839233,764.189819 480.766113,762.537170 483.618317,760.794250 C489.589844,757.144897 495.564240,753.502258 500.900299,748.924744 C502.156830,747.846680 503.511566,746.872009 503.936523,745.166626 C502.924500,743.001953 500.826050,743.323425 499.155609,742.899841 C489.158722,740.364685 478.945618,738.658508 469.211761,735.118835 C461.773529,732.413940 454.860809,728.754333 449.408447,722.901917 C443.024384,716.049500 443.933319,708.749756 451.586792,703.386658 C456.355774,700.044800 461.826050,698.525452 467.453796,697.760925 C476.516357,696.529907 485.579163,695.901184 494.797302,696.638000 C526.291260,699.155518 552.649780,688.360657 575.246521,666.335205 C594.478760,647.589233 617.988586,641.210510 644.678467,645.310059 C664.348083,648.331360 681.542908,656.227234 696.940979,668.532349 C700.966614,671.749329 703.946777,675.983398 707.110291,679.491943 C709.276855,679.298889 710.019531,678.090820 710.779297,677.048889 C718.526794,666.423645 726.734131,656.106812 732.696716,644.282654 C736.049316,637.634216 740.481934,635.850708 749.182495,638.194641 C737.397766,661.281860 723.292053,682.386169 705.285217,701.276794 M642.444275,736.903259 C645.391785,735.027039 648.320862,733.121094 651.289856,731.279419 C667.953552,720.943054 682.515625,708.082031 696.214294,694.148071 C699.455933,690.850708 699.727905,688.215393 696.738342,684.352783 C689.986755,675.629395 681.018066,669.942566 671.443115,665.247009 C650.517090,654.984741 628.827515,651.445801 606.199463,659.477783 C594.589539,663.598877 585.625916,671.530945 576.788574,679.704773 C553.137451,701.580200 525.054749,710.141724 493.197205,707.526855 C483.023834,706.691772 472.897125,707.330139 463.010834,710.209900 C460.767273,710.863403 458.060455,711.325867 457.568024,713.926453 C457.092926,716.435486 459.662292,717.453918 461.358826,718.693359 C466.820221,722.683044 473.034943,725.047974 479.516113,726.706116 C488.372803,728.971985 497.357666,730.778320 506.127655,733.331238 C517.509644,736.644409 519.668274,745.249634 511.683990,754.099060 C507.049194,759.236084 501.180023,762.765869 495.513092,766.572876 C493.678986,767.804993 491.366333,768.555481 490.258209,770.611511 C490.964630,771.739807 491.851349,771.639709 492.657654,771.707886 C517.862915,773.838379 542.837036,772.426758 567.631958,767.262390 C594.478760,761.730469 618.391296,750.495728 642.444275,736.903259 z"/>
+                        </g>
+                        <g fill="#000000">
+                            <path d="M725.113525,562.000000 C725.110779,577.497070 724.943054,592.497070 725.204407,607.489563 C725.286987,612.223755 723.913025,614.230896 719.028137,613.987122 C713.542847,613.713318 708.032715,613.870911 702.534729,613.940247 C699.118835,613.983337 697.456299,612.939087 697.536011,609.014282 C698.246399,574.039001 696.417297,539.069214 697.346008,504.083771 C697.831848,485.779388 697.680420,467.455139 697.597595,449.140839 C697.578857,444.994415 698.997803,443.488861 703.120056,443.651245 C709.109009,443.887146 715.119507,443.825867 721.111816,443.623596 C724.340637,443.514587 726.203003,444.825287 727.996643,447.454926 C754.272339,485.975677 780.659119,524.420654 807.028381,562.877563 C807.481934,563.538940 808.045593,564.124817 808.563904,564.753235 C810.385315,563.797485 809.658569,562.289673 809.658569,561.136108 C809.657837,523.644714 809.648071,486.153107 809.488953,448.662170 C809.472168,444.697418 810.844055,443.164520 814.734802,443.446472 C820.721191,443.880310 826.721191,443.902588 832.703674,443.320587 C836.475403,442.953644 837.714172,444.741913 837.658508,448.325195 C837.273132,473.144745 837.339966,497.958679 837.757568,522.784241 C838.157654,546.572693 837.482056,570.378540 837.351562,594.177185 C837.326904,598.667908 837.454773,603.177246 837.853516,607.647461 C838.245300,612.040466 836.852417,614.281311 832.127441,614.138306 C825.300354,613.931580 818.464478,613.885010 811.634399,613.958557 C807.900024,613.998718 805.633972,612.349182 803.561951,609.275818 C778.246460,571.724182 752.802002,534.259399 727.381958,496.778290 C727.022217,496.247986 726.545959,495.796722 725.114380,494.140076 C725.114380,517.444885 725.114380,539.472473 725.113525,562.000000 z"/>
+                            <path d="M362.761139,449.181885 C362.372375,444.989746 364.131226,443.759827 367.736420,443.771179 C393.235901,443.851379 418.766693,443.014008 444.226837,444.013855 C469.589111,445.009857 487.940308,458.476410 493.254669,483.377960 C498.906586,509.861481 490.820648,536.450256 461.844666,548.443848 C460.336761,549.067993 458.660553,549.500305 457.421600,551.475464 C459.561737,557.206055 463.797791,561.998352 467.181152,567.236572 C475.941528,580.799438 485.035248,594.146790 493.950378,607.610291 C494.921143,609.076294 496.627777,610.622314 495.550995,612.530029 C494.505524,614.382385 492.328339,613.935974 490.527863,613.903137 C483.033508,613.766663 475.535614,613.353699 468.048096,613.502136 C463.886780,613.584595 461.316315,612.176819 459.165466,608.591797 C449.138306,591.878967 438.793091,575.356628 428.791290,558.628906 C426.814301,555.322327 424.600952,554.026855 420.790344,554.148071 C412.798584,554.402222 404.783173,554.456726 396.796814,554.125793 C392.249390,553.937378 391.109924,555.700256 391.161133,559.933533 C391.352631,575.764465 391.100311,591.601379 391.354523,607.430542 C391.428101,612.012451 390.038544,613.701599 385.412201,613.487732 C380.269043,613.249939 375.086243,613.920166 369.938019,613.728943 C362.822449,613.464539 362.761627,613.212036 362.759735,606.159424 C362.750671,572.493042 362.741302,538.826599 362.739655,505.160217 C362.738770,486.660339 362.752960,468.160461 362.761139,449.181885 M463.733124,488.952637 C459.954620,476.981110 451.557343,470.088501 439.306091,469.431183 C424.707581,468.647949 410.036926,469.243866 395.398102,469.148132 C392.446411,469.128845 391.188721,470.250885 391.196747,473.245117 C391.240814,489.713898 391.236511,506.183136 391.145203,522.651672 C391.127289,525.879578 392.479797,527.100891 395.620728,527.070618 C410.091919,526.931335 424.572754,527.154358 439.031677,526.682129 C445.184296,526.481201 451.178253,524.547607 455.843231,520.034729 C464.585938,511.576965 466.409210,501.216980 463.733124,488.952637 z"/>
+                            <path d="M211.886658,529.000000 C211.896301,502.680908 211.903290,476.861786 211.914139,451.042694 C211.917038,444.159851 212.275009,443.798126 219.340576,443.795044 C242.827744,443.784821 266.317505,443.565094 289.801453,443.838806 C325.416016,444.253937 347.839325,471.428955 343.629578,506.018097 C339.904358,536.626404 318.056915,555.187439 287.078217,555.323608 C273.585968,555.382935 260.091400,555.477966 246.602051,555.277771 C242.383774,555.215149 241.112961,556.786743 241.152481,560.822693 C241.304138,576.312744 241.091888,591.806641 241.292068,607.295593 C241.349014,611.702515 240.158691,613.518250 235.423706,613.564575 C229.102112,613.626465 222.793365,613.699219 216.467148,613.622681 C211.929214,613.567871 211.807724,611.299255 211.816971,607.957092 C211.889282,581.804871 211.873825,555.652405 211.886658,529.000000 M294.077179,526.803528 C303.024994,524.064453 309.521942,518.832764 312.723480,509.664612 C318.620911,492.776215 310.126984,472.071472 290.612213,469.893890 C275.217773,468.176086 259.710938,469.417816 244.254959,469.268921 C241.422745,469.241638 241.199463,471.282990 241.200729,473.410828 C241.210770,490.213135 241.254745,507.015533 241.208008,523.817688 C241.199646,526.823364 242.482483,527.972351 245.421875,527.917114 C250.909760,527.813843 256.404053,528.012207 261.890350,527.873535 C272.348663,527.609253 282.848267,528.723450 294.077179,526.803528 z"/>
+                            <path d="M579.691895,515.579834 C568.057678,546.820618 556.509827,577.679382 545.158020,608.610229 C543.852234,612.168213 542.091858,613.566650 538.299927,613.468506 C532.485352,613.317871 526.656982,613.811523 520.833130,613.858276 C518.055359,613.880615 515.189880,613.991516 511.993835,612.278442 C514.808655,605.208313 517.659790,598.191589 520.401978,591.132629 C529.560120,567.558472 538.625977,543.948303 547.835083,520.394104 C552.560974,508.306580 557.545837,496.320557 562.359009,484.266846 C566.984558,472.683289 571.718262,461.137482 576.031311,449.437500 C577.595459,445.194275 579.697754,443.425659 584.375977,443.635162 C591.680725,443.962250 599.027527,443.680756 606.340820,443.329529 C609.379395,443.183624 610.973022,444.254639 612.001953,446.968414 C622.916687,475.755585 633.910522,504.512756 644.813049,533.304565 C654.066284,557.741028 663.218018,582.215881 672.437439,606.665161 C674.864075,613.100342 674.408508,613.876526 667.575012,613.882812 C661.088379,613.888733 654.600891,613.675964 648.115295,613.734009 C644.765503,613.763977 643.511780,611.768738 642.541138,609.054504 C635.256714,588.683655 627.978577,568.310242 620.590576,547.976746 C612.352905,525.304626 604.001038,502.674011 595.702332,480.024078 C595.415710,479.241913 595.149414,478.460876 593.531128,478.136749 C588.991943,490.428101 584.414246,502.823700 579.691895,515.579834 z"/>
+                        </g>
+                    </svg>
+                </a>
+                <p>Advancing the global Net-Zero transition through verified, transparent, and high-integrity carbon credits.</p>
+            </div>
+            
+            <div class="footer-nav">
+                <h4>Marketplace</h4>
+                <ul>
+                    <li><a href="#">Project Registry</a></li>
+                    <li><a href="#">Indian Carbon Market</a></li>
+                    <li><a href="#">Buyer Marketplace</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-nav">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        
+         <div class="footer-bottom">
+            <span>&copy; 2026 PRΛN. All rights reserved.</span>
+            <div class="footer-socials" aria-label="PRAN social media links">
+        
+          
+         <a href="https://www.linkedin.com/company/pranapp/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="linkdin">
+          <svg width="26" height="26" fill="var(--col-accent)" viewBox="0 0 24 24">
+            <path
+              d="M19 0h-14C2.239 0 0 2.239 0 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5V5c0-2.761-2.238-5-5-5zm-8 19H8V9h3v10zm-1.5-11.268c-.966 0-1.75-.79-1.75-1.764 0-.975.784-1.764 1.75-1.764s1.75.789 1.75 1.764c0 .974-.784 1.764-1.75 1.764zM20 19h-3v-5.604c0-3.368-4-3.113-4 0V19h-3V9h3v1.528c1.395-2.586 7-2.777 7 2.476V19z" />
+          </svg>
+        </a>
+
+        <a href="https://x.com/PRAN_real" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="twitter">
+          <svg width="26" height="26" fill="var(--col-accent)" viewBox="0 0 24 24">
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26L22.5 21.75h-6.438l-5.033-6.588-5.756 6.588H1.965l7.73-8.85L1.5 2.25h6.594l4.536 6.042 5.614-6.042z" />
+          </svg>
+        </a>
+
+        
+    </div>
+    </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Gallery Image Swap
+        function changeImage(src, element) {
+            document.getElementById('main-display-img').src = src;
+            
+            // Remove active class from all
+            document.querySelectorAll('.thumbnail-wrapper').forEach(el => el.classList.remove('active'));
+            
+            // Add active class to clicked
+            element.classList.add('active');
+        }
+
+        // Initialize Map
+        document.addEventListener('DOMContentLoaded', function() {
+            // Variables for coordinates
+            const latitude =  20.903118;
+            const longitude = 74.774986;
+
+            // Setup map
+            var map = L.map('hero-map', {
+                center: [latitude, longitude],
+                zoom: 5,
+                scrollWheelZoom: false,
+                zoomControl: false // Disable default zoom to position it custom or hide it behind overlay
+            });
+
+            // Add standard Satellite/hybrid style tiles (Using Esri World Imagery for good satellite view)
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '',
+                maxZoom: 18
+            }).addTo(map);
+
+            // Add map controls manually to top right
+            L.control.zoom({
+                position: 'topright'
+            }).addTo(map);
+
+            // Add Custom Marker
+            var customIcon = L.divIcon({
+                className: 'custom-map-marker',
+                html: `<svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#22C55E"/>
+                       </svg>`,
+                iconSize: [40, 40],
+                iconAnchor: [20, 40]
+            });
+
+            L.marker([latitude, longitude], {icon: customIcon}).addTo(map)
+                .bindPopup("<b>Wind Power Project</b><br>Maharashtra, India")
+                .openPopup();
+
+            // Animated Counters
+            const counters = document.querySelectorAll('.counter');
+            const speed = 200; // lower = faster
+
+            const animateCounters = () => {
+                counters.forEach(counter => {
+                    const updateCount = () => {
+                        const target = +counter.getAttribute('data-target');
+                        const count = +counter.innerText.replace(/,/g, '');
+                        const inc = target / speed;
+
+                        if (count < target) {
+                            counter.innerText = (count + inc).toLocaleString(undefined, { maximumFractionDigits: 1 });
+                            setTimeout(updateCount, 15);
+                        } else {
+                            counter.innerText = target.toLocaleString(undefined, { maximumFractionDigits: 1 });
+                        }
+                    };
+                    updateCount();
+                });
+            };
+
+            // Intersection Observer to trigger counter animation on scroll
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    animateCounters();
+                    observer.disconnect();
+                }
+            });
+
+            if (document.querySelector('.impact-section')) {
+                observer.observe(document.querySelector('.impact-section'));
+            }
+        });
+    </script>
+</body>
+</html>
