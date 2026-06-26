@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="Sign up for BlueCred: The transparent ledger for planetary restoration." />
-  <title>PRΛN — Create Account</title>
+  <meta name="description" content="Request to purchase verified carbon credits through PRΛN." />
+  <title>PRΛN — Compliance Trade Request</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -318,6 +318,19 @@
       font-family: var(--font-body);
       transition: var(--transition);
     }
+    
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2314532D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+    }
+    
+    textarea.form-input {
+      resize: vertical;
+      min-height: 80px;
+    }
 
     .form-input::placeholder {
       color: #94a3b8;
@@ -327,6 +340,18 @@
       border-color: var(--col-accent);
       background: rgba(255, 255, 255, 0.9);
       box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+    }
+    
+    .form-checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 20px;
+      margin-top: 10px;
+    }
+    
+    .form-checkbox {
+      margin-top: 4px;
     }
 
     .btn-submit {
@@ -348,82 +373,6 @@
       background: var(--col-accent-hover);
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(22, 163, 74, 0.35);
-    }
-
-    /* Divider */
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 32px 0;
-      color: #94a3b8;
-      font-size: 0.85rem;
-      font-weight: 500;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(22, 163, 74, 0.15);
-    }
-
-    .divider span {
-      padding: 0 16px;
-    }
-
-    /* Social Buttons */
-    .social-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .btn-social {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 12px;
-      border-radius: var(--input-radius);
-      background: rgba(255, 255, 255, 0.5);
-      border: 1px solid rgba(22, 163, 74, 0.15);
-      color: var(--col-body);
-      font-weight: 500;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .btn-social:hover {
-      background: white;
-      border-color: var(--col-accent);
-      transform: translateY(-1px);
-    }
-
-    .btn-social svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    /* Login Link */
-    .login-link {
-      text-align: center;
-      margin-top: 24px;
-      font-size: 0.9rem;
-      color: var(--col-body);
-    }
-
-    .login-link a {
-      color: var(--col-accent);
-      font-weight: 600;
-      text-decoration: underline;
-      text-decoration-color: rgba(22, 163, 74, 0.3);
-      text-underline-offset: 4px;
-    }
-
-    .login-link a:hover {
-      color: var(--col-accent-hover);
     }
 
     /* =========================
@@ -488,7 +437,6 @@
       .nav-right.active { max-height: 400px; opacity: 1; box-shadow: var(--shadow-hover); }
       .nav-items { flex-direction: column; }
       
-      .social-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 480px) {
@@ -737,6 +685,7 @@
       <ul class="nav-items">
         <li><a href="../MainPage.html" class="nav-link">Home</a></li>
         <li><a href="../Marketplace.html" class="nav-link">Marketplace</a></li>
+        <li><a href="../Compliance.html" class="nav-link">Compliance</a></li>
       </ul>
       <a href="Login.html" class="btn-login">Login</a>
     </div>
@@ -753,11 +702,11 @@
       <div class="ambient-orb"></div>
       <div class="brand-message">
         <h1 class="brand-headline">
-          Start your <br>
-          <span class="highlight-text">Impact Journey.</span>
+          Trade <br>
+          <span class="highlight-text">Compliance Credits.</span>
         </h1>
         <p class="brand-sub">
-          Create an account to access the verified ledger, track transparent data, and participate in the regenerative economy.
+          Submit a request to trade compliance credits (e.g. PAT, CBAM). Our team will facilitate the exchange.
         </p>
       </div>
     </aside>
@@ -765,13 +714,20 @@
     <!-- RIGHT CONTENT (Form) -->
     <section class="content-stream">
       <div class="glass-card" id="signup-card">
-        <h2 class="card-title">Create Account</h2>
-        <p class="card-desc">Enter your details to join PRΛN.</p>
+        <h2 class="card-title">Trade Facilitation</h2>
+        <p class="card-desc">Fill in your details below. Our team will reach out shortly.</p>
 
-        <form action="#" method="POST" onsubmit="event.preventDefault(); document.getElementById('success-msg').style.display='block';">
+        <form action="submit_trade_request.php" method="POST" onsubmit="event.preventDefault(); document.getElementById('success-msg').style.display='block'; this.reset();">
+          
+
           <div class="form-group">
             <label for="username" class="form-label">Full Name</label>
             <input type="text" id="username" class="form-input" placeholder="Enter your name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="orgname" class="form-label">Organization Name</label>
+            <input type="text" id="orgname" class="form-input" placeholder="Enter your organization name">
           </div>
 
           <div class="form-group">
@@ -780,46 +736,51 @@
           </div>
 
           <div class="form-group">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" id="phone" class="form-input" placeholder="+91">
+          </div>
+          
+          <div class="form-group">
+            <label for="quantity" class="form-label">Trade Volume (Credits)</label>
+            <input type="number" id="quantity" class="form-input" placeholder="e.g. 1000" min="1" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="tradeType" class="form-label">Trade Direction</label>
+            <select id="tradeType" class="form-input" required>
+              <option value="" disabled selected>Select direction</option>
+              <option value="Buy">Buy Credits</option>
+              <option value="Sell">Sell Credits</option>
+            </select>
+            <div class="form-group" style="margin-top: 20px;">
+              <label for="creditFramework" class="form-label">Credit Framework</label>
+              <select id="creditFramework" class="form-input" required>
+                <option value="" disabled selected>Select framework</option>
+                <option value="PAT">Perform Achieve Trade (PAT)</option>
+                <option value="CBAM">CBAM</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="notes" class="form-label">Additional Notes</label>
+            <textarea id="notes" class="form-input" rows="3" placeholder="Any specific requirements..."></textarea>
           </div>
 
-          <button type="submit" class="btn-submit">Sign Up</button>
+          <div class="form-checkbox-group">
+            <input type="checkbox" id="terms" class="form-checkbox" required>
+            <label for="terms" class="form-label" style="font-weight: normal; margin-bottom: 0;">I understand this is a trade facilitation request and PRΛN team will contact me with market counter-parties.</label>
+          </div>
+
+          <button type="submit" class="btn-submit">Submit Request</button>
           
           <!-- Mock Success Message -->
-          <div id="success-msg" style="display: none; color: var(--col-accent); margin-top: 10px; font-weight: 600; text-align: center;">
-            Account created successfully!
+          <div id="success-msg" style="display: none; color: var(--col-accent); margin-top: 15px; font-weight: 600; text-align: center;">
+            Request received. Our team will reach out to you shortly with next steps.
           </div>
         </form>
 
-        <div class="divider">
-          <span>Or continue with</span>
-        </div>
-
-        <div class="social-grid">
-          <button class="btn-social">
-            <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
-              <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" />
-                <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" />
-                <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.734 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" />
-                <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.424 44.599 -10.174 45.789 L -6.704 42.319 C -8.804 40.359 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" />
-              </g>
-            </svg>
-            Google
-          </button>
-
-          <button class="btn-social">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1877F2">
-              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.791-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-            </svg>
-            Facebook
-          </button>
-        </div>
-
-        <div class="login-link">
-          Already have an account? <a href="login.html">Login here</a>
-        </div>
       </div>
     </section>
   </main>
@@ -827,7 +788,7 @@
   <footer class="glass-footer">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="MainPage.html" class="nav-logo"><span>PRΛN</span></a>
+        <a href="../MainPage.html" class="nav-logo"><span>PRΛN</span></a>
         <br>
         <p>
           The world's first transparent, blockchain-verified ecological ledger.
@@ -906,6 +867,15 @@
 
 
   <script>
+    // 0. Populate Project Ref from URL
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectRef = urlParams.get('project');
+        if (projectRef) {
+            document.getElementById('projectRef').value = projectRef;
+        }
+    });
+
     // 1. Fade In Effect (Matches MainPage Logic)
     document.addEventListener('DOMContentLoaded', () => {
       const card = document.getElementById('signup-card');

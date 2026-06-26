@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#F0FDF4">
-    <title>Corporate Buyers Registration | PRΛN</title>
+    <title>Compliance Entity Registration | PRΛN</title>
 
     <!-- Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1202,10 +1202,10 @@ input[type="checkbox"]:focus-visible + span {
     <div class="app-container">
 
         <header class="page-header">
-            <h1 class="page-title">Corporate Registration</h1>
+            <h1 class="page-title">Compliance Entity Registration</h1>
             <p class="page-subtitle">
-                Join the global network of sustainable enterprises.
-                Verify your entity to access high-integrity carbon credits and track impact.
+                Register your facility for regulatory compliance, ESG reporting, and trade credits.
+                Track your emission targets under CBAM, PAT, and Cap & Trade frameworks.
             </p>
         </header>
 
@@ -1216,19 +1216,19 @@ input[type="checkbox"]:focus-visible + span {
                 <div class="steps-list">
                     <div class="step-item active" id="navStep1">
                         <div class="step-dot">1</div>
-                        <span class="step-label">Company Info</span>
+                        <span class="step-label">Entity Info</span>
                     </div>
                     <div class="step-item" id="navStep2">
                         <div class="step-dot">2</div>
-                        <span class="step-label">Preferences</span>
+                        <span class="step-label">Facility Details</span>
                     </div>
                     <div class="step-item" id="navStep3">
                         <div class="step-dot">3</div>
-                        <span class="step-label">Verification</span>
+                        <span class="step-label">Compliance</span>
                     </div>
                     <div class="step-item" id="navStep4">
                         <div class="step-dot">4</div>
-                        <span class="step-label">Sustainability</span>
+                        <span class="step-label">Documentation</span>
                     </div>
                     <div class="step-item" id="navStep5">
                         <div class="step-dot">5</div>
@@ -1243,8 +1243,8 @@ input[type="checkbox"]:focus-visible + span {
                     <!-- STEP 1: COMPANY INFORMATION -->
                     <div class="section-animate active" id="step1">
                         <div class="form-header">
-                            <h1>Company Information</h1>
-                            <p>Basic details and authorized representation.</p>
+                            <h1>Entity Information</h1>
+                            <p>Basic organization details and registered representation.</p>
                         </div>
 
                         <div class="field-wrapper full-width" style="margin-bottom:24px;">
@@ -1398,210 +1398,100 @@ input[type="checkbox"]:focus-visible + span {
 
                     <!-- STEP 2: PURCHASE PREFERENCES -->
                     <div class="section-animate" id="step2">
-                        <div class="form-header">
-                            <h1>Purchase Preferences</h1>
-                            <p>Tailor your carbon credit acquisition strategy.</p>
-                        </div>
-
+<div class="form-header">
+<h1>Facility Details</h1>
+<p>Provide details of your primary manufacturing or production facility.</p>
+</div>
                         <div class="input-grid">
                             <div class="field-wrapper">
-                                <label for="purchasePurpose" class="required">Purpose</label>
-                                <select id="purchasePurpose" required>
-                                    <option value="">Select Purpose...</option>
-                                    <option value="neutrality">Carbon Neutrality</option>
-                                    <option value="netzero">Net Zero Goal</option>
-                                    <option value="voluntary">Voluntary Offset</option>
-                                    <option value="compliance">Compliance</option>
-                                </select>
+                                <label for="facilityName" class="required">Facility/Plant Name</label>
+                                <input type="text" id="facilityName" required placeholder="e.g. Unit 1, Jamshedpur">
                             </div>
                             <div class="field-wrapper">
-                                <label for="purchaseQuantity" class="required">Expected Quantity</label>
-                                <select id="purchaseQuantity" required>
-                                    <option value="">Select Credits...</option>
-                                    <option value="<1000">&lt;1000</option>
-                                    <option value="1000-5000">1000–5000</option>
-                                    <option value="5000-10000">5000–10000</option>
-                                    <option value="10000+">10000+</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="field-wrapper full-width" style="margin-bottom:30px;">
-                            <label>Preferred Credit Categories</label>
-                            <div class="chip-grid" id="categoryChips">
-                                <div class="chip" data-val="afforestation">Afforestation</div>
-                                <div class="chip" data-val="renewable">Renewable Energy</div>
-                                <div class="chip" data-val="waste">Waste Mgmt</div>
-                                <div class="chip" data-val="efficiency">Energy Efficiency</div>
-                                <div class="chip" data-val="blue">Blue Carbon</div>
-                                <div class="chip" data-val="methane">Methane Reduction</div>
-                            </div>
-                        </div>
-
-                        <div class="field-wrapper full-width" style="margin-bottom:24px;">
-                            <label for="existingSuppliers" class="required">Do you have existing suppliers?</label>
-                            <select id="existingSuppliers" required
-                                onchange="toggleOther('existingSuppliers', 'supplierDetailsContainer')">
-                                <option value="">Select...</option>
-                                <option value="no">No</option>
-                                <option value="yes">Yes</option>
-                            </select>
-                            <div class="conditional-input" id="supplierDetailsContainer">
-                                <textarea id="supplierDetails" rows="3"
-                                    placeholder="Please specify supplier name or details"></textarea>
+                                <label for="annualProduction" class="required">Annual Production Capacity</label>
+                                <input type="text" id="annualProduction" required placeholder="e.g. 2 Million Tons">
                             </div>
                         </div>
 
                         <div class="input-grid">
                             <div class="field-wrapper">
-                                <label for="projectGeography" class="required">Preferred Geography</label>
-                                <select id="projectGeography" required
-                                    onchange="toggleOther('projectGeography', 'otherRegionContainer')">
-                                    <option value="">Select Region...</option>
-                                    <option value="india">India</option>
-                                    <option value="asia">Asia</option>
-                                    <option value="global">Global</option>
-                                    <option value="other">Other</option>
-                                </select>
-                                <div class="conditional-input" id="otherRegionContainer">
-                                    <input type="text" id="otherRegion" placeholder="Specify region">
-                                </div>
-
-                                <div class="field-wrapper">
-                                    <label for="purchaseFrequency" class="required">Purchase Frequency</label>
-                                    <select id="purchaseFrequency" required>
-                                        <option value="">Select Frequency</option>
-                                        <option value="onetime">One-time</option>
-                                        <option value="quarterly">Quarterly</option>
-                                        <option value="annually">Annually</option>
-                                        <option value="longterm">Long-term Agreement</option>
-                                    </select>
-                                </div>
-
+                                <label for="baselineEmissions" class="required">Baseline Emissions (tCO2e)</label>
+                                <input type="number" id="baselineEmissions" required placeholder="e.g. 500000">
                             </div>
                             <div class="field-wrapper">
-                                <label for="annualBudget">Est. Annual Budget for Carbon Credits (USD)</label>
-                                <input type="number" id="annualBudget" min="0" placeholder="e.g. 50000">
+                                <label for="emissionScope" class="required">Reporting Scope</label>
+                                <select id="emissionScope" required>
+                                    <option value="">Select Scope...</option>
+                                    <option value="scope1">Scope 1 Only</option>
+                                    <option value="scope12">Scope 1 & 2</option>
+                                    <option value="scope123">Scope 1, 2 & 3</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- STEP 3: VERIFICATION -->
+</div>
+
+<!-- STEP 3: VERIFICATION -->
                     <div class="section-animate" id="step3">
+
                         <div class="form-header">
-                            <h1>Verification</h1>
-                            <p>Upload corporate documents for due diligence.</p>
+                            <h1>Compliance Framework</h1>
+                            <p>Select the regulatory mechanisms applicable to your entity.</p>
                         </div>
-
+                        
+                        <div class="field-wrapper full-width" style="margin-bottom:30px;">
+                            <label>Applicable Frameworks</label>
+                            <div class="chip-grid" id="frameworkChips">
+                                <div class="chip" data-val="cbam">CBAM (EU)</div>
+                                <div class="chip" data-val="pat">Perform Achieve Trade (PAT)</div>
+                                <div class="chip" data-val="captrade">Cap & Trade</div>
+                                <div class="chip" data-val="voluntary">Voluntary Carbon Market</div>
+                            </div>
+                        </div>
+                        
                         <div class="input-grid">
                             <div class="field-wrapper">
-                                <label for="cinNumber" class="required">Business Registration / CIN Number</label>
-                                <input type="text" id="cinNumber" required placeholder="Registration ID">
+                                <label for="targetYear" class="required">Compliance Target Year</label>
+                                <input type="number" id="targetYear" required placeholder="e.g. 2026">
                             </div>
                             <div class="field-wrapper">
-                                <label for="gstNumber" class="required">GST / Tax ID</label>
-                                <input type="text" id="gstNumber" required placeholder="Tax ID Number">
+                                <label for="complianceOfficer" class="required">Compliance Officer Name</label>
+                                <input type="text" id="complianceOfficer" required placeholder="Name of accountable officer">
                             </div>
                         </div>
 
+</div>
+
+<!-- STEP 4: SUSTAINABILITY -->
+                    <div class="section-animate" id="step4">
+
+                        <div class="form-header">
+                            <h1>Verification & Documentation</h1>
+                            <p>Upload regulatory clearances and emission reports.</p>
+                        </div>
+                        
                         <div class="input-grid">
                             <div class="field-wrapper">
-                                <label class="required">Incorporation Cert.</label>
+                                <label class="required">Latest Emission Report</label>
                                 <div class="file-dropzone">
-                                    <input type="file" id="regCertificate" required>
+                                    <input type="file" id="emissionReport" required>
+                                    <span class="zone-icon">📊</span>
+                                    <span class="zone-text">Upload PDF / Excel</span>
+                                </div>
+                            </div>
+                            <div class="field-wrapper">
+                                <label class="required">Environmental Clearance</label>
+                                <div class="file-dropzone">
+                                    <input type="file" id="envClearance" required>
                                     <span class="zone-icon">📜</span>
                                     <span class="zone-text">Upload PDF</span>
                                 </div>
                             </div>
-                            <div class="field-wrapper">
-                                <label class="required">PAN / Tax Doc</label>
-                                <div class="file-dropzone">
-                                    <input type="file" id="panDocument" required>
-                                    <span class="zone-icon">💳</span>
-                                    <span class="zone-text">Upload PDF</span>
-                                </div>
-                            </div>
                         </div>
 
-                        <div class="input-grid">
-                            <div class="field-wrapper">
-                                <label>Company Logo</label>
-                                <div class="file-dropzone">
-                                    <input type="file" id="companyLogo" accept="image/*">
-                                    <span class="zone-icon">🖼️</span>
-                                    <span class="zone-text">Upload Image</span>
-                                </div>
-                            </div>
-                            <div class="field-wrapper">
-                                <label>Sustainability Report</label>
-                                <div class="file-dropzone">
-                                    <input type="file" id="sustainabilityReport" accept=".pdf">
-                                    <span class="zone-icon">📑</span>
-                                    <span class="zone-text">Upload PDF (Optional)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+</div>
 
-                    <!-- STEP 4: SUSTAINABILITY -->
-                    <div class="section-animate" id="step4">
-                        <div class="form-header">
-                            <h1>Sustainability Goals</h1>
-                            <p>Outline your environmental commitments.</p>
-                        </div>
-
-                        <div class="input-grid">
-                            <div class="field-wrapper">
-                                <label for="netZeroCommitment">Net Zero Commitment?</label>
-                                <select id="netZeroCommitment">
-                                    <option value="">Select...</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
-                                    <option value="exploring">Exploring</option>
-                                </select>
-                            </div>
-                            <div class="field-wrapper">
-                                <label for="netZeroYear">Target Year</label>
-                                <select id="netZeroYear" onchange="toggleOther('netZeroYear', 'otherYearContainer')">
-                                    <option value="">Select...</option>
-                                    <option value="2030">2030</option>
-                                    <option value="2040">2040</option>
-                                    <option value="2050">2050</option>
-                                    <option value="other">Other</option>
-                                </select>
-                                <div class="conditional-input" id="otherYearContainer">
-                                    <input type="text" id="otherYear" placeholder="Specify Year">
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3 style="font-size:1.1rem; font-weight:700; margin: 20px 0; color:var(--primary-dark);">ESG /
-                            Sustainability Officer</h3>
-
-                        <div class="input-grid">
-                            <div class="field-wrapper">
-                                <label for="esgOfficerName" class="required">Officer Name</label>
-                                <input type="text" id="esgOfficerName" required>
-                            </div>
-                            <div class="field-wrapper">
-                                <label for="officerPhone" class="required">Contact Number</label>
-                                <input type="tel" id="officerPhone" required>
-                            </div>
-                        </div>
-
-                        <div class="field-wrapper full-width" style="margin-bottom:24px;">
-                            <label for="officerEmail" class="required">Officer Email</label>
-                            <input type="email" id="officerEmail" required>
-                        </div>
-
-                        <div class="field-wrapper full-width">
-                            <label for="esgGoals">Sustainability / ESG Goals Description</label>
-                            <textarea id="esgGoals" rows="4"
-                                placeholder="Briefly describe your objectives..."></textarea>
-                        </div>
-                    </div>
-
-                    <!-- STEP 5: DECLARATION -->
+<!-- STEP 5: DECLARATION -->
                     <div class="section-animate" id="step5">
                         <div class="form-header">
                             <h1>Declaration</h1>
@@ -1658,7 +1548,7 @@ input[type="checkbox"]:focus-visible + span {
                             Your Corporate Registration has been submitted successfully. Our team will verify your
                             credentials within 3–5 working days.
                         </p>
-                        <button type="button" class="btn btn-ghost1" onclick="window.location.href='DashB/dashngo.html'">Continue</button>
+                        <button type="button" class="btn btn-ghost1" onclick="window.location.href='DashB/ComplianceDashboard.html'">Continue</button>
                     </div>
                 </form>
 
@@ -1843,7 +1733,8 @@ input[type="checkbox"]:focus-visible + span {
 
                 currentStep++; localStorage.removeItem('corporateDraft'); updateUI();
                 setTimeout(() => { document.getElementById("stepSuccess").scrollIntoView({ behavior: "smooth", block: "center" }); 
-                setTimeout(() => { window.location.href = "DashB/dashngo.html"; }, 2500);}, 200);
+                setTimeout(() => { window.location.href = "DashB/ComplianceDashboard.html"; }, 2500);}, 200);
+                setTimeout(() => { window.location.href = "DashB/ComplianceDashboard.html"; }, 2500);
             }, 1500);
         }
 

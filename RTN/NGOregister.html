@@ -848,9 +848,11 @@ input[type="checkbox"]:focus-visible + span {
         <div class="nav-right">
             <ul class="nav-items">
                 <li><a href="../MainPage.html" class="nav-link">Home</a></li>
+        <li><a href="../Marketplace.html" class="nav-link">Marketplace</a></li>
+        <li><a href="../Compliance.html" class="nav-link">Compliance</a></li>
                 <li><a href="#" class="nav-link">Help Center</a></li>
             </ul>
-            <a href="#" class="btn-login">Login</a>
+            <a href="Login.html" class="btn-login">Login</a>
         </div>
         <button class="hamburger" aria-label="Menu">
             <span class="line"></span><span class="line"></span><span class="line"></span>
@@ -1307,7 +1309,7 @@ input[type="checkbox"]:focus-visible + span {
                             We’ve received your submission, and our team will carefully review your details.
 Expect an update or follow-up within 3–5 business days.
                         </p>
-                        <button type="button" class="btn btn-ghost1" onclick="window.location.href='TP.html'">Return to Homepage</button>
+                        <button type="button" class="btn btn-ghost1" onclick="window.location.href='DashB/dashngo.html'">Return to Homepage</button>
                     </div>
 
                 </form>
@@ -1358,7 +1360,7 @@ Expect an update or follow-up within 3–5 business days.
             <li><a href="#">Privacy Policy</a></li>
             <li><a href="#">Terms of Service</a></li>
             <li><a href="#">Cookie Policy</a></li>
-            <li><a href="#">Compliance</a></li>
+            <li><a href="../Compliance.html">Compliance</a></li>
           </ul>
         </div>
       </div>
@@ -1581,9 +1583,13 @@ function submitForm() {
     // the PHP script should handle the redirect. Adding logic here just in case of JS intercept).
     /*
     setTimeout(() => {
+                const mockUser = { name: "Test User", role: "admin", email: "test@example.com" };
+                localStorage.setItem('blueCredUser', JSON.stringify(mockUser));
+
         currentStep++;
         updateUI();
-    }, 1500);
+    
+                setTimeout(() => { window.location.href = "DashB/dashngo.html"; }, 2500);}, 1500);
     */
 }
 

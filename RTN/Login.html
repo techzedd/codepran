@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="Sign up for BlueCred: The transparent ledger for planetary restoration." />
-  <title>PRΛN — Create Account</title>
+  <meta name="description" content="Login to PRΛN: Access your climate dashboard." />
+  <title>PRΛN — Login</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -426,6 +426,16 @@
       color: var(--col-accent-hover);
     }
 
+    /* Forgot Password */
+    .forgot-password {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--col-accent);
+      text-align: right;
+      margin-top: -12px;
+      margin-bottom: 8px;
+    }
+
     /* =========================
          6. FOOTER
          ========================= */
@@ -737,8 +747,9 @@
       <ul class="nav-items">
         <li><a href="../MainPage.html" class="nav-link">Home</a></li>
         <li><a href="../Marketplace.html" class="nav-link">Marketplace</a></li>
+        <li><a href="../Compliance.html" class="nav-link">Compliance</a></li>
       </ul>
-      <a href="Login.html" class="btn-login">Login</a>
+      <a href="User1.html" class="btn-login">Sign Up</a>
     </div>
     <button class="hamburger" aria-label="Menu">
       <span class="line"></span>
@@ -753,11 +764,11 @@
       <div class="ambient-orb"></div>
       <div class="brand-message">
         <h1 class="brand-headline">
-          Start your <br>
-          <span class="highlight-text">Impact Journey.</span>
+          Welcome back to <br>
+          <span class="highlight-text">PRΛN.</span>
         </h1>
         <p class="brand-sub">
-          Create an account to access the verified ledger, track transparent data, and participate in the regenerative economy.
+          Sign in to access your dashboard, track your projects, and manage your climate impact portfolio.
         </p>
       </div>
     </aside>
@@ -765,15 +776,10 @@
     <!-- RIGHT CONTENT (Form) -->
     <section class="content-stream">
       <div class="glass-card" id="signup-card">
-        <h2 class="card-title">Create Account</h2>
-        <p class="card-desc">Enter your details to join PRΛN.</p>
+        <h2 class="card-title">Sign In</h2>
+        <p class="card-desc">Enter your credentials to access your PRΛN account.</p>
 
-        <form action="#" method="POST" onsubmit="event.preventDefault(); document.getElementById('success-msg').style.display='block';">
-          <div class="form-group">
-            <label for="username" class="form-label">Full Name</label>
-            <input type="text" id="username" class="form-input" placeholder="Enter your name" required>
-          </div>
-
+        <form id="loginForm" onsubmit="event.preventDefault(); handleLogin();">
           <div class="form-group">
             <label for="email" class="form-label">Email Address</label>
             <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
@@ -783,13 +789,10 @@
             <label for="password" class="form-label">Password</label>
             <input type="password" id="password" class="form-input" placeholder="••••••••" required>
           </div>
-
-          <button type="submit" class="btn-submit">Sign Up</button>
           
-          <!-- Mock Success Message -->
-          <div id="success-msg" style="display: none; color: var(--col-accent); margin-top: 10px; font-weight: 600; text-align: center;">
-            Account created successfully!
-          </div>
+          <a href="#" class="forgot-password">Forgot Password?</a>
+
+          <button type="submit" class="btn-submit">Sign In</button>
         </form>
 
         <div class="divider">
@@ -818,7 +821,7 @@
         </div>
 
         <div class="login-link">
-          Already have an account? <a href="login.html">Login here</a>
+          Don't have an account? <a href="User1.html">Sign up here</a>
         </div>
       </div>
     </section>
@@ -827,7 +830,7 @@
   <footer class="glass-footer">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="MainPage.html" class="nav-logo"><span>PRΛN</span></a>
+        <a href="../MainPage.html" class="nav-logo"><span>PRΛN</span></a>
         <br>
         <p>
           The world's first transparent, blockchain-verified ecological ledger.
@@ -1002,5 +1005,18 @@ document.addEventListener("keydown", function(e) {
     });
 })();
 </script>
+
+  <script>
+    function handleLogin() {
+      const btn = document.querySelector('.btn-submit');
+      btn.innerText = 'Authenticating...';
+      btn.style.opacity = '0.7';
+      setTimeout(() => {
+        const mockUser = { name: "Demo User", role: "admin", email: "demo@example.com" };
+        localStorage.setItem('blueCredUser', JSON.stringify(mockUser));
+        window.location.href = "DashB/dashngo.html";
+      }, 1000);
+    }
+  </script>
 </body>
 </html>

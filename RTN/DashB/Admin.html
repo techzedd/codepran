@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>PRΛN | Admin Console</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ====================================================================
+           1. CORE DESIGN TOKENS
+           ==================================================================== */
+        :root {
+            /* Brand Palette */
+            --col-primary: #14532D;      /* Deep Forest */
+            --col-accent: #16A34A;       /* Vibrant Green */
+            --col-accent-hover: #15803D;
+            --col-body: #475569;
+            
+            --text-main: #022C22;
+            --text-body: #374151;
+            --text-muted: #64748B;
+            
+            /* Glass Engine */
+            --glass-surface: rgba(255, 255, 255, 0.7);
+            
+            /* Spacing */
+            --nav-height: 80px;
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            
+            --font-display: "Space Grotesk", sans-serif;
+            --font-body: "Manrope", sans-serif;
+            --font-nav: "Inter", sans-serif;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
+
+        /* --- RESET --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-font-smoothing: antialiased; }
+        
+        body {
+            font-family: var(--font-body);
+            background: #F8FAFC;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(22, 163, 74, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(56, 189, 248, 0.06) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.03) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-top: var(--nav-height);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ====================================================================
+           2. NAVBAR
+           ==================================================================== */
+        .glass-nav {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(22, 163, 74, 0.15);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 60px;
+            transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .nav-logo {
+            font-family: var(--font-display); font-size: 1.75rem; font-weight: 700;
+            letter-spacing: -0.02em; color: var(--col-primary); display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .nav-logo::after { content: ''; width: 8px; height: 8px; background: var(--col-accent); border-radius: 50%; }
+        .nav-logo span { color: var(--col-accent); }
+
+        .nav-right { display: flex; align-items: center; gap: 40px; }
+        .nav-items { display: flex; align-items: center; gap: 32px; list-style: none; margin: 0; padding: 0;}
+
+        .nav-link {
+            font-family: var(--font-nav); font-weight: 500; color: var(--col-body); font-size: 1rem;
+            transition: color 0.3s ease; text-decoration: none; display: flex; align-items: center; gap: 6px; cursor: pointer;
+        }
+        .nav-link:hover, .nav-link.active { color: var(--col-accent); }
+
+        /* NAV PROFILE */
+        .nav-profile {
+            display: flex; align-items: center; gap: 10px; cursor: pointer;
+            padding: 6px 14px 6px 6px; background: rgba(255,255,255,0.5); 
+            border: 1px solid rgba(22, 163, 74, 0.15); border-radius: 50px;
+            transition: 0.3s var(--ease-out);
+        }
+        .nav-profile:hover { border-color: var(--col-accent); background: white; transform: translateY(-1px); }
+        .avatar {
+            width: 32px; height: 32px; background: linear-gradient(135deg, #14532D, #16A34A);
+            color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
+        }
+        .profile-name { font-size: 0.9rem; font-weight: 600; color: var(--col-primary); font-family: var(--font-nav); }
+
+        .hamburger { display: none; flex-direction: column; gap: 6px; cursor: pointer; z-index: 1002; background: none; border: none; }
+        .line { width: 24px; height: 2px; background: var(--col-primary); border-radius: 2px; transition: 0.3s ease; }
+
+        /* ====================================================================
+           3. DASHBOARD CONTENT
+           ==================================================================== */
+        .container { max-width: 1280px; margin: 0 auto; padding: 48px 24px; flex: 1; width: 100%; }
+
+        /* Header */
+        .dash-header { 
+            margin-bottom: 40px; padding-bottom: 24px; 
+            border-bottom: 1px solid rgba(20, 83, 45, 0.05);
+            animation: fadeIn 0.8s var(--ease-out);
+            display: flex; justify-content: space-between; align-items: flex-end;
+        }
+        .welcome h1 {
+            font-family: var(--font-display); font-size: 2.25rem; font-weight: 700; 
+            color: var(--col-primary); margin-bottom: 6px; letter-spacing: -0.03em; line-height: 1.1;
+        }
+        .welcome p { font-size: 1.05rem; color: var(--text-muted); opacity: 0.9; }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 56px;
+            animation: slideUp 0.8s var(--ease-out) 0.1s backwards;
+        }
+
+        /* STAT CARDS - Data Driven Style */
+        .stat-card {
+            grid-column: span 1; background: #FFFFFF; border: 1px solid rgba(22, 163, 74, 0.08); 
+            border-radius: var(--radius-lg); padding: 24px; 
+            display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 160px; box-shadow: var(--shadow-sm); 
+            transition: transform 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out), border-color 0.4s; 
+            position: relative; overflow: hidden;
+        }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); border-color: var(--col-accent); }
+        
+        .stat-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: auto; }
+        .stat-icon {
+            width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; transition: 0.3s;
+        }
+        
+        /* Typography optimized for data */
+        .stat-val { 
+            font-family: var(--font-display); font-size: 2.25rem; font-weight: 700; 
+            color: var(--col-primary); line-height: 1; margin-bottom: 8px; letter-spacing: -0.03em; 
+        }
+        .stat-label { 
+            font-size: 0.8rem; font-weight: 600; color: var(--text-muted); 
+            text-transform: uppercase; letter-spacing: 0.08em; 
+        }
+
+        /* Projects List */
+        .section-header { margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; }
+        .section-title { font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--col-primary); }
+        .projects-wrapper {
+            background: #FFFFFF; border: 1px solid rgba(22, 163, 74, 0.08);
+            border-radius: var(--radius-xl); padding: 0; box-shadow: var(--shadow-sm); overflow: auto;
+        }
+        
+        /* Updated Grid for Project Row - Flexible */
+        .project-row {
+            display: flex;
+            align-items: center; gap: 16px; 
+            border-bottom: 1px solid #F1F5F9; padding: 20px 32px;
+            transition: background-color 0.2s;
+        }
+        .project-row > div {
+            flex: 1;
+        }
+        .project-row > div:last-child {
+            flex: 0 0 auto;
+            display: flex;
+            gap: 10px;
+        }
+        .project-row:last-child { border-bottom: none; }
+        .project-row:hover { background-color: #F8FAFC; }
+        
+        .row-text-primary { font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
+        .row-text-secondary { font-family: var(--font-display); font-size: 0.85rem; color: var(--text-muted); letter-spacing: 0.03em; }
+        .row-text-meta { font-size: 0.9rem; color: var(--text-body); font-weight: 500; }
+        
+        .status-badge {
+            display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 700; width: fit-content; text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .sb-verified { background: #DCFCE7; color: #14532D; border: 1px solid #86EFAC; }
+        .sb-pending { background: #E0F2FE; color: #0369A1; border: 1px solid #7DD3FC; }
+        .sb-draft { background: #F1F5F9; color: #475569; border: 1px solid #CBD5E1; }
+        
+        .btn-action-green {
+            background: #16A34A; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
+        }
+        .btn-action-green:hover { background: #15803D; }
+        
+        .btn-action-red {
+            background: transparent; color: #EF4444; border: 1px solid #FCA5A5; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.2s;
+        }
+        .btn-action-red:hover { background: #FEF2F2; }
+
+        select.status-select {
+            padding: 8px 12px; border-radius: 6px; border: 1px solid #CBD5E1; background: white; font-size: 0.85rem; font-weight: 600; color: var(--col-primary); cursor: pointer;
+        }
+
+        /* --------------------------------------------------------
+           VIEWS
+           -------------------------------------------------------- */
+        .view-section { display: none; animation: fadeIn 0.4s; }
+        .view-section.active { display: block; }
+
+        /* Footer */
+        .glass-footer {
+            background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-top: 1px solid rgba(22, 163, 74, 0.15); padding: 80px 60px 40px;
+            position: relative; z-index: 20; width: 100%; margin-top: auto; font-family: var(--font-nav);
+        }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; }
+        .footer-brand h3 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; color: var(--col-primary); margin-bottom: 16px; }
+        .footer-brand p { color: var(--col-body); line-height: 1.6; font-size: 0.95rem; max-width: 300px; }
+        .footer-heading { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--col-accent); margin-bottom: 24px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; }
+        .footer-links a { color: var(--col-body); font-size: 0.95rem; transition: color 0.2s; text-decoration: none; }
+        .footer-links a:hover { color: var(--col-primary); }
+        .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 32px; border-top: 1px solid rgba(22, 163, 74, 0.1); font-size: 0.9rem; color: var(--col-body); }
+
+        /* Keyframes & Media */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 1024px) {
+            .glass-nav { padding: 0 30px; }
+            .nav-right { display: none; }
+            .hamburger { display: flex; }
+            .bento-grid { grid-template-columns: 1fr 1fr; }
+            .stat-card { grid-column: span 1; }
+            .project-row { flex-direction: column; align-items: flex-start; gap: 12px; padding: 24px; }
+            .project-row > div:last-child { align-self: flex-start; margin-top: 10px; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+            .glass-footer { padding: 60px 30px 30px; }
+        }
+        @media (max-width: 640px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+        }
+        
+        /* Table Header Row */
+        .table-header {
+            display: flex;
+            align-items: center; gap: 16px;
+            padding: 16px 32px;
+            background: #F8FAFC;
+            border-bottom: 1px solid #E2E8F0;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .table-header > div {
+            flex: 1;
+        }
+        .table-header > div:last-child {
+            flex: 0 0 auto;
+            width: 150px;
+        }
+        @media (max-width: 1024px) {
+            .table-header { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav">
+        <a href="../../index.html" class="nav-logo"><span>PRΛN</span></a>
+        
+        <div class="nav-right">
+            <ul class="nav-items">
+                <li><a href="#" class="nav-link" data-target="view-kyc" onclick="App.switch(event, 'view-kyc')">Entity KYC</a></li>
+                <li><a href="#" class="nav-link" data-target="view-projects" onclick="App.switch(event, 'view-projects')">Projects</a></li>
+                <li><a href="#" class="nav-link" data-target="view-buy-requests" onclick="App.switch(event, 'view-buy-requests')">Buy Requests</a></li>
+                <li><a href="#" class="nav-link" data-target="view-service-trade" onclick="App.switch(event, 'view-service-trade')">Services & Trade</a></li>
+            </ul>
+            
+            <div class="nav-profile">
+                <div class="avatar" id="navAvatar">A</div>
+                <span class="profile-name" id="navProfileName">Admin</span>
+            </div>
+        </div>
+
+        <button class="hamburger" aria-label="Menu">
+            <span class="line"></span><span class="line"></span><span class="line"></span>
+        </button>
+    </nav>
+
+    <main class="container">
+        
+        <header class="dash-header">
+            <div class="welcome">
+                <h1>Admin Console</h1>
+                <p>Manage registrations, project approvals, and requests.</p>
+            </div>
+        </header>
+
+        <section class="bento-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background:#FFFBEB; color:#B45309;"><i class="fa-solid fa-user-clock"></i></div>
+                </div>
+                <div>
+                    <div class="stat-val">12</div>
+                    <div class="stat-label">Pending KYC</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background:#EFF6FF; color:#2563EB;"><i class="fa-solid fa-clipboard-check"></i></div>
+                </div>
+                <div>
+                    <div class="stat-val">5</div>
+                    <div class="stat-label">Pending Projects</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background:#F0FDF4; color:#16A34A;"><i class="fa-solid fa-cart-shopping"></i></div>
+                </div>
+                <div>
+                    <div class="stat-val">8</div>
+                    <div class="stat-label">Open Buy Requests</div>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background:#F0F9FF; color:#0891B2;"><i class="fa-solid fa-exchange"></i></div>
+                </div>
+                <div>
+                    <div class="stat-val">3</div>
+                    <div class="stat-label">Trade Requests</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: Entity KYC Queue -->
+        <section id="view-kyc" class="view-section active">
+            <div class="section-header">
+                <div class="section-title">Entity KYC Queue</div>
+            </div>
+            <div class="projects-wrapper">
+                <div class="table-header">
+                    <div>Entity Name</div>
+                    <div>Type</div>
+                    <div>Ledger ID</div>
+                    <div>Submitted</div>
+                    <div>Status</div>
+                    <div>Actions</div>
+                </div>
+                
+                <div class="project-row">
+                    <div class="row-text-primary">Green Earth Foundation</div>
+                    <div class="row-text-meta">NGO</div>
+                    <div class="row-text-secondary">BCX-N-MH-1A2B</div>
+                    <div class="row-text-meta">2025-10-12</div>
+                    <div><span class="status-badge sb-pending">Pending</span></div>
+                    <div>
+                        <button class="btn-action-green">Approve</button>
+                        <button class="btn-action-red">Reject</button>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-primary">Tech Solutions Inc</div>
+                    <div class="row-text-meta">Corporate Buyer</div>
+                    <div class="row-text-secondary">BCX-B-KA-3C4D</div>
+                    <div class="row-text-meta">2025-10-14</div>
+                    <div><span class="status-badge sb-verified">Verified</span></div>
+                    <div>
+                        <button class="btn-action-green">Approve</button>
+                        <button class="btn-action-red">Reject</button>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-primary">EcoVillage Cooperative</div>
+                    <div class="row-text-meta">Community</div>
+                    <div class="row-text-secondary">BCX-C-KL-5E6F</div>
+                    <div class="row-text-meta">2025-10-15</div>
+                    <div><span class="status-badge sb-pending">Pending</span></div>
+                    <div>
+                        <button class="btn-action-green">Approve</button>
+                        <button class="btn-action-red">Reject</button>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-primary">National Institute of Tech</div>
+                    <div class="row-text-meta">Institute</div>
+                    <div class="row-text-secondary">BCX-E-DL-7G8H</div>
+                    <div class="row-text-meta">2025-10-18</div>
+                    <div><span class="status-badge sb-pending">Pending</span></div>
+                    <div>
+                        <button class="btn-action-green">Approve</button>
+                        <button class="btn-action-red">Reject</button>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-primary">Steel Authority Ltd</div>
+                    <div class="row-text-meta">Compliance Entity</div>
+                    <div class="row-text-secondary">BCX-CE-OD-9I0J</div>
+                    <div class="row-text-meta">2025-10-20</div>
+                    <div><span class="status-badge sb-pending">Pending</span></div>
+                    <div>
+                        <button class="btn-action-green">Approve</button>
+                        <button class="btn-action-red">Reject</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: Project Review Queue -->
+        <section id="view-projects" class="view-section">
+            <div class="section-header">
+                <div class="section-title">Project Review Queue</div>
+            </div>
+            <div class="projects-wrapper">
+                <div class="table-header">
+                    <div>Project Name</div>
+                    <div>Protocol</div>
+                    <div>Submitted By</div>
+                    <div>Date</div>
+                    <div>Status</div>
+                    <div>Actions</div>
+                </div>
+                
+                <div class="project-row">
+                    <div class="row-text-primary">Munnar Reforestation</div>
+                    <div class="row-text-meta">Tree Plantation</div>
+                    <div class="row-text-secondary">BCX-N-KL-1234</div>
+                    <div class="row-text-meta">2025-10-01</div>
+                    <div><span class="status-badge sb-pending">Pending</span></div>
+                    <div>
+                        <button class="btn-action-green">Approve</button>
+                        <button class="btn-action-red">Reject</button>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-primary">Rajasthan Solar Farm</div>
+                    <div class="row-text-meta">Solar Energy</div>
+                    <div class="row-text-secondary">BCX-B-RJ-5678</div>
+                    <div class="row-text-meta">2025-10-05</div>
+                    <div><span class="status-badge sb-pending">Pending</span></div>
+                    <div>
+                        <button class="btn-action-green">Approve</button>
+                        <button class="btn-action-red">Reject</button>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-primary">Western Ghats Restoration</div>
+                    <div class="row-text-meta">Tree Plantation</div>
+                    <div class="row-text-secondary">BCX-N-MH-9012</div>
+                    <div class="row-text-meta">2025-10-10</div>
+                    <div><span class="status-badge sb-verified">Verified</span></div>
+                    <div>
+                        <button class="btn-action-green">Approve</button>
+                        <button class="btn-action-red">Reject</button>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-primary">Gujarat Rooftop Solar</div>
+                    <div class="row-text-meta">Solar Energy</div>
+                    <div class="row-text-secondary">BCX-C-GJ-3456</div>
+                    <div class="row-text-meta">2025-10-15</div>
+                    <div><span class="status-badge sb-pending">Pending</span></div>
+                    <div>
+                        <button class="btn-action-green">Approve</button>
+                        <button class="btn-action-red">Reject</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- VIEW: Buy Requests Queue -->
+        <section id="view-buy-requests" class="view-section">
+            <div class="section-header">
+                <div class="section-title">Buy Requests Queue</div>
+            </div>
+            <div class="projects-wrapper">
+                <div class="table-header">
+                    <div>Reference</div>
+                    <div>Buyer</div>
+                    <div>Project</div>
+                    <div>Volume</div>
+                    <div>Date</div>
+                    <div>Status</div>
+                    <div>Actions</div>
+                </div>
+                
+                <div class="project-row">
+                    <div class="row-text-secondary">REQ-8A2B</div>
+                    <div class="row-text-primary">Tech Solutions Inc</div>
+                    <div class="row-text-meta">Munnar Reforestation</div>
+                    <div class="row-text-meta">500</div>
+                    <div class="row-text-meta">2025-10-21</div>
+                    <div><span class="status-badge sb-pending">RECEIVED</span></div>
+                    <div>
+                        <select class="status-select">
+                            <option value="RECEIVED" selected>RECEIVED</option>
+                            <option value="TEAM_REVIEWING">TEAM_REVIEWING</option>
+                            <option value="CONNECTING_PARTIES">CONNECTING_PARTIES</option>
+                            <option value="QUOTE_SHARED">QUOTE_SHARED</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-secondary">REQ-9C3D</div>
+                    <div class="row-text-primary">Global Logistics Corp</div>
+                    <div class="row-text-meta">Rajasthan Solar Farm</div>
+                    <div class="row-text-meta">1200</div>
+                    <div class="row-text-meta">2025-10-20</div>
+                    <div><span class="status-badge sb-pending">TEAM_REVIEWING</span></div>
+                    <div>
+                        <select class="status-select">
+                            <option value="RECEIVED">RECEIVED</option>
+                            <option value="TEAM_REVIEWING" selected>TEAM_REVIEWING</option>
+                            <option value="CONNECTING_PARTIES">CONNECTING_PARTIES</option>
+                            <option value="QUOTE_SHARED">QUOTE_SHARED</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-secondary">REQ-7E4F</div>
+                    <div class="row-text-primary">Green Hotels Group</div>
+                    <div class="row-text-meta">Western Ghats Restoration</div>
+                    <div class="row-text-meta">800</div>
+                    <div class="row-text-meta">2025-10-18</div>
+                    <div><span class="status-badge sb-verified">COMPLETED</span></div>
+                    <div>
+                        <select class="status-select">
+                            <option value="RECEIVED">RECEIVED</option>
+                            <option value="TEAM_REVIEWING">TEAM_REVIEWING</option>
+                            <option value="CONNECTING_PARTIES">CONNECTING_PARTIES</option>
+                            <option value="QUOTE_SHARED">QUOTE_SHARED</option>
+                            <option value="COMPLETED" selected>COMPLETED</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- VIEW: Service & Trade Requests Queue -->
+        <section id="view-service-trade" class="view-section">
+            <div class="section-header">
+                <div class="section-title">Compliance Service Requests</div>
+            </div>
+            <div class="projects-wrapper" style="margin-bottom: 40px;">
+                <div class="table-header">
+                    <div>Entity Name</div>
+                    <div>Services Requested</div>
+                    <div>Urgency</div>
+                    <div>Date</div>
+                    <div>Status</div>
+                    <div>Actions</div>
+                </div>
+                
+                <div class="project-row">
+                    <div class="row-text-primary">Steel Authority Ltd</div>
+                    <div class="row-text-meta">ESG Reporting, CBAM</div>
+                    <div class="row-text-secondary" style="color:#EF4444;">High</div>
+                    <div class="row-text-meta">2025-10-22</div>
+                    <div><span class="status-badge sb-pending">Pending</span></div>
+                    <div>
+                        <button class="btn-action-green">Contacted</button>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-primary">Aluminium Corp</div>
+                    <div class="row-text-meta">BRSR Reporting</div>
+                    <div class="row-text-secondary">Normal</div>
+                    <div class="row-text-meta">2025-10-19</div>
+                    <div><span class="status-badge sb-verified">In Progress</span></div>
+                    <div>
+                        <button class="btn-action-green">Update</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section-header">
+                <div class="section-title">Trade Facilitation Requests</div>
+            </div>
+            <div class="projects-wrapper">
+                <div class="table-header">
+                    <div>Entity Name</div>
+                    <div>Exchange</div>
+                    <div>Direction</div>
+                    <div>Volume (CCCs)</div>
+                    <div>Deadline</div>
+                    <div>Actions</div>
+                </div>
+                
+                <div class="project-row">
+                    <div class="row-text-primary">Steel Authority Ltd</div>
+                    <div class="row-text-meta">IEX</div>
+                    <div class="row-text-meta">Buy to Cover Deficit</div>
+                    <div class="row-text-primary">5000</div>
+                    <div class="row-text-secondary">2025-12-31</div>
+                    <div>
+                        <select class="status-select">
+                            <option value="RECEIVED" selected>RECEIVED</option>
+                            <option value="TEAM_REVIEWING">TEAM_REVIEWING</option>
+                            <option value="FACILITATING">FACILITATING</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="project-row">
+                    <div class="row-text-primary">Cement Ind Ltd</div>
+                    <div class="row-text-meta">PXIL</div>
+                    <div class="row-text-meta">Sell Surplus</div>
+                    <div class="row-text-primary">2500</div>
+                    <div class="row-text-secondary">2025-11-30</div>
+                    <div>
+                        <select class="status-select">
+                            <option value="RECEIVED">RECEIVED</option>
+                            <option value="TEAM_REVIEWING">TEAM_REVIEWING</option>
+                            <option value="FACILITATING" selected>FACILITATING</option>
+                            <option value="COMPLETED">COMPLETED</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="glass-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+            <a href="../../index.html" class="nav-logo"><span>PRΛN</span></a>
+            <br><br>
+          <p>The world's first transparent, blockchain-verified ecological ledger.</p>
+        </div>
+        
+        <div class="footer-col">
+          <h4 class="footer-heading">Platform</h4>
+          <ul class="footer-links">
+            <li><a href="#">Register NGO</a></li>
+            <li><a href="#">Buy Credits</a></li>
+            <li><a href="#">Community</a></li>
+            <li><a href="#">Explorer</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Company</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Impact Reports</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="../../Compliance.html">Compliance</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; 2025 PRΛN Registry. All rights reserved.</div>
+        <div style="display: flex; gap: 20px;">
+            <a href="#" style="color:var(--col-accent);"><i class="fa-brands fa-twitter fa-lg"></i></a>
+            <a href="#" style="color:var(--col-accent);"><i class="fa-brands fa-linkedin fa-lg"></i></a>
+            <a href="#" style="color:var(--col-accent);"><i class="fa-brands fa-instagram fa-lg"></i></a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+        const App = {
+            init() {
+                // Initialize default view
+                this.switch(null, 'view-kyc');
+                this.setupMobileNav();
+            },
+
+            switch(event, viewId) {
+                if (event) event.preventDefault();
+                
+                // Hide all views
+                document.querySelectorAll('.view-section').forEach(el => {
+                    el.classList.remove('active');
+                });
+                
+                // Remove active class from all links
+                document.querySelectorAll('.nav-link').forEach(el => {
+                    el.classList.remove('active');
+                });
+                
+                // Show target view
+                const targetView = document.getElementById(viewId);
+                if (targetView) targetView.classList.add('active');
+                
+                // Add active class to clicked link
+                if (event && event.target) {
+                    event.target.classList.add('active');
+                } else {
+                    const defaultLink = document.querySelector(`.nav-link[data-target="${viewId}"]`);
+                    if (defaultLink) defaultLink.classList.add('active');
+                }
+            },
+
+            setupMobileNav() {
+                const hamburger = document.querySelector('.hamburger');
+                const navRight = document.querySelector('.nav-right');
+                if (hamburger) {
+                    hamburger.addEventListener('click', () => {
+                        hamburger.classList.toggle('active');
+                        if(navRight.style.maxHeight) {
+                            navRight.style.maxHeight = null;
+                            navRight.style.opacity = 0;
+                        } else {
+                            navRight.style.display = 'flex';
+                            navRight.style.position = 'fixed';
+                            navRight.style.top = '80px';
+                            navRight.style.left = '0';
+                            navRight.style.width = '100%';
+                            navRight.style.background = 'white';
+                            navRight.style.flexDirection = 'column';
+                            navRight.style.padding = '40px';
+                            navRight.style.maxHeight = '400px';
+                            navRight.style.opacity = 1;
+                        }
+                    });
+                }
+            }
+        };
+
+        App.init();
+    </script>
+   <script>
+document.addEventListener("keydown", function(e) {
+    if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 117)) {
+        e.preventDefault(); 
+    }
+});
+</script>
+	<script>
+(function () {
+    document.addEventListener('keydown', function (e) {
+        if (e.ctrlKey && e.key.toLowerCase() === 'u') {
+            e.preventDefault(); return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'i') {
+            e.preventDefault(); return false;
+        }
+        if (e.key === 'F12') {
+            e.preventDefault(); return false;
+        }
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'j') {
+            e.preventDefault(); return false;
+        }
+        if (e.ctrlKey && e.key.toLowerCase() === 's') {
+            e.preventDefault(); return false;
+        }
+    });
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+})();
+</script>
+</body>
+</html>

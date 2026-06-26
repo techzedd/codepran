@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>PRΛN | Climate Intelligence Dashboard</title>
+    <title>PRΛN | Compliance Dashboard</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -370,11 +370,11 @@
 <body>
 
     <nav class="glass-nav">
-        <a href="../index.html" class="nav-logo"><span>PRΛN</span></a>
+        <a href="dashngo.html" class="nav-logo" title="Go to Main Dashboard"><span>PRΛN</span></a>
         
         <div class="nav-right">
             <ul class="nav-items">
-                <li><a href="#" class="nav-link active" onclick="App.switch('dashboard')">Dashboard</a></li>
+                <li><a href="dashngo.html" class="nav-link active">Main Dashboard</a></li>
                 <li><a href="#" class="nav-link" onclick="App.switch('projects')">My Projects</a></li>
             </ul>
             
@@ -401,20 +401,20 @@
 
             <section class="bento-grid">
                 
-                <div class="action-card card-tree" onclick="window.location.href='TP.html'">
+                <div class="action-card card-tree" onclick="window.location.href='../ComplianceServiceRequest.html'">
                     <div class="ac-content">
                         
-                        <h3>Tree Plantation Project</h3>
-                        <p>Initiate reforestation registration for satellite verification and carbon indexing.</p>
+                        <h3>Submit Compliance Report</h3>
+                        <p>Submit your latest BRSR, CBAM, or emission baseline reports for verification.</p>
                     </div>
                     <div class="ac-btn"><i class="fa-solid fa-arrow-right"></i></div>
                 </div>
 
-                <div class="action-card card-solar" onclick="window.location.href='SP.html'">
+                <div class="action-card card-solar" onclick="window.location.href='../ComplianceTradeRequest.html'">
                     <div class="ac-content">
                         
-                        <h3>Solar Energy Project</h3>
-                        <p>Register renewable energy assets for automated output tracking and credit minting.</p>
+                        <h3>Trade Compliance Credits</h3>
+                        <p>Access the market to buy or sell compliance credits under PAT or Cap & Trade.</p>
                     </div>
                     <div class="ac-btn"><i class="fa-solid fa-arrow-right"></i></div>
                 </div>
@@ -425,7 +425,7 @@
                     </div>
                     <div>
                         <div class="stat-val" id="statActive">--</div>
-                        <div class="stat-label">Total Projects</div>
+                        <div class="stat-label">Facilities</div>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -434,7 +434,7 @@
                     </div>
                     <div>
                         <div class="stat-val" id="statVerifying">--</div>
-                        <div class="stat-label">Under Verification</div>
+                        <div class="stat-label">Pending Audits</div>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -443,7 +443,7 @@
                     </div>
                     <div>
                         <div class="stat-val" id="statVerified">--</div>
-                        <div class="stat-label">Verified Assets</div>
+                        <div class="stat-label">Approved Reports</div>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -452,7 +452,7 @@
                     </div>
                     <div>
                         <div class="stat-val" id="statCredits">--</div>
-                        <div class="stat-label">Est. Credits</div>
+                        <div class="stat-label">Trade Volume</div>
                     </div>
                 </div>
 
@@ -460,7 +460,7 @@
 
             <section id="projects-section">
                 <div class="section-header">
-                    <div class="section-title">Recent Projects</div>
+                    <div class="section-title">Recent Reports & Facilities</div>
                 </div>
                 
                 <div id="projects-wrapper" class="projects-wrapper">
@@ -494,7 +494,7 @@
 
                     <div class="data-grid">
                         <div class="data-group">
-                            <label class="data-label">Legal Entity Structure</label>
+                            <label class="data-label">Entity Type</label>
                             <div class="data-value" id="profType">Society</div>
                         </div>
                         <div class="data-group">
@@ -800,7 +800,7 @@
                             <i class="fa-solid fa-folder-open" style="font-size:3rem; color:#CBD5E1; margin-bottom:20px;"></i>
                             <h3 style="margin-bottom:8px; color:var(--col-primary); font-family:'Space Grotesk'; font-size:1.5rem;">No projects yet</h3>
                             <p style="color:var(--text-muted);">Get started by uploading your first project above.</p>
-                            <button class="btn-cta" onclick="window.location.href='TP.html'">Upload First Project</button>
+                            <button class="btn-cta" onclick="window.location.href='../ComplianceServiceRequest.html'">Upload First Project</button>
                         </div>`;
                     return;
                 }

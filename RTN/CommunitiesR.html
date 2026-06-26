@@ -847,9 +847,11 @@ input[type="checkbox"]:focus-visible + span {
         <div class="nav-right">
             <ul class="nav-items">
                 <li><a href="../MainPage.html" class="nav-link">Home</a></li>
+        <li><a href="../Marketplace.html" class="nav-link">Marketplace</a></li>
+        <li><a href="../Compliance.html" class="nav-link">Compliance</a></li>
                 <li><a href="#" class="nav-link">Help Center</a></li>
             </ul>
-            <a href="#" class="btn-login">Login</a>
+            <a href="Login.html" class="btn-login">Login</a>
         </div>
         <button class="hamburger" aria-label="Menu">
             <span class="line"></span><span class="line"></span><span class="line"></span>
@@ -1224,7 +1226,7 @@ input[type="checkbox"]:focus-visible + span {
                         <p style="color:var(--text-body); max-width:400px; margin:0 auto 40px;">
                             Your Community Registration has been submitted successfully. PRΛN will verify your details within 3–5 working days.
                         </p>
-                        <button type="button" class="btn btn-ghost1" onclick="window.location.href='index.html'">Continue</button>
+                        <button type="button" class="btn btn-ghost1" onclick="window.location.href='DashB/dashngo.html'">Continue</button>
                     </div>
                 </form>
 
@@ -1273,7 +1275,7 @@ input[type="checkbox"]:focus-visible + span {
             <li><a href="#">Privacy Policy</a></li>
             <li><a href="#">Terms of Service</a></li>
             <li><a href="#">Cookie Policy</a></li>
-            <li><a href="#">Compliance</a></li>
+            <li><a href="../Compliance.html">Compliance</a></li>
           </ul>
         </div>
       </div>
@@ -1436,6 +1438,9 @@ input[type="checkbox"]:focus-visible + span {
             btn.style.opacity = '0.7';
 
             setTimeout(() => {
+                const mockUser = { name: "Test User", role: "admin", email: "test@example.com" };
+                localStorage.setItem('blueCredUser', JSON.stringify(mockUser));
+
                 currentStep++;
                 localStorage.removeItem('municipalDraft');
                 updateUI();
@@ -1444,7 +1449,8 @@ input[type="checkbox"]:focus-visible + span {
                     if (successSection) {
                         successSection.scrollIntoView({ behavior: "smooth", block: "center" });
                     }
-                }, 200);
+                
+                setTimeout(() => { window.location.href = "DashB/dashngo.html"; }, 2500);}, 200);
             }, 1500);
         }
 
