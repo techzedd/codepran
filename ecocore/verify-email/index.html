@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Verify your business email address on PRAN EcoCore" />
+    <title>PRΛN EcoCore — Verify Email</title>
+    
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <!-- Split Layout -->
+    <div class="split-screen">
+        
+        <!-- Left Side: Brand Panel -->
+        <div class="brand-panel">
+            <div class="brand-header">
+                <a href="/ecocore/index.html" class="logo-white">PRΛN <span>EcoCore</span></a>
+            </div>
+            
+            <div class="brand-content">
+                <h1>Verify Your<br>Identity.</h1>
+                <p>Security is the foundation of sustainability. We require all users to verify their business email before provisioning workspaces or uploading sensitive environmental utility bills.</p>
+                
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <i class="fa-solid fa-envelope-circle-check"></i>
+                        <span>Secure Corporate Domains Only</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-fingerprint"></i>
+                        <span>Enforced Access Control Limits</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="brand-footer">
+                &copy; 2026 PRΛN Technologies Inc. &bull; Enterprise Compliance Standard
+            </div>
+        </div>
+        
+        <!-- Right Side: Verification Panel -->
+        <div class="form-panel">
+            <div class="form-container" style="text-align: center;">
+                
+                <div class="success-screen">
+                    <div id="verify-status-icon" class="success-icon" style="background-color: rgba(22, 163, 74, 0.05); color: var(--text-muted); animation: pulseGlow 1.5s infinite;">
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
+                    
+                    <h2 style="font-family: var(--font-display); font-size: 2.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 12px; letter-spacing: -0.02em;">Email Verification</h2>
+                    
+                    <p id="verify-status-text" style="color: var(--text-muted); font-size: 1rem; line-height: 1.6; margin-bottom: 32px;">
+                        We are verifying your business email account.<br/>This process happens automatically in a few seconds...
+                    </p>
+                    
+                    <button id="ecocore-verify-btn" class="btn btn-primary" style="opacity: 0.5; transition: var(--transition);" disabled>
+                        Continue to Login <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    
+                    <div style="margin-top: 24px;">
+                        <button id="verify-resend-btn" class="btn btn-secondary" style="width: auto; padding: 10px 20px; font-size: 0.85rem;">
+                            <i class="fa-solid fa-rotate-right"></i> Resend Verification Code
+                        </button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/auth.js"></script>
+</body>
+</html>

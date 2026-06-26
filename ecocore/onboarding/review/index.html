@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Onboarding: Review Configuration</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 40px 0;">
+
+    <div class="wizard-container">
+        
+        <div style="text-align: center; margin-bottom: 32px;">
+            <a href="/ecocore/index.html" class="nav-logo" style="justify-content: center; font-size: 2rem; pointer-events: none;">PRΛN <span>EcoCore</span></a>
+            <p style="color: var(--text-muted); margin-top: 8px; font-weight: 500;">Step-by-step sustainability workspace initialization wizard</p>
+        </div>
+
+        <div id="wizard-steps-container" class="wizard-steps"></div>
+
+        <div class="wizard-card">
+            <div style="margin-bottom: 28px;">
+                <h2 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--col-primary); margin-bottom: 6px; font-weight: 700;">Review Workspace Settings</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Verify the configuration parameters for your sustainability registry before finalizing workspace creation.</p>
+            </div>
+
+            <!-- Summary Container -->
+            <div id="review-summary" style="background: rgba(22, 163, 74, 0.01); border: 1px solid rgba(22, 163, 74, 0.1); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 28px;">
+                <!-- Injected dynamically by onboarding.js -->
+            </div>
+
+            <!-- Confirmation disclaimer -->
+            <div class="checkbox-group" style="margin-bottom: 24px;">
+                <input type="checkbox" id="review-confirm-cb" checked />
+                <label for="review-confirm-cb" style="font-size: 0.85rem; color: var(--text-muted);">I verify that the above information is accurate and wish to initialize the PRAN EcoCore ledger for this organization.</label>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="wizard-footer">
+                <button type="button" id="wizard-prev-btn" class="btn btn-secondary" style="width: auto;">
+                    <i class="fa-solid fa-chevron-left"></i> Previous
+                </button>
+                <button type="button" id="wizard-next-btn" class="btn btn-primary" style="width: auto; background-color: var(--col-primary);">
+                    Create Workspace <i class="fa-solid fa-square-poll-vertical"></i>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/onboarding.js"></script>
+</body>
+</html>

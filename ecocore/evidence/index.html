@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Evidence Repository</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <header id="app-header"></header>
+
+    <div class="workspace-wrapper">
+        <aside id="app-sidebar"></aside>
+
+        <main class="workspace-content">
+            
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Evidence Repository</h1>
+                    <p>Audit-ready storage for utility invoices, emissions receipts, and ISO environmental certificates.</p>
+                </div>
+            </div>
+
+            <!-- Folders Layout Grid -->
+            <div class="grid-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 32px;">
+                
+                <div class="card" onclick="filterFolder('Invoices')" style="margin-bottom:0; cursor:pointer; text-align:center; padding: 20px; border-color: rgba(22,163,74,0.08); transition: var(--transition);">
+                    <i class="fa-solid fa-folder-open" style="font-size: 2.5rem; color: #D97706; margin-bottom: 12px;"></i>
+                    <h4 style="font-family:var(--font-display); font-weight:700; color:var(--col-primary);">Utility Invoices</h4>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">4 Files &bull; 12.4 MB</span>
+                </div>
+
+                <div class="card" onclick="filterFolder('Bills')" style="margin-bottom:0; cursor:pointer; text-align:center; padding: 20px; border-color: rgba(22,163,74,0.08); transition: var(--transition);">
+                    <i class="fa-solid fa-folder-open" style="font-size: 2.5rem; color: var(--col-accent); margin-bottom: 12px;"></i>
+                    <h4 style="font-family:var(--font-display); font-weight:700; color:var(--col-primary);">Fuel Slips</h4>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">3 Files &bull; 8.2 MB</span>
+                </div>
+
+                <div class="card" onclick="filterFolder('Certificates')" style="margin-bottom:0; cursor:pointer; text-align:center; padding: 20px; border-color: rgba(22,163,74,0.08); transition: var(--transition);">
+                    <i class="fa-solid fa-folder-open" style="font-size: 2.5rem; color: #7C3AED; margin-bottom: 12px;"></i>
+                    <h4 style="font-family:var(--font-display); font-weight:700; color:var(--col-primary);">Certifications</h4>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">2 Files &bull; 4.1 MB</span>
+                </div>
+
+                <div class="card" onclick="filterFolder('Reports')" style="margin-bottom:0; cursor:pointer; text-align:center; padding: 20px; border-color: rgba(22,163,74,0.08); transition: var(--transition);">
+                    <i class="fa-solid fa-folder-open" style="font-size: 2.5rem; color: var(--accent-sky); margin-bottom: 12px;"></i>
+                    <h4 style="font-family:var(--font-display); font-weight:700; color:var(--col-primary);">ESG Reports</h4>
+                    <span style="font-size:0.75rem; color:var(--text-muted);">5 Files &bull; 24.5 MB</span>
+                </div>
+
+            </div>
+
+            <!-- Document list and upload -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                    <div style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--col-primary);">Document Archive</div>
+                    
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="doc-search" onkeyup="searchDocs()" placeholder="Search documents..." style="padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(22,163,74,0.15); font-size:0.85rem;" />
+                        <button class="btn btn-primary" onclick="triggerUpload()" style="width: auto; padding: 8px 16px; font-size: 0.85rem;">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload Document
+                        </button>
+                        <input type="file" id="evidence-repo-file" style="display:none;" onchange="uploadToRepo(this)" />
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Filename</th>
+                                <th>Folder Category</th>
+                                <th>File Size</th>
+                                <th>Linked Activity ID</th>
+                                <th>Uploaded Date</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="evidence-table-body">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/workspace.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadEvidence();
+        });
+
+        function getEvidence() {
+            const stored = localStorage.getItem("ecocore_evidence");
+            const defaults = [
+                { id: 1, name: "Electricity_Bill_May2026.pdf", category: "Invoices", size: "3.2 MB", activity: "ACT-9201", date: "June 24, 2026" },
+                { id: 2, name: "Diesel_Purchase_Slip_MIDC.pdf", category: "Bills", size: "1.1 MB", activity: "ACT-9188", date: "June 23, 2026" },
+                { id: 3, name: "ISO_14001_Certification.pdf", category: "Certificates", size: "2.4 MB", activity: "None (Global)", date: "June 10, 2026" },
+                { id: 4, name: "ESG_Assessment_Draft_Q1.pdf", category: "Reports", size: "4.8 MB", activity: "None (Global)", date: "June 05, 2026" }
+            ];
+
+            if (stored) {
+                try { return JSON.parse(stored); } catch (e) {}
+            }
+            localStorage.setItem("ecocore_evidence", JSON.stringify(defaults));
+            return defaults;
+        }
+
+        function loadEvidence() {
+            const list = getEvidence();
+            renderEvidence(list);
+        }
+
+        function renderEvidence(list) {
+            const tbody = document.getElementById("evidence-table-body");
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">No documents archived in this folder.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = list.map(d => `
+                <tr class="evidence-row" data-category="${d.category}">
+                    <td style="font-weight: 700; color: var(--text-main);"><i class="fa-regular fa-file-pdf" style="color:#ef4444; margin-right:8px;"></i> ${d.name}</td>
+                    <td><span class="badge badge-info">${d.category}</span></td>
+                    <td style="font-weight:600;">${d.size}</td>
+                    <td style="font-family: var(--font-display); font-weight: 700; color: var(--col-primary);">${d.activity}</td>
+                    <td>${d.date}</td>
+                    <td style="text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="previewDoc('${d.name}')" title="Preview" style="width: auto; padding: 6px 10px; font-size: 0.8rem; border-color: rgba(0,0,0,0.1);">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                        <button class="btn btn-secondary" onclick="downloadDoc('${d.name}')" title="Download" style="width: auto; padding: 6px 10px; font-size: 0.8rem; border-color: rgba(0,0,0,0.1);">
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                        <button class="btn btn-secondary" onclick="deleteDoc(${d.id})" title="Delete" style="width: auto; padding: 6px 10px; font-size: 0.8rem; border-color: rgba(239, 68, 68, 0.15); color: #ef4444;">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function triggerUpload() {
+            document.getElementById("evidence-repo-file").click();
+        }
+
+        function uploadToRepo(input) {
+            if (!input.files || input.files.length === 0) return;
+
+            const file = input.files[0];
+            const list = getEvidence();
+            const newDoc = {
+                id: Date.now(),
+                name: file.name,
+                category: "Invoices",
+                size: (file.size / (1024 * 1024)).toFixed(1) + " MB",
+                activity: "None (Unlinked)",
+                date: "Today"
+            };
+
+            list.unshift(newDoc);
+            localStorage.setItem("ecocore_evidence", JSON.stringify(list));
+            loadEvidence();
+
+            alert(`Document ${file.name} successfully uploaded and securely stored in your Evidence Vault.`);
+        }
+
+        function previewDoc(name) {
+            alert(`Document Preview: Launching secure inline sandbox viewer for "${name}"...`);
+        }
+
+        function downloadDoc(name) {
+            alert(`Downloading encrypted copy of "${name}" to your local filesystem.`);
+        }
+
+        function deleteDoc(id) {
+            let list = getEvidence();
+            list = list.filter(d => d.id !== id);
+            localStorage.setItem("ecocore_evidence", JSON.stringify(list));
+            loadEvidence();
+        }
+
+        function filterFolder(category) {
+            const rows = document.querySelectorAll(".evidence-row");
+            rows.forEach(row => {
+                const cat = row.getAttribute("data-category");
+                if (cat === category) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        function searchDocs() {
+            const query = document.getElementById("doc-search").value.toLowerCase();
+            const rows = document.querySelectorAll(".evidence-row");
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

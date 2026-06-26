@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Sustainability Data Collection</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <header id="app-header"></header>
+
+    <div class="workspace-wrapper">
+        <aside id="app-sidebar"></aside>
+
+        <main class="workspace-content">
+            
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Data Collection</h1>
+                    <p>Select a sustainability module to submit monthly utility metrics and upload audit bills.</p>
+                </div>
+            </div>
+
+            <!-- Ingestion Grid -->
+            <div class="grid-3" style="margin-bottom: 40px;" id="data-modules-grid">
+                <!-- Populated dynamically via JS -->
+            </div>
+
+            <!-- Ingestion Modal -->
+            <div id="ingestion-modal" style="display: none; position: fixed; inset: 0; background: rgba(2, 44, 34, 0.4); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 24px;">
+                <div class="wizard-card" style="max-width: 580px; width: 100%; position: relative; animation: scaleIn 0.3s var(--ease-out); max-height: 90vh; overflow-y: auto;">
+                    
+                    <button onclick="closeModal()" style="position: absolute; top: 20px; right: 20px; border: none; background: transparent; font-size: 1.5rem; color: var(--text-muted); cursor: pointer;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                    
+                    <div style="margin-bottom: 24px;">
+                        <span id="modal-badge" class="badge badge-success" style="margin-bottom: 10px;">Scope 1</span>
+                        <h2 id="modal-title" style="font-family: var(--font-display); font-size: 1.5rem; color: var(--col-primary); font-weight: 700;">Ingest Utility Data</h2>
+                        <p id="modal-desc" style="color: var(--text-muted); font-size: 0.9rem;">Submit fuel consumption logs and upload invoices.</p>
+                    </div>
+
+                    <!-- Dynamic Form Content -->
+                    <form id="modal-ingestion-form">
+                        <input type="hidden" id="ingest-category" />
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="ingest-loc">Facility Node</label>
+                                <select id="ingest-loc" class="form-control" style="padding-left:16px;">
+                                    <!-- Populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ingest-period">Reporting Period</label>
+                                <select id="ingest-period" class="form-control" style="padding-left:16px;">
+                                    <option value="May 2026">May 2026</option>
+                                    <option value="June 2026">June 2026</option>
+                                    <option value="April 2026">April 2026</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Specialized parameters -->
+                        <div id="dynamic-fields-container">
+                            <!-- Injected depending on category -->
+                        </div>
+
+                        <!-- Bill Upload -->
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label>Supporting Evidence (Invoice / Bill PDF)</label>
+                            <div class="upload-zone" onclick="document.getElementById('evidence-upload-file').click();">
+                                <input type="file" id="evidence-upload-file" style="display:none;" onchange="handleFileSelected(this)" />
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <p id="upload-status-text">Drag & drop or <span>browse file</span></p>
+                                <span style="font-size:0.75rem; color: var(--text-muted); display:block; margin-top:4px;">PDF, PNG, JPG, or XLS up to 10MB</span>
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(22, 163, 74, 0.1);">
+                            <button type="button" class="btn btn-secondary" onclick="closeModal()" style="width: auto; padding: 10px 20px;">Cancel</button>
+                            <button type="submit" class="btn btn-primary" style="width: auto; padding: 10px 24px;">Submit Record</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/workspace.js"></script>
+    <script>
+        const MODULES = [
+            { id: "energy", name: "Electricity Energy", icon: "fa-solid fa-bolt", scope: "Scope 2", completion: 85, pending: 1 },
+            { id: "fuel", name: "Stationary Fuels", icon: "fa-solid fa-gas-pump", scope: "Scope 1", completion: 90, pending: 0 },
+            { id: "water", name: "Water Management", icon: "fa-solid fa-droplet", scope: "Scope 3 / Resource", completion: 50, pending: 2 },
+            { id: "waste", name: "Waste Management", icon: "fa-solid fa-trash-arrow-up", scope: "Scope 3 / Resource", completion: 75, pending: 1 },
+            { id: "production", name: "Production Outputs", icon: "fa-solid fa-boxes-packing", scope: "Operational", completion: 100, pending: 0 },
+            { id: "transport", name: "Logistics Transport", icon: "fa-solid fa-truck", scope: "Scope 1 / 3", completion: 60, pending: 1 },
+            { id: "travel", name: "Business Travel", icon: "fa-solid fa-plane", scope: "Scope 3", completion: 40, pending: 3 },
+            { id: "commute", name: "Employee Commute", icon: "fa-solid fa-car-side", scope: "Scope 3", completion: 30, pending: 1 },
+            { id: "renewable", name: "Renewable Energy", icon: "fa-solid fa-solar-panel", scope: "Scope 2 Offset", completion: 100, pending: 0 },
+            { id: "materials", name: "Raw Materials", icon: "fa-solid fa-cubes", scope: "Scope 3", completion: 70, pending: 2 },
+            { id: "supply", name: "Supply Chain ESG", icon: "fa-solid fa-network-wired", scope: "Scope 3", completion: 20, pending: 4 },
+            { id: "projects", name: "Offset Projects", icon: "fa-solid fa-seedling", scope: "Carbon Offsets", completion: 100, pending: 0 }
+        ];
+
+        document.addEventListener("DOMContentLoaded", function () {
+            renderModulesGrid();
+            loadModalOptions();
+            
+            // Handle form submission
+            document.getElementById("modal-ingestion-form").addEventListener("submit", function(e) {
+                e.preventDefault();
+                submitIngestionForm();
+            });
+        });
+
+        function renderModulesGrid() {
+            const grid = document.getElementById("data-modules-grid");
+            grid.innerHTML = MODULES.map(m => `
+                <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between; border-color: rgba(22,163,74,0.08); transition: var(--transition);">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+                            <div style="width:40px; height:40px; border-radius:10px; background:rgba(22, 163, 74, 0.05); color:var(--col-accent); display:flex; align-items:center; justify-content:center; font-size:1.2rem;">
+                                <i class="${m.icon}"></i>
+                            </div>
+                            <span class="badge ${m.scope.includes('Scope 1') ? 'badge-danger' : m.scope.includes('Scope 2') ? 'badge-success' : 'badge-info'}">${m.scope}</span>
+                        </div>
+                        
+                        <h3 style="font-family: var(--font-display); font-size:1.15rem; color:var(--col-primary); margin-bottom:8px; font-weight:700;">${m.name}</h3>
+                        
+                        <div style="margin-bottom:16px;">
+                            <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px; font-weight:600; color:var(--text-muted);">
+                                <span>Completion</span>
+                                <span>${m.completion}%</span>
+                            </div>
+                            <div style="height:6px; background:#F1F5F9; border-radius:10px; overflow:hidden;">
+                                <div style="width:${m.completion}%; height:100%; background:var(--col-accent); border-radius:10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+                        <span style="font-size:0.8rem; color:${m.pending > 0 ? '#D97706' : 'var(--text-muted)'}; font-weight:600;">
+                            <i class="fa-regular fa-clock"></i> ${m.pending} Forms Pending
+                        </span>
+                        <button onclick="openIngestModal('${m.id}')" class="btn btn-secondary" style="width:auto; padding:6px 14px; font-size:0.8rem; border-color: rgba(22,163,74,0.15);">
+                            Open
+                        </button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function loadModalOptions() {
+            const onboardingStored = localStorage.getItem("ecocore_onboarding_data");
+            if (!onboardingStored) return;
+
+            const onboardingData = JSON.parse(onboardingStored);
+            const locSelect = document.getElementById("ingest-loc");
+            if (locSelect) {
+                locSelect.innerHTML = onboardingData.locations.map(l => `<option value="${l.name}">${l.name}</option>`).join("");
+            }
+        }
+
+        function openIngestModal(moduleId) {
+            const m = MODULES.find(mod => mod.id === moduleId);
+            if (!m) return;
+
+            document.getElementById("ingest-category").value = m.id;
+            document.getElementById("modal-title").textContent = `${m.name} Ingestion`;
+            document.getElementById("modal-badge").textContent = m.scope;
+            
+            // Set dynamic fields
+            const container = document.getElementById("dynamic-fields-container");
+            
+            if (m.id === "energy") {
+                document.getElementById("modal-desc").textContent = "Submit electricity utility bills and offset records.";
+                container.innerHTML = `
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="param-qty">Grid Consumption (kWh)</label>
+                            <input type="number" id="param-qty" class="form-control" placeholder="e.g. 24500" style="padding-left:16px;" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="param-offset">Solar Offset (kWh)</label>
+                            <input type="number" id="param-offset" class="form-control" placeholder="e.g. 5200" style="padding-left:16px;" />
+                        </div>
+                    </div>
+                `;
+            } else if (m.id === "fuel") {
+                document.getElementById("modal-desc").textContent = "Record diesel or natural gas usage in stationary machinery.";
+                container.innerHTML = `
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="param-fuel-type">Fuel Type</label>
+                            <select id="param-fuel-type" class="form-control" style="padding-left:16px;">
+                                <option value="Diesel">Diesel (High Speed Diesel)</option>
+                                <option value="Natural Gas">Natural Gas (CNG/PNG)</option>
+                                <option value="LDO">Light Diesel Oil (LDO)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="param-qty">Quantity Consumed (Litres/m³)</label>
+                            <input type="number" id="param-qty" class="form-control" placeholder="e.g. 450" style="padding-left:16px;" required />
+                        </div>
+                    </div>
+                `;
+            } else if (m.id === "water") {
+                document.getElementById("modal-desc").textContent = "Record groundwater drawal and municipal water supply metrics.";
+                container.innerHTML = `
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="param-water-source">Water Source</label>
+                            <select id="param-water-source" class="form-control" style="padding-left:16px;">
+                                <option value="Groundwater">Groundwater (Borewell)</option>
+                                <option value="Municipal">Municipal Water Supply</option>
+                                <option value="Recycled">Recycled Water</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="param-qty">Quantity Consumed (m³)</label>
+                            <input type="number" id="param-qty" class="form-control" placeholder="e.g. 185" style="padding-left:16px;" required />
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById("modal-desc").textContent = `Submit activity files for ${m.name}.`;
+                container.innerHTML = `
+                    <div class="form-group">
+                        <label for="param-qty">Activity Quantity / Metrics</label>
+                        <input type="number" id="param-qty" class="form-control" placeholder="e.g. 1500" style="padding-left:16px;" required />
+                    </div>
+                `;
+            }
+
+            document.getElementById("upload-status-text").innerHTML = "Drag & drop or <span>browse file</span>";
+            document.getElementById("ingestion-modal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("ingestion-modal").style.display = "none";
+        }
+
+        function handleFileSelected(input) {
+            const statusText = document.getElementById("upload-status-text");
+            if (input.files && input.files.length > 0) {
+                statusText.innerHTML = `<strong style="color: var(--col-accent);"><i class="fa-solid fa-file-pdf"></i> ${input.files[0].name} selected</strong>`;
+            }
+        }
+
+        function submitIngestionForm() {
+            const categoryId = document.getElementById("ingest-category").value;
+            const facility = document.getElementById("ingest-loc").value;
+            const period = document.getElementById("ingest-period").value;
+            const qty = document.getElementById("param-qty").value;
+
+            // Load current activities
+            let activities = [];
+            const storedAct = localStorage.getItem("ecocore_activities");
+            if (storedAct) {
+                try { activities = JSON.parse(storedAct); } catch(e) {}
+            }
+
+            const m = MODULES.find(mod => mod.id === categoryId);
+            const newAct = {
+                id: "ACT-" + Math.floor(1000 + Math.random() * 9000),
+                module: m.name,
+                dept: facility,
+                status: "Pending",
+                reportedBy: "John Doe",
+                date: period,
+                details: `${qty} units reported.`
+            };
+
+            activities.unshift(newAct);
+            localStorage.setItem("ecocore_activities", JSON.stringify(activities));
+
+            alert(`${m.name} data submitted successfully. Your submission ID is ${newAct.id}.`);
+            closeModal();
+        }
+    </script>
+</body>
+</html>

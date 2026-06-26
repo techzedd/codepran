@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Organization Profile</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <header id="app-header"></header>
+
+    <div class="workspace-wrapper">
+        <aside id="app-sidebar"></aside>
+
+        <main class="workspace-content">
+            
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Organization Profile</h1>
+                    <p>Configure corporate identity, GST settings, and manage operational sites.</p>
+                </div>
+            </div>
+
+            <!-- Profile Info & GST Details -->
+            <div class="grid-2">
+                <div class="card">
+                    <h3 class="card-title">Corporate Profile</h3>
+                    <div style="display: flex; flex-direction: column; gap: 16px; font-size: 0.95rem;">
+                        <div>
+                            <span style="color: var(--text-muted); display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Company Name</span>
+                            <strong id="org-profile-name" style="color: var(--text-main); font-size: 1.2rem;">Acme Industries Ltd.</strong>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted); display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Industry Classification</span>
+                            <span id="org-profile-ind">Manufacturing & Assembly</span>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted); display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Reporting Financial Year</span>
+                            <span id="org-profile-fy">2026-2027</span>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted); display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Corporate Address</span>
+                            <span id="org-profile-address">12, Nariman Point, Mumbai, MH, 400021</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">GST & Registration Codes</h3>
+                    <div style="display: flex; flex-direction: column; gap: 16px; font-size: 0.95rem;">
+                        <div>
+                            <span style="color: var(--text-muted); display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">GSTIN Code</span>
+                            <strong id="org-profile-gst" style="color: var(--text-main);">27AAAAA1111A1Z1</strong>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted); display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Incorporation Number (CIN)</span>
+                            <span id="org-profile-cin">U12345MH2026PTC123456</span>
+                        </div>
+                        <div>
+                            <span style="color: var(--text-muted); display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Primary Domain</span>
+                            <span id="org-profile-web">https://www.acme-industries.com</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Locations management -->
+            <div class="card">
+                <div class="card-title">
+                    <span>Operational Facility Nodes</span>
+                    <button class="btn btn-secondary" onclick="toggleAddLocForm()" style="width: auto; padding: 6px 14px; font-size: 0.8rem; border-color: rgba(22,163,74,0.15);">
+                        <i class="fa-solid fa-plus"></i> Add Facility
+                    </button>
+                </div>
+
+                <!-- Hidden Form: Add Location -->
+                <div id="add-loc-form" style="display: none; background: rgba(22, 163, 74, 0.02); border: 1px solid rgba(22, 163, 74, 0.1); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 24px;">
+                    <h4 style="font-family: var(--font-display); font-size: 1rem; color: var(--col-primary); margin-bottom: 14px; font-weight: 700;">Add Facility Node</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Facility Name</label>
+                            <input type="text" id="new-loc-name" class="form-control" placeholder="Pune Warehouse" style="padding-left:16px;" />
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Type</label>
+                            <select id="new-loc-type" class="form-control" style="padding-left:16px;">
+                                <option value="Plant">Plant / Factory</option>
+                                <option value="Office">Office</option>
+                                <option value="Warehouse">Warehouse</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>City</label>
+                            <input type="text" id="new-loc-city" class="form-control" placeholder="Pune" style="padding-left:16px;" />
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Address</label>
+                            <input type="text" id="new-loc-addr" class="form-control" placeholder="Industrial Sector B" style="padding-left:16px;" />
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="submitNewLoc()" style="width: auto; padding: 10px 20px; font-size: 0.85rem;">Save Node</button>
+                        <button class="btn btn-secondary" onclick="toggleAddLocForm()" style="width: auto; padding: 10px 20px; font-size: 0.85rem;">Cancel</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Node ID</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>City</th>
+                                <th>Address</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="org-locations-table">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/workspace.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadOrgData();
+        });
+
+        function loadOrgData() {
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            
+            // Populate profile
+            if (data.company.name) document.getElementById("org-profile-name").textContent = data.company.name;
+            if (data.company.industry) document.getElementById("org-profile-ind").textContent = data.company.industry;
+            if (data.company.fy) document.getElementById("org-profile-fy").textContent = data.company.fy;
+            if (data.company.address) document.getElementById("org-profile-address").textContent = data.company.address;
+            if (data.company.gst) document.getElementById("org-profile-gst").textContent = data.company.gst;
+            if (data.company.reg) document.getElementById("org-profile-cin").textContent = data.company.reg;
+            if (data.company.web) document.getElementById("org-profile-web").textContent = data.company.web;
+
+            // Populate locations
+            renderLocations(data.locations);
+        }
+
+        function renderLocations(locations) {
+            const tbody = document.getElementById("org-locations-table");
+            if (locations.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted);">No locations configured.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = locations.map(loc => `
+                <tr>
+                    <td style="font-family: var(--font-display); font-weight: 700; color: var(--col-primary);">LOC-${loc.id.toString().slice(-4)}</td>
+                    <td style="font-weight: 700;">${loc.name}</td>
+                    <td><span class="badge ${loc.type === 'Plant' ? 'badge-success' : 'badge-info'}">${loc.type}</span></td>
+                    <td>${loc.city}</td>
+                    <td>${loc.address || 'N/A'}</td>
+                    <td style="text-align: right;">
+                        <button class="btn btn-secondary" onclick="removeLoc(${loc.id})" style="width: auto; padding: 6px 10px; font-size: 0.8rem; color:#ef4444; border-color: rgba(239, 68, 68, 0.15);">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function toggleAddLocForm() {
+            const form = document.getElementById("add-loc-form");
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+
+        function submitNewLoc() {
+            const name = document.getElementById("new-loc-name").value.trim();
+            const type = document.getElementById("new-loc-type").value;
+            const city = document.getElementById("new-loc-city").value.trim();
+            const address = document.getElementById("new-loc-addr").value.trim();
+
+            if (!name || !city) {
+                alert("Name and City are required.");
+                return;
+            }
+
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            const newLoc = { id: Date.now(), name, type, city, address };
+            data.locations.push(newLoc);
+            localStorage.setItem("ecocore_onboarding_data", JSON.stringify(data));
+            
+            loadOrgData();
+            toggleAddLocForm();
+
+            // Clear inputs
+            document.getElementById("new-loc-name").value = "";
+            document.getElementById("new-loc-city").value = "";
+            document.getElementById("new-loc-addr").value = "";
+        }
+
+        function removeLoc(id) {
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            data.locations = data.locations.filter(loc => loc.id !== id);
+            localStorage.setItem("ecocore_onboarding_data", JSON.stringify(data));
+
+            loadOrgData();
+        }
+    </script>
+</body>
+</html>

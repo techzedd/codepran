@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Roles & Permissions</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <header id="app-header"></header>
+
+    <div class="workspace-wrapper">
+        <aside id="app-sidebar"></aside>
+
+        <main class="workspace-content">
+            
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Roles & Permissions</h1>
+                    <p>Assign module-level security permissions to workspace user roles.</p>
+                </div>
+            </div>
+
+            <!-- Role Permissions Cards -->
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom:8px;">
+                        <span><i class="fa-solid fa-crown" style="color: #D97706; margin-right: 8px;"></i> Workspace Owner / Admin</span>
+                        <span class="badge badge-success">Full Access</span>
+                    </h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Owner of the workspace. Access to all modules, bills, locations, and settings. Can delete the workspace.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 8px; opacity: 0.8;"><i class="fa-regular fa-square-check" style="color: var(--col-accent);"></i> <span style="font-size:0.85rem;">Dashboard</span></div>
+                        <div style="display: flex; align-items: center; gap: 8px; opacity: 0.8;"><i class="fa-regular fa-square-check" style="color: var(--col-accent);"></i> <span style="font-size:0.85rem;">Reports</span></div>
+                        <div style="display: flex; align-items: center; gap: 8px; opacity: 0.8;"><i class="fa-regular fa-square-check" style="color: var(--col-accent);"></i> <span style="font-size:0.85rem;">Users</span></div>
+                        <div style="display: flex; align-items: center; gap: 8px; opacity: 0.8;"><i class="fa-regular fa-square-check" style="color: var(--col-accent);"></i> <span style="font-size:0.85rem;">Organization</span></div>
+                        <div style="display: flex; align-items: center; gap: 8px; opacity: 0.8;"><i class="fa-regular fa-square-check" style="color: var(--col-accent);"></i> <span style="font-size:0.85rem;">Data Collection</span></div>
+                        <div style="display: flex; align-items: center; gap: 8px; opacity: 0.8;"><i class="fa-regular fa-square-check" style="color: var(--col-accent);"></i> <span style="font-size:0.85rem;">Activities</span></div>
+                        <div style="display: flex; align-items: center; gap: 8px; opacity: 0.8;"><i class="fa-regular fa-square-check" style="color: var(--col-accent);"></i> <span style="font-size:0.85rem;">Settings</span></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom:8px;">
+                        <span><i class="fa-solid fa-user-shield" style="color: var(--col-accent); margin-right: 8px;"></i> Department Admin</span>
+                        <span class="badge badge-info">Write Access</span>
+                    </h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Oversees department activities, adds facility nodes, and invites officers.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;" id="matrix-admin">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom:8px;">
+                        <span><i class="fa-solid fa-user-check" style="color: var(--accent-sky); margin-right: 8px;"></i> Reviewer / Approver</span>
+                        <span class="badge badge-info">Audit Access</span>
+                    </h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Reviews submitted energy & fuel activities. Approves records or flags them for review.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;" id="matrix-reviewer">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title" style="margin-bottom:8px;">
+                        <span><i class="fa-solid fa-user-pen" style="color: #7C3AED; margin-right: 8px;"></i> Data Entry Officer</span>
+                        <span class="badge badge-warning">Entry Access</span>
+                    </h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">Uploads utility bills, energy records, and diesel usage inputs. Cannot delete records.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;" id="matrix-officer">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/workspace.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadPermissions();
+        });
+
+        function loadPermissions() {
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            const roles = data.roles;
+            const modules = ["Dashboard", "Reports", "Users", "Organization", "Data Collection", "Activities", "Settings"];
+
+            // Render admin
+            renderMatrix("matrix-admin", "admin", roles.admin, modules);
+            // Render reviewer
+            renderMatrix("matrix-reviewer", "reviewer", roles.reviewer, modules);
+            // Render officer
+            renderMatrix("matrix-officer", "officer", roles.officer, modules);
+        }
+
+        function renderMatrix(containerId, roleKey, activeModules, modules) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = modules.map(mod => {
+                const checked = activeModules.includes(mod) ? "checked" : "";
+                return `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="perm-${roleKey}-${mod.replace(" ", "")}" ${checked} onchange="updatePerm('${roleKey}', '${mod}', this.checked)" style="width:16px; height:16px; accent-color: var(--col-accent); cursor:pointer;" />
+                        <label for="perm-${roleKey}-${mod.replace(" ", "")}" style="text-transform:none; margin:0; font-size:0.85rem; font-weight:500; cursor:pointer; color:var(--text-body);">${mod}</label>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        function updatePerm(roleKey, moduleName, isChecked) {
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            if (isChecked) {
+                if (!data.roles[roleKey].includes(moduleName)) {
+                    data.roles[roleKey].push(moduleName);
+                }
+            } else {
+                data.roles[roleKey] = data.roles[roleKey].filter(m => m !== moduleName);
+            }
+            localStorage.setItem("ecocore_onboarding_data", JSON.stringify(data));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Workspace Users</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <header id="app-header"></header>
+
+    <div class="workspace-wrapper">
+        <aside id="app-sidebar"></aside>
+
+        <main class="workspace-content">
+            
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Users Directory</h1>
+                    <p>Invite sustainability auditors, assign reviewer permissions, and oversee team activities.</p>
+                </div>
+            </div>
+
+            <!-- Table Card -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                    <!-- Search & Filter -->
+                    <div style="display: flex; gap: 12px; align-items: center; flex: 1; min-width: 280px;">
+                        <div style="position: relative; display: flex; align-items: center; flex: 1;">
+                            <input type="text" id="user-search-input" onkeyup="searchUsers()" placeholder="Search users by name, email, department..." style="width: 100%; padding: 10px 16px 10px 36px; border-radius: 8px; border: 1px solid rgba(22, 163, 74, 0.15); background: var(--bg-page); font-size: 0.9rem; font-family: var(--font-body);" />
+                            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; color: var(--text-muted); font-size: 0.9rem;"></i>
+                        </div>
+                        <select id="role-filter" onchange="searchUsers()" class="form-control" style="width: auto; padding: 10px 24px 10px 16px; padding-left: 16px; margin-bottom: 0;">
+                            <option value="">All Roles</option>
+                            <option value="Department Admin">Department Admin</option>
+                            <option value="Reviewer">Reviewer / Approver</option>
+                            <option value="Data Entry Officer">Data Entry Officer</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="toggleInviteForm()" style="width: auto; padding: 10px 20px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-user-plus"></i> Invite Teammate
+                    </button>
+                </div>
+
+                <!-- Hidden Invite Form -->
+                <div id="invite-user-form" style="display: none; background: rgba(22, 163, 74, 0.02); border: 1px solid rgba(22, 163, 74, 0.1); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 24px;">
+                    <h4 style="font-family: var(--font-display); font-size: 1rem; color: var(--col-primary); margin-bottom: 14px; font-weight: 700;">Invite Teammate</h4>
+                    <div style="display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Email Address</label>
+                            <input type="email" id="new-user-email" class="form-control" placeholder="name@company.com" style="padding-left:16px;" />
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Role</label>
+                            <select id="new-user-role" class="form-control" style="padding-left:16px;">
+                                <option value="Department Admin">Department Admin</option>
+                                <option value="Reviewer">Reviewer / Approver</option>
+                                <option value="Data Entry Officer">Data Entry Officer</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Department</label>
+                            <select id="new-user-dept" class="form-control" style="padding-left:16px;">
+                                <!-- Loaded dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="submitInvite()" style="width: auto; padding: 10px 20px; font-size: 0.85rem;">Send Invitation</button>
+                        <button class="btn btn-secondary" onclick="toggleInviteForm()" style="width: auto; padding: 10px 20px; font-size: 0.85rem;">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- Main Users Table -->
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Last Login</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/workspace.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadUsersData();
+        });
+
+        function loadUsersData() {
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            
+            // Populate department selector
+            const deptSelect = document.getElementById("new-user-dept");
+            if (deptSelect && data.departments) {
+                deptSelect.innerHTML = data.departments.map(d => `<option value="${d.name}">${d.name}</option>`).join("");
+            }
+
+            // Populate table
+            renderUsers(data.users);
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById("users-table-body");
+            if (users.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-muted);">No users found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                const nameParts = user.email.split("@")[0].split(".");
+                const name = nameParts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
+                
+                // Set default status/login if missing
+                const status = user.status || "Active";
+                const lastLogin = user.lastLogin || "Today, 10:15 AM";
+
+                return `
+                    <tr class="user-row">
+                        <td style="font-weight: 700; color: var(--text-main);">${name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.department}</td>
+                        <td><strong style="color: var(--col-primary); font-size: 0.85rem;">${user.role}</strong></td>
+                        <td><span class="badge ${status === 'Active' ? 'badge-success' : 'badge-danger'}">${status}</span></td>
+                        <td style="font-size: 0.8rem; color: var(--text-muted);">${lastLogin}</td>
+                        <td style="text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                            <button class="btn btn-secondary" onclick="deactivateUser(${user.id})" title="Toggle Deactivate" style="width: auto; padding: 6px 10px; font-size: 0.8rem; border-color: rgba(0,0,0,0.1);">
+                                <i class="fa-solid fa-ban" style="color: #D97706;"></i>
+                            </button>
+                            <button class="btn btn-secondary" onclick="deleteUser(${user.id})" title="Delete" style="width: auto; padding: 6px 10px; font-size: 0.8rem; border-color: rgba(239, 68, 68, 0.15); color: #ef4444;">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        function toggleInviteForm() {
+            const form = document.getElementById("invite-user-form");
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+
+        function submitInvite() {
+            const email = document.getElementById("new-user-email").value.trim();
+            const role = document.getElementById("new-user-role").value;
+            const dept = document.getElementById("new-user-dept").value;
+
+            if (!email) {
+                alert("Please enter a valid email.");
+                return;
+            }
+
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            const newUser = {
+                id: Date.now(),
+                email,
+                role,
+                department: dept,
+                status: "Active",
+                lastLogin: "Never Logged In"
+            };
+
+            data.users.push(newUser);
+            localStorage.setItem("ecocore_onboarding_data", JSON.stringify(data));
+            
+            loadUsersData();
+            toggleInviteForm();
+
+            document.getElementById("new-user-email").value = "";
+        }
+
+        function deactivateUser(id) {
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            data.users = data.users.map(user => {
+                if (user.id === id) {
+                    user.status = user.status === "Active" ? "Deactivated" : "Active";
+                }
+                return user;
+            });
+            localStorage.setItem("ecocore_onboarding_data", JSON.stringify(data));
+            loadUsersData();
+        }
+
+        function deleteUser(id) {
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            data.users = data.users.filter(user => user.id !== id);
+            localStorage.setItem("ecocore_onboarding_data", JSON.stringify(data));
+            loadUsersData();
+        }
+
+        function searchUsers() {
+            const query = document.getElementById("user-search-input").value.toLowerCase();
+            const roleFilter = document.getElementById("role-filter").value.toLowerCase();
+            const rows = document.querySelectorAll(".user-row");
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const roleMatches = roleFilter === "" || text.includes(roleFilter);
+                const queryMatches = query === "" || text.includes(query);
+
+                if (roleMatches && queryMatches) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Assets Inventory</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <header id="app-header"></header>
+
+    <div class="workspace-wrapper">
+        <aside id="app-sidebar"></aside>
+
+        <main class="workspace-content">
+            
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Assets Register</h1>
+                    <p>Track physical assets such as boilers, vehicle fleets, solar plants, and factory units.</p>
+                </div>
+            </div>
+
+            <!-- Table Card -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                    <div style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; color: var(--col-primary);">Operational Assets</div>
+                    <button class="btn btn-primary" onclick="toggleAddAssetForm()" style="width: auto; padding: 10px 20px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-plus"></i> Add Asset
+                    </button>
+                </div>
+
+                <!-- Hidden Form: Add Asset -->
+                <div id="add-asset-form" style="display: none; background: rgba(22, 163, 74, 0.02); border: 1px solid rgba(22, 163, 74, 0.1); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 24px;">
+                    <h4 style="font-family: var(--font-display); font-size: 1rem; color: var(--col-primary); margin-bottom: 14px; font-weight: 700;">Register Asset</h4>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Asset Name</label>
+                            <input type="text" id="new-asset-name" class="form-control" placeholder="e.g. 500kVA Solar array" style="padding-left:16px;" />
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Asset Type</label>
+                            <select id="new-asset-type" class="form-control" style="padding-left:16px;">
+                                <option value="Solar Plant">Solar Plant</option>
+                                <option value="DG Set">DG Generator Set</option>
+                                <option value="Boiler">Boiler System</option>
+                                <option value="Factory">Factory Facility</option>
+                                <option value="Vehicle">Vehicle / Logistics Fleet</option>
+                                <option value="Building">Corporate Building</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Location Node</label>
+                            <select id="new-asset-loc" class="form-control" style="padding-left:16px;">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Owner Department</label>
+                            <select id="new-asset-dept" class="form-control" style="padding-left:16px;">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Operational Code</label>
+                            <input type="text" id="new-asset-code" class="form-control" placeholder="e.g. SOL-500KVA" style="padding-left:16px;" />
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="submitNewAsset()" style="width: auto; padding: 10px 20px; font-size: 0.85rem;">Register Asset</button>
+                        <button class="btn btn-secondary" onclick="toggleAddAssetForm()" style="width: auto; padding: 10px 20px; font-size: 0.85rem;">Cancel</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Asset Code</th>
+                                <th>Asset Name</th>
+                                <th>Asset Type</th>
+                                <th>Location</th>
+                                <th>Owner Department</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assets-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/workspace.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadAssetsData();
+        });
+
+        // Seed default assets if empty
+        function getAssets() {
+            const stored = localStorage.getItem("ecocore_assets");
+            const defaultAssets = [
+                { id: 1, code: "FAC-HQ-MUM", name: "Corporate HQ Complex", type: "Building", loc: "HQ Corporate Office", dept: "Environmental Compliance", status: "Active" },
+                { id: 2, code: "SOL-PUN-01", name: "300kW Rooftop Solar Plant", type: "Solar Plant", loc: "Main Plant", dept: "Energy & Utilities", status: "Active" },
+                { id: 3, code: "DG-PUN-04", name: "150kVA Emergency DG Set", type: "DG Set", loc: "Main Plant", dept: "Production & Operations", status: "Active" },
+                { id: 4, code: "BOI-PUN-12", name: "Heavy Duty Boiler Unit B", type: "Boiler", loc: "Main Plant", dept: "Production & Operations", status: "Active" }
+            ];
+
+            if (stored) {
+                try { return JSON.parse(stored); } catch (e) { return defaultAssets; }
+            }
+            localStorage.setItem("ecocore_assets", JSON.stringify(defaultAssets));
+            return defaultAssets;
+        }
+
+        function loadAssetsData() {
+            const onboardingStored = localStorage.getItem("ecocore_onboarding_data");
+            if (!onboardingStored) return;
+
+            const onboardingData = JSON.parse(onboardingStored);
+            
+            // Populate select menus
+            const locSelect = document.getElementById("new-asset-loc");
+            if (locSelect) {
+                locSelect.innerHTML = onboardingData.locations.map(l => `<option value="${l.name}">${l.name}</option>`).join("");
+            }
+            const deptSelect = document.getElementById("new-asset-dept");
+            if (deptSelect) {
+                deptSelect.innerHTML = onboardingData.departments.map(d => `<option value="${d.name}">${d.name}</option>`).join("");
+            }
+
+            const assets = getAssets();
+            renderAssets(assets);
+        }
+
+        function renderAssets(assets) {
+            const tbody = document.getElementById("assets-table-body");
+            if (assets.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-muted);">No assets registered.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = assets.map(a => `
+                <tr>
+                    <td style="font-family: var(--font-display); font-weight: 700; color: var(--col-primary);">${a.code}</td>
+                    <td style="font-weight: 700;">${a.name}</td>
+                    <td><span class="badge badge-info">${a.type}</span></td>
+                    <td>${a.loc}</td>
+                    <td>${a.dept}</td>
+                    <td><span class="badge ${a.status === 'Active' ? 'badge-success' : 'badge-danger'}">${a.status}</span></td>
+                    <td style="text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="archiveAsset(${a.id})" title="Archive" style="width: auto; padding: 6px 10px; font-size: 0.8rem; border-color: rgba(0,0,0,0.1);">
+                            <i class="fa-solid fa-box-archive" style="color: #64748B;"></i>
+                        </button>
+                        <button class="btn btn-secondary" onclick="deleteAsset(${a.id})" title="Delete" style="width: auto; padding: 6px 10px; font-size: 0.8rem; border-color: rgba(239, 68, 68, 0.15); color: #ef4444;">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function toggleAddAssetForm() {
+            const form = document.getElementById("add-asset-form");
+            form.style.display = form.style.display === "none" ? "block" : "none";
+        }
+
+        function submitNewAsset() {
+            const name = document.getElementById("new-asset-name").value.trim();
+            const type = document.getElementById("new-asset-type").value;
+            const loc = document.getElementById("new-asset-loc").value;
+            const dept = document.getElementById("new-asset-dept").value;
+            const code = document.getElementById("new-asset-code").value.trim();
+
+            if (!name || !code) {
+                alert("Please fill in Asset Name and Operational Code.");
+                return;
+            }
+
+            const assets = getAssets();
+            const newAsset = {
+                id: Date.now(),
+                code,
+                name,
+                type,
+                loc,
+                dept,
+                status: "Active"
+            };
+
+            assets.push(newAsset);
+            localStorage.setItem("ecocore_assets", JSON.stringify(assets));
+
+            loadAssetsData();
+            toggleAddAssetForm();
+
+            document.getElementById("new-asset-name").value = "";
+            document.getElementById("new-asset-code").value = "";
+        }
+
+        function archiveAsset(id) {
+            let assets = getAssets();
+            assets = assets.map(a => {
+                if (a.id === id) {
+                    a.status = a.status === "Active" ? "Archived" : "Active";
+                }
+                return a;
+            });
+            localStorage.setItem("ecocore_assets", JSON.stringify(assets));
+            loadAssetsData();
+        }
+
+        function deleteAsset(id) {
+            let assets = getAssets();
+            assets = assets.filter(a => a.id !== id);
+            localStorage.setItem("ecocore_assets", JSON.stringify(assets));
+            loadAssetsData();
+        }
+    </script>
+</body>
+</html>

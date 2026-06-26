@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Onboarding: Company Profile</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 40px 0;">
+
+    <!-- Wizard Wrapper -->
+    <div class="wizard-container">
+        
+        <div style="text-align: center; margin-bottom: 32px;">
+            <a href="/ecocore/index.html" class="nav-logo" style="justify-content: center; font-size: 2rem; pointer-events: none;">PRΛN <span>EcoCore</span></a>
+            <p style="color: var(--text-muted); margin-top: 8px; font-weight: 500;">Step-by-step sustainability workspace initialization wizard</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div id="wizard-steps-container" class="wizard-steps">
+            <!-- Injected by onboarding.js -->
+        </div>
+
+        <!-- Wizard Card -->
+        <div class="wizard-card">
+            <div style="margin-bottom: 28px;">
+                <h2 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--col-primary); margin-bottom: 6px; font-weight: 700;">Company Profile</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Enter your legal enterprise identification details to setup the primary workspace profile.</p>
+            </div>
+
+            <!-- Form Content -->
+            <form onsubmit="return false;">
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="comp-name">Company Legal Name</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="comp-name" class="form-control" placeholder="e.g. Acme Industries Ltd." required />
+                            <i class="fa-regular fa-building"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-email">Corporate Contact Email</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="comp-email" class="form-control" placeholder="sustainability@company.com" required />
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="comp-industry">Industry Sector</label>
+                        <div class="input-wrapper">
+                            <select id="comp-industry" class="form-control">
+                                <option value="Manufacturing">Manufacturing</option>
+                                <option value="Chemicals & Plastics">Chemicals & Plastics</option>
+                                <option value="Metals & Mining">Metals & Mining</option>
+                                <option value="Energy & Power Generation">Energy & Power Generation</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Logistics & Transport">Logistics & Transport</option>
+                            </select>
+                            <i class="fa-solid fa-industry"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-fy">Reporting Financial Year</label>
+                        <div class="input-wrapper">
+                            <select id="comp-fy" class="form-control">
+                                <option value="2026-2027">2026-2027 (Current)</option>
+                                <option value="2025-2026">2025-2026</option>
+                                <option value="2027-2028">2027-2028</option>
+                            </select>
+                            <i class="fa-regular fa-calendar-days"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="comp-gst">GSTIN (Optional)</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="comp-gst" class="form-control" placeholder="27AAAAA1111A1Z1" />
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-reg">Registration / Incorporation Code</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="comp-reg" class="form-control" placeholder="U12345MH2026PTC123456" />
+                            <i class="fa-solid fa-barcode"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="comp-web">Corporate Website URL</label>
+                    <div class="input-wrapper">
+                        <input type="url" id="comp-web" class="form-control" placeholder="https://www.company.com" />
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="comp-address">Headquarters Address</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="comp-address" class="form-control" placeholder="Full Registered HQ Street Address" required />
+                        <i class="fa-solid fa-map-pin"></i>
+                    </div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="wizard-footer">
+                    <button type="button" id="wizard-prev-btn" class="btn btn-secondary" style="width: auto;">
+                        <i class="fa-solid fa-chevron-left"></i> Previous
+                    </button>
+                    <button type="button" id="wizard-next-btn" class="btn btn-primary" style="width: auto;">
+                        Save & Continue <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/onboarding.js"></script>
+</body>
+</html>

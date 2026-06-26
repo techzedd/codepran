@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PRAN EcoCore - Enterprise Sustainability & ESG Compliance Workspace" />
+    <title>PRΛN EcoCore — Enterprise Sustainability Workspace</title>
+    
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body style="padding-top: var(--nav-height); display: flex; flex-direction: column;">
+
+    <!-- Navbar -->
+    <nav class="glass-nav">
+        <a href="/index.html" class="nav-logo" style="text-decoration: none;">
+            PRΛN <span>EcoCore</span>
+        </a>
+        <div class="nav-right" style="gap: 24px; display: flex; align-items: center;">
+            <a href="/Marketplace.html" style="font-family: var(--font-nav); font-weight: 500; color: var(--col-body);">Marketplace</a>
+            <a href="/Compliance.html" style="font-family: var(--font-nav); font-weight: 500; color: var(--col-body);">Compliance</a>
+            <a href="/ecocore/login/index.html" class="btn btn-secondary" style="padding: 10px 24px; font-size: 0.9rem; width: auto;">Log In</a>
+            <a href="/ecocore/register/index.html" class="btn btn-primary" style="padding: 10px 24px; font-size: 0.9rem; width: auto;">Create Workspace</a>
+        </div>
+    </nav>
+
+    <!-- Hero Content -->
+    <main style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 80px 24px; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 10%; left: 5%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(22, 163, 74, 0.1) 0%, transparent 70%); pointer-events: none;"></div>
+        <div style="position: absolute; bottom: 10%; right: 5%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(14, 165, 233, 0.08) 0%, transparent 70%); pointer-events: none;"></div>
+
+        <div style="max-width: 900px; text-align: center; position: relative; z-index: 10;">
+            <div style="display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--col-accent); background: rgba(22,163,74,0.08); border: 1px solid rgba(22,163,74,0.15); padding: 8px 16px; border-radius: 50px; margin-bottom: 24px;" class="pulse">
+                Now Live: Phase 1 & 2 Workspace Release
+            </div>
+            <h1 style="font-family: var(--font-display); font-size: 4rem; font-weight: 700; color: var(--text-main); line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.03em;">
+                The Ultimate Command Center for <span style="background: linear-gradient(135deg, var(--col-primary) 0%, var(--col-accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Enterprise Sustainability</span>
+            </h1>
+            <p style="font-size: 1.25rem; line-height: 1.6; color: var(--text-muted); max-width: 700px; margin: 0 auto 40px auto;">
+                Track greenhouse gas emissions, compile automated environmental disclosure reports, and coordinate multi-location sustainability data under a secure, audit-ready compliance framework.
+            </p>
+
+            <!-- Cards selection -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 700px; margin: 0 auto 48px auto; text-align: left;">
+                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(22,163,74,0.1); transition: var(--transition); cursor: pointer;" onclick="window.location.href='/ecocore/register/index.html'">
+                    <div>
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(22,163,74,0.08); color: var(--col-accent); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 20px;">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <h3 style="font-family: var(--font-display); font-size: 1.35rem; color: var(--col-primary); margin-bottom: 8px; font-weight: 700;">Establish Workspace</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">
+                            Create a secure organizational account, register locations, invite personnel, and initialize compliance profiles.
+                        </p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; color: var(--col-accent); font-weight: 700; font-size: 0.9rem;">
+                        Register Now <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(22,163,74,0.1); transition: var(--transition); cursor: pointer;" onclick="window.location.href='/ecocore/login/index.html'">
+                    <div>
+                        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(14,165,233,0.08); color: #0EA5E9; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: 20px;">
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        </div>
+                        <h3 style="font-family: var(--font-display); font-size: 1.35rem; color: var(--col-primary); margin-bottom: 8px; font-weight: 700;">Access Console</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">
+                            Log in with your corporate credentials to resume emissions data entry, review evidence files, or download reports.
+                        </p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; color: #0EA5E9; font-weight: 700; font-size: 0.9rem;">
+                        Enter Workspace <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back to Home -->
+            <a href="/index.html" style="font-size: 0.95rem; font-weight: 600; color: var(--col-accent); display: inline-flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-arrow-left-long"></i> Return to PRAN Landing Page
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="padding: 24px; text-align: center; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid rgba(22,163,74,0.05); background: white;">
+        &copy; 2026 PRΛN Technologies Inc. All rights reserved. &bull; <a href="javascript:void(0)" style="color: var(--col-accent);">Privacy Protocol</a> &bull; <a href="javascript:void(0)" style="color: var(--col-accent);">Terms of Use</a>
+    </footer>
+
+</body>
+</html>

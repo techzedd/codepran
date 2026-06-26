@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Onboarding: Invite Users</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 40px 0;">
+
+    <div class="wizard-container">
+        
+        <div style="text-align: center; margin-bottom: 32px;">
+            <a href="/ecocore/index.html" class="nav-logo" style="justify-content: center; font-size: 2rem; pointer-events: none;">PRΛN <span>EcoCore</span></a>
+            <p style="color: var(--text-muted); margin-top: 8px; font-weight: 500;">Step-by-step sustainability workspace initialization wizard</p>
+        </div>
+
+        <div id="wizard-steps-container" class="wizard-steps"></div>
+
+        <div class="wizard-card">
+            <div style="margin-bottom: 28px;">
+                <h2 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--col-primary); margin-bottom: 6px; font-weight: 700;">Invite Personnel</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Add employees or environmental assessors. They will receive secure activation tokens once your workspace is online.</p>
+            </div>
+
+            <!-- Form: Invite User -->
+            <div style="background: rgba(22, 163, 74, 0.02); border: 1px solid rgba(22, 163, 74, 0.1); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 28px;">
+                <h3 style="font-family: var(--font-display); font-size: 1.05rem; color: var(--col-primary); margin-bottom: 16px; font-weight: 700;">Issue Invitation</h3>
+                
+                <div class="form-group">
+                    <label for="user-email">Teammate Email Address</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="user-email" class="form-control" placeholder="colleague@company.com" />
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="user-role">Assigned Role</label>
+                        <div class="input-wrapper">
+                            <select id="user-role" class="form-control">
+                                <option value="Department Admin">Department Admin</option>
+                                <option value="Reviewer">Reviewer / Approver</option>
+                                <option value="Data Entry Officer">Data Entry Officer</option>
+                                <option value="Viewer">Viewer / Auditor</option>
+                            </select>
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-dept">Assigned Department</label>
+                        <div class="input-wrapper">
+                            <select id="user-dept" class="form-control">
+                                <!-- Loaded dynamically based on departments -->
+                            </select>
+                            <i class="fa-solid fa-sitemap"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" onclick="inviteUser()" class="btn btn-secondary" style="width: auto; padding: 10px 24px; font-size: 0.9rem; margin-top: 8px;">
+                    <i class="fa-regular fa-paper-plane"></i> Dispatch Invite
+                </button>
+            </div>
+
+            <!-- Invited Users List -->
+            <div style="margin-bottom: 8px;">
+                <h4 style="font-family: var(--font-display); font-size: 1rem; color: var(--col-primary); margin-bottom: 16px; font-weight: 700;">Pending Invitations</h4>
+                <div id="users-list">
+                    <!-- Loaded dynamically by onboarding.js -->
+                </div>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="wizard-footer">
+                <button type="button" id="wizard-prev-btn" class="btn btn-secondary" style="width: auto;">
+                    <i class="fa-solid fa-chevron-left"></i> Previous
+                </button>
+                <button type="button" id="wizard-next-btn" class="btn btn-primary" style="width: auto;">
+                    Save & Continue <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/onboarding.js"></script>
+</body>
+</html>

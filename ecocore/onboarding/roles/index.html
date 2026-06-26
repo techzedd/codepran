@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Onboarding: Roles & Permissions</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 40px 0;">
+
+    <div class="wizard-container">
+        
+        <div style="text-align: center; margin-bottom: 32px;">
+            <a href="/ecocore/index.html" class="nav-logo" style="justify-content: center; font-size: 2rem; pointer-events: none;">PRΛN <span>EcoCore</span></a>
+            <p style="color: var(--text-muted); margin-top: 8px; font-weight: 500;">Step-by-step sustainability workspace initialization wizard</p>
+        </div>
+
+        <div id="wizard-steps-container" class="wizard-steps"></div>
+
+        <div class="wizard-card">
+            <div style="margin-bottom: 28px;">
+                <h2 style="font-family: var(--font-display); font-size: 1.5rem; color: var(--col-primary); margin-bottom: 6px; font-weight: 700;">Roles & Access Controls</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Configure module-level access permissions for each user class. You can refine these settings later inside the settings panel.</p>
+            </div>
+
+            <!-- Permissions Matrix Container -->
+            <div id="permissions-matrix" style="margin-bottom: 12px;">
+                <!-- Injected dynamically by onboarding.js -->
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="wizard-footer">
+                <button type="button" id="wizard-prev-btn" class="btn btn-secondary" style="width: auto;">
+                    <i class="fa-solid fa-chevron-left"></i> Previous
+                </button>
+                <button type="button" id="wizard-next-btn" class="btn btn-primary" style="width: auto;">
+                    Save & Continue <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/onboarding.js"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Settings & Workspace Configuration</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <header id="app-header"></header>
+
+    <div class="workspace-wrapper">
+        <aside id="app-sidebar"></aside>
+
+        <main class="workspace-content">
+            
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Workspace Settings</h1>
+                    <p>Manage sustainability parameters, update security keys, and oversee access logs.</p>
+                </div>
+            </div>
+
+            <!-- Settings layout -->
+            <div style="display: grid; grid-template-columns: 200px 1fr; gap: 32px; align-items: start;">
+                
+                <!-- Inner settings navigation -->
+                <div class="card" style="padding: 16px 12px; margin-bottom: 0;">
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 4px;">
+                        <li><button class="settings-nav-btn active" onclick="switchSettingsTab('general', this)" style="width: 100%; border: none; background: transparent; text-align: left; padding: 10px 14px; font-weight: 600; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: var(--col-accent); background: rgba(22,163,74,0.05);">General</button></li>
+                        <li><button class="settings-nav-btn" onclick="switchSettingsTab('profile', this)" style="width: 100%; border: none; background: transparent; text-align: left; padding: 10px 14px; font-weight: 500; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: var(--col-body);">My Profile</button></li>
+                        <li><button class="settings-nav-btn" onclick="switchSettingsTab('security', this)" style="width: 100%; border: none; background: transparent; text-align: left; padding: 10px 14px; font-weight: 500; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: var(--col-body);">Security</button></li>
+                        <li><button class="settings-nav-btn" onclick="switchSettingsTab('audits', this)" style="width: 100%; border: none; background: transparent; text-align: left; padding: 10px 14px; font-weight: 500; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: var(--col-body);">Audit Logs</button></li>
+                        <li><button class="settings-nav-btn" onclick="switchSettingsTab('danger', this)" style="width: 100%; border: none; background: transparent; text-align: left; padding: 10px 14px; font-weight: 500; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: #ef4444;">Danger Zone</button></li>
+                    </ul>
+                </div>
+
+                <!-- Settings Content Panel -->
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    
+                    <!-- Tab 1: General Settings -->
+                    <div id="tab-general" class="settings-tab-panel">
+                        <div class="card" style="margin-bottom:0;">
+                            <h3 class="card-title">General Settings</h3>
+                            <form onsubmit="event.preventDefault(); saveGeneralSettings();">
+                                <div class="form-group">
+                                    <label for="set-ws-name">Workspace Name</label>
+                                    <input type="text" id="set-ws-name" class="form-control" placeholder="Acme Industries" style="padding-left:16px;" required />
+                                </div>
+                                <div class="form-group">
+                                    <label for="set-ws-fy">Primary Reporting Interval</label>
+                                    <select id="set-ws-fy" class="form-control" style="padding-left:16px;">
+                                        <option value="2026-2027">Financial Year 2026-2027</option>
+                                        <option value="2025-2026">Financial Year 2025-2026</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="set-ws-currency">Reporting Currency</label>
+                                    <select id="set-ws-currency" class="form-control" style="padding-left:16px;">
+                                        <option value="INR">INR (₹) - Indian Rupee</option>
+                                        <option value="USD">USD ($) - US Dollar</option>
+                                        <option value="EUR">EUR (€) - Euro</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: auto; padding: 10px 24px; font-size: 0.85rem; margin-top: 10px;">Save Parameters</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Profile Settings -->
+                    <div id="tab-profile" class="settings-tab-panel" style="display: none;">
+                        <div class="card" style="margin-bottom:0;">
+                            <h3 class="card-title">User Account Profile</h3>
+                            <form onsubmit="event.preventDefault(); alert('Profile updated successfully.');">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Display Name</label>
+                                        <input type="text" id="set-profile-name" class="form-control" value="John Doe" style="padding-left:16px;" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Registered Business Email</label>
+                                        <input type="email" id="set-profile-email" class="form-control" value="john.doe@company.com" style="padding-left:16px;" readonly />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Access Role</label>
+                                    <input type="text" class="form-control" value="Workspace Owner / Sustainability Administrator" style="padding-left:16px;" readonly />
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: auto; padding: 10px 24px; font-size: 0.85rem; margin-top: 10px;">Update Profile</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Security Settings -->
+                    <div id="tab-security" class="settings-tab-panel" style="display: none;">
+                        <div class="card" style="margin-bottom:0;">
+                            <h3 class="card-title">Security & Encryption Keys</h3>
+                            <form onsubmit="event.preventDefault(); alert('Credentials updated successfully.');">
+                                <div class="form-group">
+                                    <label>Current Security Key</label>
+                                    <input type="password" class="form-control" placeholder="••••••••" style="padding-left:16px;" required />
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>New Password</label>
+                                        <input type="password" class="form-control" placeholder="••••••••" style="padding-left:16px;" required />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Confirm Password</label>
+                                        <input type="password" class="form-control" placeholder="••••••••" style="padding-left:16px;" required />
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: auto; padding: 10px 24px; font-size: 0.85rem; margin-top: 10px;">Update Password</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Audit Logs -->
+                    <div id="tab-audits" class="settings-tab-panel" style="display: none;">
+                        <div class="card" style="margin-bottom:0;">
+                            <h3 class="card-title">Security Audit Trail</h3>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>User Action</th>
+                                            <th>Triggered IP</th>
+                                            <th>Device Info</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Today, 10:15 AM</td>
+                                            <td><span style="font-weight:700; color:var(--text-main);">User Authentication</span></td>
+                                            <td>192.168.1.42</td>
+                                            <td>macOS Big Sur &bull; Chrome 124</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Yesterday, 04:32 PM</td>
+                                            <td><span style="font-weight:700; color:var(--text-main);">Electricity Data Ingested (ACT-9201)</span></td>
+                                            <td>192.168.1.42</td>
+                                            <td>macOS Big Sur &bull; Chrome 124</td>
+                                        </tr>
+                                        <tr>
+                                            <td>June 24, 2026, 11:20 AM</td>
+                                            <td><span style="font-weight:700; color:var(--text-main);">Workspace Initialized</span></td>
+                                            <td>192.168.1.40</td>
+                                            <td>macOS Big Sur &bull; Safari 17.4</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 5: Danger Zone -->
+                    <div id="tab-danger" class="settings-tab-panel" style="display: none;">
+                        <div class="card" style="margin-bottom:0; border-color: rgba(239, 68, 68, 0.3);">
+                            <h3 class="card-title" style="color: #ef4444;">Danger Zone</h3>
+                            <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.5; margin-bottom:20px;">These actions are irreversible and will delete your organization's entire carbon ledger and uploaded invoices.</p>
+                            <div style="display:flex; flex-direction:column; gap:12px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; background:rgba(239, 68, 68, 0.02); border:1px solid rgba(239, 68, 68, 0.1); border-radius: var(--radius-md);">
+                                    <div>
+                                        <strong style="color:var(--text-main); font-size:0.95rem;">Clear All Activities</strong>
+                                        <p style="font-size:0.8rem; color:var(--text-muted);">Deletes all reported electricity, fuel, and water records from history.</p>
+                                    </div>
+                                    <button class="btn btn-secondary" onclick="clearActivities()" style="width:auto; padding:8px 16px; font-size:0.85rem; color:#ef4444; border-color:rgba(239, 68, 68, 0.2);">Clear Logs</button>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; background:rgba(239, 68, 68, 0.02); border:1px solid rgba(239, 68, 68, 0.1); border-radius: var(--radius-md);">
+                                    <div>
+                                        <strong style="color:var(--text-main); font-size:0.95rem;">Delete Sustainability Workspace</strong>
+                                        <p style="font-size:0.8rem; color:var(--text-muted);">Permanently terminates the workspace ledger and deactivates invited members.</p>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="deleteWorkspace()" style="width:auto; padding:8px 16px; font-size:0.85rem; background-color:#ef4444;">Terminate</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/workspace.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadSettings();
+        });
+
+        function loadSettings() {
+            // Pre-fill fields
+            const orgName = localStorage.getItem("ecocore_org_name") || "Acme Industries";
+            document.getElementById("set-ws-name").value = orgName;
+
+            const userEmail = localStorage.getItem("ecocore_user_email") || "john.doe@company.com";
+            document.getElementById("set-profile-email").value = userEmail;
+            
+            const nameParts = userEmail.split("@")[0].split(".");
+            const cleanName = nameParts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(" ");
+            document.getElementById("set-profile-name").value = cleanName;
+        }
+
+        function switchSettingsTab(tabName, btn) {
+            // Toggle active button style
+            document.querySelectorAll(".settings-nav-btn").forEach(b => {
+                b.classList.remove("active");
+                b.style.fontWeight = "500";
+                b.style.color = "var(--col-body)";
+                b.style.background = "transparent";
+            });
+
+            btn.classList.add("active");
+            btn.style.fontWeight = "600";
+            if (tabName === "danger") {
+                btn.style.color = "#ef4444";
+                btn.style.background = "rgba(239, 68, 68, 0.05)";
+            } else {
+                btn.style.color = "var(--col-accent)";
+                btn.style.background = "rgba(22, 163, 74, 0.05)";
+            }
+
+            // Show active panel
+            document.querySelectorAll(".settings-tab-panel").forEach(p => p.style.display = "none");
+            document.getElementById(`tab-${tabName}`).style.display = "block";
+        }
+
+        function saveGeneralSettings() {
+            const wsName = document.getElementById("set-ws-name").value.trim();
+            if (!wsName) return;
+
+            localStorage.setItem("ecocore_org_name", wsName);
+            
+            // Sync with onboarding company if present
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (stored) {
+                const data = JSON.parse(stored);
+                data.company.name = wsName;
+                localStorage.setItem("ecocore_onboarding_data", JSON.stringify(data));
+            }
+
+            alert("General workspace parameters updated successfully.");
+            window.location.reload();
+        }
+
+        function clearActivities() {
+            if (confirm("Are you absolutely sure you want to clear all data logs? This will wipe the Activities Timeline.")) {
+                localStorage.removeItem("ecocore_activities");
+                alert("Activity logs cleared.");
+            }
+        }
+
+        function deleteWorkspace() {
+            if (confirm("CRITICAL CAUTION:\n\nAre you sure you want to permanently delete this sustainability workspace? This will deactivate all members and destroy all logs. You will be redirected to the landing page.")) {
+                localStorage.clear();
+                window.location.href = "/ecocore/index.html";
+            }
+        }
+    </script>
+</body>
+</html>

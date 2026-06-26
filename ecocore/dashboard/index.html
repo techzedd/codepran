@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Sustainability Workspace Dashboard</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <!-- Shared Header Header -->
+    <header id="app-header"></header>
+
+    <!-- Workspace Wrapper -->
+    <div class="workspace-wrapper">
+        
+        <!-- Shared Left Sidebar -->
+        <aside id="app-sidebar"></aside>
+
+        <!-- Main Workspace Content -->
+        <main class="workspace-content">
+            
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Sustainability Workspace</h1>
+                    <p>Real-time emissions aggregation and ESG compliance status.</p>
+                </div>
+                <div class="page-actions">
+                    <button class="btn btn-secondary" onclick="window.location.reload();" style="width: auto; padding: 10px 18px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-arrows-rotate"></i> Refresh Metrics
+                    </button>
+                    <a href="/ecocore/reports/index.html" class="btn btn-primary" style="width: auto; padding: 10px 18px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-file-contract"></i> General Report
+                    </a>
+                </div>
+            </div>
+
+            <!-- KPI Cards Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon primary"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">84.5%</span>
+                        <span class="kpi-label">Data Completion</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon blue"><i class="fa-regular fa-clock"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">12</span>
+                        <span class="kpi-label">Pending Approvals</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon amber"><i class="fa-solid fa-person-running"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">4</span>
+                        <span class="kpi-label">Open Activities</span>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon purple"><i class="fa-solid fa-users"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-value">9</span>
+                        <span class="kpi-label">Active Users</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bento Dashboard Grid -->
+            <div class="grid-3" style="margin-bottom: 24px; align-items: start;">
+                
+                <!-- Quick Actions Card (1 span equivalent) -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 class="card-title">Quick Actions</h3>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <a href="/ecocore/data-collection/index.html" class="btn btn-secondary" style="justify-content: flex-start; text-align: left; padding: 12px 16px; font-size: 0.9rem; border-color: rgba(22,163,74,0.15);">
+                            <i class="fa-solid fa-bolt" style="color: var(--col-accent); width: 20px;"></i> Enter Energy Data
+                        </a>
+                        <a href="/ecocore/data-collection/index.html" class="btn btn-secondary" style="justify-content: flex-start; text-align: left; padding: 12px 16px; font-size: 0.9rem; border-color: rgba(22,163,74,0.15);">
+                            <i class="fa-solid fa-gas-pump" style="color: var(--col-accent); width: 20px;"></i> Enter Fuel Utilities
+                        </a>
+                        <a href="/ecocore/activities/index.html" class="btn btn-secondary" style="justify-content: flex-start; text-align: left; padding: 12px 16px; font-size: 0.9rem; border-color: rgba(22,163,74,0.15);">
+                            <i class="fa-regular fa-calendar-plus" style="color: var(--col-accent); width: 20px;"></i> Create Activity
+                        </a>
+                        <a href="/ecocore/users/index.html" class="btn btn-secondary" style="justify-content: flex-start; text-align: left; padding: 12px 16px; font-size: 0.9rem; border-color: rgba(22,163,74,0.15);">
+                            <i class="fa-solid fa-user-plus" style="color: var(--col-accent); width: 20px;"></i> Add Workspace Member
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Live Notifications (1 span equivalent) -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 class="card-title">System Flags</h3>
+                    <div style="display: flex; flex-direction: column; gap: 14px;">
+                        <div style="padding: 12px; border-radius: var(--radius-sm); background: #FEF3C7; border: 1px solid #FCD34D; display: flex; gap: 12px; font-size: 0.85rem; color: #78350F;">
+                            <i class="fa-solid fa-triangle-exclamation" style="margin-top: 2px;"></i>
+                            <div>
+                                <strong style="display: block;">Missing Energy Data</strong>
+                                HQ Plant lacks electricity statements for May 2026.
+                            </div>
+                        </div>
+                        <div style="padding: 12px; border-radius: var(--radius-sm); background: #E0F2FE; border: 1px solid #7DD3FC; display: flex; gap: 12px; font-size: 0.85rem; color: #0C4A6E;">
+                            <i class="fa-solid fa-circle-info" style="margin-top: 2px;"></i>
+                            <div>
+                                <strong style="display: block;">8 Pending approvals</strong>
+                                Submissions are waiting in the verification queue.
+                            </div>
+                        </div>
+                        <div style="padding: 12px; border-radius: var(--radius-sm); background: #FEE2E2; border: 1px solid #FCA5A5; display: flex; gap: 12px; font-size: 0.85rem; color: #7F1D1D;">
+                            <i class="fa-solid fa-clock-rotate-left" style="margin-top: 2px;"></i>
+                            <div>
+                                <strong style="display: block;">Certificate Expiring</strong>
+                                Clean Air Act audit expires in 12 days.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completion Progress (1 span equivalent) -->
+                <div class="card" style="margin-bottom: 0;">
+                    <h3 class="card-title">Completion Analysis</h3>
+                    <div style="display: flex; flex-direction: column; gap: 16px; font-size: 0.9rem;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-weight: 600;">
+                                <span>Monthly Progress</span>
+                                <span style="color: var(--col-accent);">90%</span>
+                            </div>
+                            <div style="height: 8px; background: #F1F5F9; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 90%; height: 100%; background: var(--col-accent); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-weight: 600;">
+                                <span>Department Compliance</span>
+                                <span style="color: var(--col-accent);">82%</span>
+                            </div>
+                            <div style="height: 8px; background: #F1F5F9; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 82%; height: 100%; background: var(--col-accent); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 6px; font-weight: 600;">
+                                <span>Plant A Reporting</span>
+                                <span style="color: #D97706;">65%</span>
+                            </div>
+                            <div style="height: 8px; background: #F1F5F9; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 65%; height: 100%; background: #D97706; border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Recent Activities Timeline Card -->
+            <div class="card">
+                <h3 class="card-title">
+                    <span>Recent Activities Log</span>
+                    <a href="/ecocore/activities/index.html" style="font-size: 0.8rem; color: var(--col-accent);">View All <i class="fa-solid fa-arrow-right-long"></i></a>
+                </h3>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Activity ID</th>
+                                <th>Category</th>
+                                <th>Source Department</th>
+                                <th>Reported By</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-family: var(--font-display); font-weight: 700; color: var(--col-primary);">ACT-9201</td>
+                                <td><i class="fa-solid fa-bolt" style="color: #D97706; margin-right: 6px;"></i> Electricity Grid Consumption</td>
+                                <td>Energy & Utilities</td>
+                                <td>John Doe</td>
+                                <td>June 24, 2026</td>
+                                <td><span class="badge badge-success">Approved</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family: var(--font-display); font-weight: 700; color: var(--col-primary);">ACT-9188</td>
+                                <td><i class="fa-solid fa-gas-pump" style="color: var(--col-accent); margin-right: 6px;"></i> Generator Diesel Usage</td>
+                                <td>Production & Operations</td>
+                                <td>Michael T.</td>
+                                <td>June 23, 2026</td>
+                                <td><span class="badge badge-success">Approved</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family: var(--font-display); font-weight: 700; color: var(--col-primary);">ACT-9102</td>
+                                <td><i class="fa-solid fa-droplet" style="color: var(--accent-sky); margin-right: 6px;"></i> Plant A Water Flow</td>
+                                <td>Environmental Compliance</td>
+                                <td>Sarah Jenkins</td>
+                                <td>June 20, 2026</td>
+                                <td><span class="badge badge-warning">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-family: var(--font-display); font-weight: 700; color: var(--col-primary);">ACT-9087</td>
+                                <td><i class="fa-solid fa-plane" style="color: #7C3AED; margin-right: 6px;"></i> Quarterly Travel Emissions</td>
+                                <td>Finance & Travel</td>
+                                <td>Robert Chen</td>
+                                <td>June 18, 2026</td>
+                                <td><span class="badge badge-info">Under Review</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/workspace.js"></script>
+</body>
+</html>

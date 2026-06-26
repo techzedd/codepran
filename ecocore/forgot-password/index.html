@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Recover your PRAN EcoCore password" />
+    <title>PRΛN EcoCore — Forgot Password</title>
+    
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <!-- Split Layout -->
+    <div class="split-screen">
+        
+        <!-- Left Side: Brand Panel -->
+        <div class="brand-panel">
+            <div class="brand-header">
+                <a href="/ecocore/index.html" class="logo-white">PRΛN <span>EcoCore</span></a>
+            </div>
+            
+            <div class="brand-content">
+                <h1>Password<br>Recovery.</h1>
+                <p>Lost your keys? Don't worry. Enter your registered business email and we'll send you an encrypted token to reset your password and restore access to your compliance hub.</p>
+            </div>
+            
+            <div class="brand-footer">
+                &copy; 2026 PRΛN Technologies Inc. &bull; Enterprise Compliance Standard
+            </div>
+        </div>
+        
+        <!-- Right Side: Recovery Form -->
+        <div class="form-panel">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Recover Password</h2>
+                    <p>Remember your password? <a href="/ecocore/login/index.html">Access Console</a></p>
+                </div>
+                
+                <form id="ecocore-forgot-form">
+                    
+                    <div class="form-group">
+                        <label for="forgot-email">Business Email Address</label>
+                        <div class="input-wrapper">
+                            <input type="email" id="forgot-email" class="form-control" placeholder="name@company.com" required />
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
+                        Send Reset Link <i class="fa-regular fa-paper-plane"></i>
+                    </button>
+                    
+                </form>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/auth.js"></script>
+</body>
+</html>

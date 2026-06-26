@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Activities Timeline</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <header id="app-header"></header>
+
+    <div class="workspace-wrapper">
+        <aside id="app-sidebar"></aside>
+
+        <main class="workspace-content">
+            
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Activities Log</h1>
+                    <p>Timeline of all environmental data submissions and verification logs.</p>
+                </div>
+            </div>
+
+            <!-- Card Layout -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                    <!-- Filter tabs -->
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary filter-btn active" onclick="filterActivities('all', this)" style="width: auto; padding: 8px 16px; font-size: 0.85rem;">All Logs</button>
+                        <button class="btn btn-secondary filter-btn" onclick="filterActivities('Pending', this)" style="width: auto; padding: 8px 16px; font-size: 0.85rem; border-color: rgba(217, 119, 6, 0.2); color: #B45309;">Pending</button>
+                        <button class="btn btn-secondary filter-btn" onclick="filterActivities('Approved', this)" style="width: auto; padding: 8px 16px; font-size: 0.85rem; border-color: rgba(22, 163, 74, 0.2); color: var(--col-accent);">Approved</button>
+                        <button class="btn btn-secondary filter-btn" onclick="filterActivities('Rejected', this)" style="width: auto; padding: 8px 16px; font-size: 0.85rem; border-color: rgba(239, 68, 68, 0.2); color: #EF4444;">Rejected</button>
+                    </div>
+
+                    <!-- Actions -->
+                    <button class="btn btn-secondary" onclick="exportData()" style="width: auto; padding: 8px 16px; font-size: 0.85rem; border-color: rgba(22,163,74,0.15);">
+                        <i class="fa-solid fa-file-export"></i> Export CSV
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Activity ID</th>
+                                <th>Category Module</th>
+                                <th>Facility Node</th>
+                                <th>Reported By</th>
+                                <th>Reporting Period</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Audit Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activities-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/workspace.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadActivities();
+        });
+
+        function getActivities() {
+            const stored = localStorage.getItem("ecocore_activities");
+            const defaults = [
+                { id: "ACT-9201", module: "Electricity Energy", dept: "HQ Corporate Office", reportedBy: "John Doe", date: "May 2026", status: "Approved" },
+                { id: "ACT-9188", module: "Stationary Fuels", dept: "Main Plant", reportedBy: "Michael T.", date: "May 2026", status: "Approved" },
+                { id: "ACT-9102", module: "Water Management", dept: "Main Plant", reportedBy: "Sarah Jenkins", date: "May 2026", status: "Pending" },
+                { id: "ACT-9087", module: "Business Travel", dept: "HQ Corporate Office", reportedBy: "Robert Chen", date: "April 2026", status: "Pending" }
+            ];
+
+            if (stored) {
+                try { return JSON.parse(stored); } catch(e) {}
+            }
+            localStorage.setItem("ecocore_activities", JSON.stringify(defaults));
+            return defaults;
+        }
+
+        function loadActivities() {
+            const list = getActivities();
+            renderActivities(list);
+        }
+
+        function renderActivities(list) {
+            const tbody = document.getElementById("activities-table-body");
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-muted);">No records registered in this queue.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = list.map(a => `
+                <tr class="activity-row" data-status="${a.status}">
+                    <td style="font-family: var(--font-display); font-weight: 700; color: var(--col-primary);">${a.id}</td>
+                    <td style="font-weight:700;">${a.module}</td>
+                    <td>${a.dept}</td>
+                    <td>${a.reportedBy}</td>
+                    <td style="font-weight:600;">${a.date}</td>
+                    <td>
+                        <span class="badge ${a.status === 'Approved' ? 'badge-success' : a.status === 'Rejected' ? 'badge-danger' : 'badge-warning'}">
+                            ${a.status}
+                        </span>
+                    </td>
+                    <td style="text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                        ${a.status === 'Pending' ? `
+                            <button class="btn btn-secondary" onclick="auditAction('${a.id}', 'Approved')" title="Approve" style="width: auto; padding: 6px 10px; font-size: 0.8rem; border-color: rgba(22, 163, 74, 0.2); color: var(--col-accent);">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                            <button class="btn btn-secondary" onclick="auditAction('${a.id}', 'Rejected')" title="Reject" style="width: auto; padding: 6px 10px; font-size: 0.8rem; border-color: rgba(239, 68, 68, 0.2); color:#ef4444;">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        ` : `
+                            <span style="font-size:0.8rem; color:var(--text-muted); padding: 6px 10px;">Reviewed</span>
+                        `}
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function auditAction(id, action) {
+            let list = getActivities();
+            list = list.map(a => {
+                if (a.id === id) {
+                    a.status = action;
+                }
+                return a;
+            });
+            localStorage.setItem("ecocore_activities", JSON.stringify(list));
+            loadActivities();
+        }
+
+        function filterActivities(status, btn) {
+            // Update active btn style
+            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            const rows = document.querySelectorAll(".activity-row");
+            rows.forEach(row => {
+                const rowStatus = row.getAttribute("data-status");
+                if (status === "all" || rowStatus === status) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        function exportData() {
+            alert("Exporting activity logs as ACT_LOG_EXCEL.csv. Your download will start shortly.");
+        }
+    </script>
+</body>
+</html>

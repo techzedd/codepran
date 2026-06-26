@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRΛN EcoCore — Reports Compilation</title>
+    
+    <!-- Typography & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/ecocore/assets/css/style.css">
+</head>
+<body>
+
+    <header id="app-header"></header>
+
+    <div class="workspace-wrapper">
+        <aside id="app-sidebar"></aside>
+
+        <main class="workspace-content">
+            
+            <div class="page-header">
+                <div class="page-title">
+                    <h1>Sustainability Reports</h1>
+                    <p>Compile BRSR disclosures, Scope 1-3 carbon foot-printing spreadsheets, and ESG reports.</p>
+                </div>
+            </div>
+
+            <!-- Report Cards selection -->
+            <div class="grid-3" style="margin-bottom: 32px;">
+                
+                <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between; border-color: rgba(22,163,74,0.08); transition: var(--transition);">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+                            <div style="width:40px; height:40px; border-radius:10px; background:rgba(22, 163, 74, 0.05); color:var(--col-accent); display:flex; align-items:center; justify-content:center; font-size:1.2rem;">
+                                <i class="fa-solid fa-calendar-days"></i>
+                            </div>
+                            <span class="badge badge-success">BRSR Standard</span>
+                        </div>
+                        <h3 style="font-family: var(--font-display); font-size:1.15rem; color:var(--col-primary); margin-bottom:8px; font-weight:700;">Annual ESG Report</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Comprehensive annual disclosure package covering business responsibility indicators, Scope emissions, and resource compliance audits.</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="compileReport('Annual ESG')" style="width:100%; padding:10px; font-size:0.85rem; margin-top:20px; border-color: rgba(22,163,74,0.15);">
+                        Compile Report
+                    </button>
+                </div>
+
+                <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between; border-color: rgba(22,163,74,0.08); transition: var(--transition);">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+                            <div style="width:40px; height:40px; border-radius:10px; background:rgba(14, 165, 233, 0.05); color:#0EA5E9; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">
+                                <i class="fa-solid fa-chart-column"></i>
+                            </div>
+                            <span class="badge badge-info">Interim Audit</span>
+                        </div>
+                        <h3 style="font-family: var(--font-display); font-size:1.15rem; color:var(--col-primary); margin-bottom:8px; font-weight:700;">Quarterly Emissions Summary</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Three-month interval inventory compilation tracking Scope 1 fuel consumption offset indices and Scope 2 electricity usage matrices.</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="compileReport('Quarterly Emissions')" style="width:100%; padding:10px; font-size:0.85rem; margin-top:20px; border-color: rgba(22,163,74,0.15);">
+                        Compile Report
+                    </button>
+                </div>
+
+                <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:space-between; border-color: rgba(22,163,74,0.08); transition: var(--transition);">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+                            <div style="width:40px; height:40px; border-radius:10px; background:rgba(139, 92, 246, 0.05); color:#8B5CF6; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">
+                                <i class="fa-solid fa-industry"></i>
+                            </div>
+                            <span class="badge badge-warning">Node Level</span>
+                        </div>
+                        <h3 style="font-family: var(--font-display); font-size:1.15rem; color:var(--col-primary); margin-bottom:8px; font-weight:700;">Facility Performance Report</h3>
+                        <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.5;">Dedicated footprint ledger for specific plant sites. Compares resource consumption, electricity, and waste KPIs between nodes.</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="compileReport('Facility Node')" style="width:100%; padding:10px; font-size:0.85rem; margin-top:20px; border-color: rgba(22,163,74,0.15);">
+                        Compile Report
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Report Generator / Preview -->
+            <div class="card">
+                <h3 class="card-title">Live Disclosures Preview</h3>
+                
+                <div style="background: rgba(22, 163, 74, 0.01); border: 1px solid rgba(22, 163, 74, 0.08); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; align-items: flex-end;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Scope / Theme</label>
+                            <select id="rep-scope" class="form-control" style="padding-left:16px;">
+                                <option value="all">All Disclosures</option>
+                                <option value="Scope 1">Scope 1 - Stationary Fuels</option>
+                                <option value="Scope 2">Scope 2 - Grid Energy</option>
+                                <option value="Scope 3">Scope 3 - Logistics & Travel</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Reporting Facility</label>
+                            <select id="rep-loc" class="form-control" style="padding-left:16px;">
+                                <!-- Loaded dynamically -->
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="simulateCompile()" style="width:auto; padding:12px 20px; font-size:0.85rem;">
+                            <i class="fa-solid fa-square-poll-vertical"></i> Update Preview
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Emissions Category</th>
+                                <th>Accounting Unit</th>
+                                <th>Consumption Q1</th>
+                                <th>Emissions Q1 (tCO2e)</th>
+                                <th>Consumption Q2</th>
+                                <th>Emissions Q2 (tCO2e)</th>
+                                <th>Reduction Target</th>
+                            </tr>
+                        </thead>
+                        <tbody id="disclosures-tbody">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Export toolbar -->
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px; padding-top:20px; border-top:1px solid rgba(0,0,0,0.05);">
+                    <button class="btn btn-secondary" onclick="exportFormat('PDF')" style="width:auto; padding:10px 20px; font-size:0.85rem; border-color:#EF4444; color:#EF4444;">
+                        <i class="fa-regular fa-file-pdf"></i> Export PDF
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportFormat('Excel')" style="width:auto; padding:10px 20px; font-size:0.85rem; border-color:#16A34A; color:#16A34A;">
+                        <i class="fa-regular fa-file-excel"></i> Export Excel
+                    </button>
+                    <button class="btn btn-primary" onclick="shareReport()" style="width:auto; padding:10px 24px; font-size:0.85rem;">
+                        <i class="fa-regular fa-share-from-square"></i> Share Link
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/ecocore/assets/js/workspace.js"></script>
+    <script>
+        const DUMMY_DATA = [
+            { cat: "Grid Electricity", unit: "MWh", scope: "Scope 2", qty1: 120, co1: 98.4, qty2: 114, co2: 93.4, target: "-5.0%" },
+            { cat: "Stationary Diesel", unit: "Litres", scope: "Scope 1", qty1: 4500, co1: 12.1, qty2: 4200, co2: 11.2, target: "-3.0%" },
+            { cat: "Corporate Flights", unit: "Pax-km", scope: "Scope 3", qty1: 34000, co1: 8.6, qty2: 28000, co2: 7.1, target: "-10.0%" },
+            { cat: "Groundwater Extraction", unit: "m³", scope: "Scope 3", qty1: 1800, co1: 0.0, qty2: 1540, co2: 0.0, target: "-12.0%" }
+        ];
+
+        document.addEventListener("DOMContentLoaded", function () {
+            loadOnboardingOptions();
+            simulateCompile();
+        });
+
+        function loadOnboardingOptions() {
+            const stored = localStorage.getItem("ecocore_onboarding_data");
+            if (!stored) return;
+
+            const data = JSON.parse(stored);
+            const locSelect = document.getElementById("rep-loc");
+            if (locSelect) {
+                locSelect.innerHTML = `<option value="all">All Facilities</option>` + data.locations.map(l => `<option value="${l.name}">${l.name}</option>`).join("");
+            }
+        }
+
+        function simulateCompile() {
+            const scope = document.getElementById("rep-scope").value;
+            const tbody = document.getElementById("disclosures-tbody");
+            
+            const filtered = DUMMY_DATA.filter(d => scope === "all" || d.scope === scope);
+
+            tbody.innerHTML = filtered.map(d => `
+                <tr>
+                    <td style="font-weight:700; color:var(--text-main);">${d.cat} <span style="font-size:0.75rem; color:var(--text-muted); font-weight:400;">(${d.scope})</span></td>
+                    <td><span class="badge badge-info">${d.unit}</span></td>
+                    <td>${d.qty1.toLocaleString()}</td>
+                    <td style="font-weight:700; color:var(--col-primary);">${d.co1} t</td>
+                    <td>${d.qty2.toLocaleString()}</td>
+                    <td style="font-weight:700; color:var(--col-primary);">${d.co2} t</td>
+                    <td style="font-weight:700; color:var(--col-accent);">${d.target}</td>
+                </tr>
+            `).join("");
+        }
+
+        function compileReport(name) {
+            alert(`Compiling workspace ledger data for "${name}" report. This may take up to 30 seconds to compile...`);
+            setTimeout(() => {
+                alert(`"${name}" report compilation complete. Audited preview ready below.`);
+            }, 1000);
+        }
+
+        function exportFormat(fmt) {
+            alert(`Generating secure download payload. "${fmt}" report will begin downloading.`);
+        }
+
+        function shareReport() {
+            alert("Report Access Key copied. You can share this encrypted link with external ESG verifiers.");
+        }
+    </script>
+</body>
+</html>
